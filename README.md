@@ -21,6 +21,9 @@
 3. 必要なnodeモジュールを取得するため、`npm install` を一度実行します。
 4. `functions` ディレクトリ内でも `npm install` を一度実行します。
 5. Firebaseコンソール (https://firebase.google.com から) を開き、プロジェクトを追加します。
+   - Firebase CLI でログインしていることを確認してください。`firebase login` を実行して、Google アカウントでログインします。
+   - CLIでのfirebase initは不要です(このキット自体が初期設定を代行しているため)
+   - CLIでのfirebase use --add でプロジェクトを追加し、その後 firebase use でプロジェクトを選択することは必要です。
 6. このプロジェクトのダッシュボードから、アプリを追加し「ウェブ」 (</>) を選択します。
 7. このアプリの設定から、「Config」を選択します（Firebase SDKスニペット内）。
 8. 設定ファイルをコピーし、`src/config/project.ts` ファイルに貼り付けます。
