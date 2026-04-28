@@ -4,28 +4,15 @@
     "indexes": "firestore.indexes.json"
   },
   "functions": {
-    "ignore": [
-      "tests",
-      "*.sh",
-      "*.md",
-      "*.txt",
-      "**/node_modules/**"
-    ],
-    "predeploy": [
-      "npm --prefix \"$RESOURCE_DIR\" run lint",
-      "npm --prefix \"$RESOURCE_DIR\" run build"
-    ],
+    "ignore": ["tests", "*.sh", "*.md", "*.txt", "**/node_modules/**"],
+    "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run lint", "npm --prefix \"$RESOURCE_DIR\" run build"],
     "source": "functions"
   },
   "hosting": [
     {
       "target": "app",
       "public": "dist",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "headers": [
         {
           "source": "**",
@@ -78,30 +65,8 @@
           "destination": "/index.html"
         }
       ]
-    },
-    {
-      "target": "mock",
-      "public": "system-design/mock/ticket-site",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ]
-    },
-    {
-      "target": "kiosk",
-      "public": "system-design/mock/self-order-kiosk",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ]
     }
-
   ],
-  "storage": {
-    "rules": "storage.rules"
-  },
   "emulators": {
     "auth": {
       "port": 9099
