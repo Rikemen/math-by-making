@@ -14,7 +14,21 @@
 
 ## 📋 要件
 
-- Node.js バージョン 16以降（推奨：最新のLTSバージョン。※ functionsではNode 24に対応するよう構成を調整済み）。
+- Node.js バージョン 22（LTS推奨）。
+
+> **⚠️ Firebase 料金プランに関する注意:**
+>
+> このキットには Cloud Firestore と Cloud Functions の設定が含まれています。Spark（無料）プランでは、Firestore を有効化した状態で Cloud Functions をデプロイすることができません。Functions を使用する場合は **Blaze（従量課金）プラン** へのアップグレードが必要です。
+>
+> Firestore を使用しない場合は、`firebase.json` から以下の `firestore` セクションを削除し、関連ファイル（`firestore.rules`, `firestore.indexes.json`）も不要であれば削除してください。
+>
+> ```json
+> // firebase.json から以下を削除
+> "firestore": {
+>   "rules": "firestore.rules",
+>   "indexes": "firestore.indexes.json"
+> },
+> ```
 
 ## 📖 初期セットアップ手順
 
@@ -158,9 +172,6 @@ firebase target:apply hosting <TARGET_NAME> <YOUR_SITE_ID>
 ```bash
 # mockターゲットを mock-your-project-id サイトに紐付ける場合
 firebase target:apply hosting mock mock-your-project-id
-
-# kioskターゲットを your-kiosk-project-id サイトに紐付ける場合
-firebase target:apply hosting kiosk your-kiosk-project-id
 ```
 
 この操作を行うと、プロジェクトルートの `.firebaserc` にターゲット情報が自動的に保存されます。
@@ -186,3 +197,14 @@ firebase target:apply hosting kiosk your-kiosk-project-id
 ```bash
 firebase deploy --only hosting:mock
 ```
+
+## ローカル・ステージング・本番環境について（個人開発を想定）
+
+- 開発初期 : ローカルのみ or ローカルとステージングで開発する
+- 開発中盤 : ローカル・ステージング
+- 開発終盤 : ローカル・ステージング・本番環境で開発する
+
+## その他Tips
+
+- コンテナ保存期間をfirebaseデプロイ時にCLIで聞かれた時は基本はデフォルトの1日でOK
+- firebase deployの際にhono serverだけ再度デプロイするとうまく行く場合がある(権限付与される前に内部的に先にデプロイが走ってしまうことがあるそう)
