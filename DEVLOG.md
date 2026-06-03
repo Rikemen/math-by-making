@@ -18,3 +18,18 @@
 ### 開発タスク
 
 github issuesで今後のこのスターターに対する開発課題は管理します。
+
+## 2026-06-03
+
+### Cloud Functions（第2世代）デプロイ時の権限エラー対応
+
+**事象:** `firebase deploy` で Cloud Functions（第2世代）をデプロイした際、`missing permission on the build service account.` というエラーでビルドが失敗した。
+
+**原因:** Cloud Functions（第2世代）のコンテナビルド処理は、デフォルトで **Compute Engine デフォルトサービスアカウント** (`[プロジェクト番号]-compute@developer.gserviceaccount.com`) が使用される仕様になっているが、このアカウントに適切な権限が付与されていなかった。
+
+**ハマりポイント:**
+
+- エラー名から旧来のビルドサービスアカウント（`@cloudbuild.gserviceaccount.com`）に権限を付与してしまい、空振りした。
+- IAM画面のリストに Compute Engine デフォルトアカウントが表示されていなかった。過去に権限がすべて削除されており、IAMの「権限を持つアカウント一覧」から消えていたのが原因。
+
+**対応:** Google Cloud コンソールの「IAM と管理」>「IAM」画面の「＋ アクセス権を付与」から、「新しいプリンシパル」として `[プロジェクト番号]-compute@developer.gserviceaccount.com` を直接手入力で追加し、必要なロール（`編集者` や `Artifact Registry 作成者` 等）を付与。これによりビルドプロセスが許可され、デプロイに成功した。

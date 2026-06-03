@@ -32,20 +32,44 @@
 
 ## 📖 初期セットアップ手順
 
-1. このリポジトリをGitクローンします。
-2. `npm global add firebase-tools` を実行して、Firebase toolsをインストールします。
-3. 必要なnodeモジュールを取得するため、`npm install` を一度実行します。
-4. `functions` ディレクトリ内でも `npm install` を一度実行します。
-5. Firebaseコンソール (https://firebase.google.com から) を開き、プロジェクトを追加します。
+> **💡 stg / prod 環境分離について:**
+>
+> 使い捨てではない本格的なアプリを開発する場合、**最初に作成するGitHubリポジトリとFirebaseプロジェクトはステージング（stg）用**として構成してください。本番（prod）用のリポジトリやFirebaseプロジェクトは、開発がある程度進んだ段階で別途作成します。最初からstgとして始めておくことで、後からprod環境を追加する際にスムーズに移行できます。環境分離の詳細は「[ローカル・ステージング・本番環境について](#ローカルステージング本番環境について個人開発を想定)」を参照してください。
+
+1. このリポジトリ（スターターキット）をGitクローンします。
+   ```bash
+   git clone https://github.com/<ベースキットのリポジトリURL>.git <your-project-name>
+   cd <your-project-name>
+   ```
+2. Gitリモートの向き先を自分のリポジトリに変更します。
+   - まず、GitHub上に新しいリポジトリを作成してください（stg/prod分離する場合は、リポジトリ名に `-stg` を付けるなどしてstg用と分かるようにしておくと管理しやすくなります）。
+   - クローン元（スターターキット）のoriginを `upstream` にリネームし、自分のリポジトリを新たな `origin` として設定します。
+   ```bash
+   # 現在のoriginをupstreamにリネーム（ベースキットの更新を取り込みたい場合に残す）
+   git remote rename origin upstream
+   # 自分のリポジトリをoriginとして追加
+   git remote add origin https://github.com/<your-username>/<your-repo-name>.git
+   # 自分のリポジトリにプッシュ
+   git push -u origin main
+   ```
+   - ベースキットの更新を今後取り込む必要がない場合は、`upstream` を削除しても構いません。
+   ```bash
+   git remote remove upstream
+   ```
+   - 設定後、`git remote -v` で向き先が正しいことを確認してください。
+3. `npm install -g firebase-tools` を実行して、Firebase toolsをインストールします。
+4. 必要なnodeモジュールを取得するため、`npm install` を一度実行します。
+5. `functions` ディレクトリ内でも `npm install` を一度実行します。
+6. Firebaseコンソール (https://firebase.google.com から) を開き、プロジェクトを追加します（stg/prod分離する場合は、プロジェクト名に `-stg` を含めてステージング用として作成してください）。
    - Firebase CLI でログインしていることを確認してください。`firebase login` を実行して、Google アカウントでログインします。
    - CLIでのfirebase initは不要です(このキット自体が初期設定を代行しているため)
    - CLIでのfirebase use --add でプロジェクトを追加し、その後 firebase use でプロジェクトを選択することは必要です。
-6. このプロジェクトのダッシュボードから、アプリを追加し「ウェブ」 (</>) を選択します。
-7. このアプリの設定から、「Config」を選択します（Firebase SDKスニペット内）。
-8. 設定ファイルをコピーし、`src/config/project.ts` ファイルに貼り付けます。
-9. `.firebaserc` ファイル内の `fir-vue-startup-kit` という単語を、あなたのFirebaseプロジェクト名に置き換えます。
-10. Firebaseコンソールを開き、Cloud Firestoreを作成します（とりあえず「セキュア」にしておきます）。
-11. FirebaseコンソールでFirebase Hostingを有効にします。
+7. このプロジェクトのダッシュボードから、アプリを追加し「ウェブ」 (</>) を選択します。
+8. このアプリの設定から、「Config」を選択します（Firebase SDKスニペット内）。
+9. 設定ファイルをコピーし、`src/config/project.ts` ファイルに貼り付けます。
+10. `.firebaserc` ファイル内の `fir-vue-startup-kit` という単語を、あなたのFirebaseプロジェクト名に置き換えます。
+11. Firebaseコンソールを開き、Cloud Firestoreを作成します（とりあえず「セキュア」にしておきます）。
+12. FirebaseコンソールでFirebase Hostingを有効にします。
 
 ## 開発環境の立ち上げ
 
@@ -208,3 +232,51 @@ firebase deploy --only hosting:mock
 
 - コンテナ保存期間をfirebaseデプロイ時にCLIで聞かれた時は基本はデフォルトの1日でOK
 - firebase deployの際にhono serverだけ再度デプロイするとうまく行く場合がある(権限付与される前に内部的に先にデプロイが走ってしまうことがあるそう)
+
+> **📝 開発ログ:** 開発中にハマったポイントやトラブルシューティングの詳細は `DEVLOG.md`（または `DEVLOG.html`）に記録しています。問題に遭遇した際は、まずそちらを確認してください。
+
+## 🤖 AIエージェント設定（`.agent/`）
+
+このプロジェクトには、AIコーディングアシスタント（Antigravity等）向けのワークフロー・スキル・ルールが `.agent/` ディレクトリに格納されています。
+
+### ワークフロー（`.agent/workflows/`）
+
+チャットで `/コマンド名` を入力すると、対応するワークフローが起動します。
+
+| コマンド | 説明 |
+|----------|------|
+| `/ask` | 読み取り専用の相談モード。ゼロコンテキスト戦略で客観的な助言を提供する |
+| `/check` | 既存コードの仕様・挙動・依存関係を調査する（読み取り専用） |
+| `/commit` | staged変更からConventional Commits形式のコミットメッセージを英語で生成する |
+| `/commit-ja` | staged変更からConventional Commits形式のコミットメッセージを日本語で生成する |
+| `/create-rop` | 文字起こしファイルから構造化された議事録を自動生成する |
+| `/discard` | 現在のセッションを要約し、新しいセッションの再開プロンプトを生成する |
+| `/explain` | コードや概念の「なぜ」と「どのように」を焦点に説明する（読み取り専用） |
+| `/grasp` | コードの役割・依存関係・影響範囲を360度分析する（読み取り専用） |
+| `/make-dev-plan` | 実装計画を水色ベースデザインの1ファイルHTMLとして `docs/` に生成する |
+| `/make-lightblue-doc` | 水色ベースデザインでインライン編集・JSON入出力を備えたHTMLドキュメントを生成する |
+| `/plan` | 実装計画を `implementation_plan.md` として生成する（コード変更は行わない） |
+| `/review` | コードまたはテキストをレビューし、重大な問題・提案・称賛に分類して報告する |
+
+### スキル（`.agent/skills/`）
+
+エージェントが特定の状況で自動的に、または明示的な指示で使用する拡張機能です。
+
+| スキル名 | 説明 |
+|----------|------|
+| `indexing-awareness` | プロジェクトの構造インデックスと依存関係トレースにより、RAG的なコンテキスト取得を実現する。`index-structure.sh`、`trace-dependencies.sh`、`verify-structure.sh` の3つのスクリプトを提供 |
+| `knowledge-cutoff-awareness` | システムの現在日時を取得し、知識カットオフによる事実の捏造を防止する |
+| `sync-readme-html` | `README.md` の変更時に `README.html` を水色ベースのデザインシステムで自動同期する |
+
+### ルール（`.agent/rules/`）
+
+エージェントの行動規範・コーディング規約を定義するファイル群です。`git-commit-rules.md`（コミットメッセージ規約）、`indexing-codebase.md`（構造認識）、`language-strategies.md`（言語戦略）、`senior-engineer-conduct.md`（行動規範）が含まれています。
+
+## 📘 README.html
+
+`README.html` は `README.md` と同じ内容を、水色ベースのデザインシステムで整形したHTMLドキュメントです。ブラウザで直接開いて閲覧できます。
+
+- **情報源**: `README.md` が唯一の情報源（Single Source of Truth）です
+- **同期**: `README.md` を更新した際は、`sync-readme-html` スキルにより `README.html` も同期されます
+- **デザイン**: 固定ヘッダー + 左サイドバー（目次） + メインコンテンツのレイアウト、860px以下でレスポンシブ対応
+- **直接編集禁止**: `README.html` を直接編集せず、必ず `README.md` を編集してください
