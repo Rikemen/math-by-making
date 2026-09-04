@@ -48,7 +48,7 @@ Important guidelines:
 - Always prefer **machine-readable ISO 8601 output** for calculations.
 - Only convert to human-readable format when presenting results to users.
 
-Run the following commands from the **skill root directory** (e.g. `.agent/skills/knowledge-cutoff-awareness` or `skills/knowledge-cutoff-awareness`). The path `scripts/get_date.js` is relative to that directory.
+Run the following commands from the **skill root directory** (e.g. `.agents/skills/knowledge-cutoff-awareness` or `skills/knowledge-cutoff-awareness`). The path `scripts/get_date.js` is relative to that directory.
 
 # Examples for Agents
 

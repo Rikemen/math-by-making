@@ -10,7 +10,7 @@ description: コミットメッセージ生成（日本語）
 staged 変更から Conventional Commits 形式のコミットメッセージを**日本語**で生成する。
 
 > **注意:** このワークフローは git の状態を読み取りますが、ファイルの変更は行いません。
-> コミットルールは `.agent/rules/git-commit-rules.md` に定義されています。
+> コミットルールは `.agents/rules/git-commit-rules.md` に定義されています。
 
 ---
 
@@ -30,7 +30,7 @@ staged 変更から Conventional Commits 形式のコミットメッセージを
 ## 3. コミットメッセージの生成
 - **目的:** そのまま使えるコミットメッセージを出力する。
 - **アクション:**
-  - `.agent/rules/git-commit-rules.md` のすべてのルールに従う。
+  - `.agents/rules/git-commit-rules.md` のすべてのルールに従う。
   - **言語:** 日本語（type は英語のまま）。
   - **Description:** 自然な日本語、業務調（丁寧すぎず簡潔）、50文字以内。
   - **Body（任意）:** 空行の後、変更の意図・影響を簡潔に記述。

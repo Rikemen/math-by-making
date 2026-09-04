@@ -32,7 +32,7 @@ description: 実装計画を水色ベースデザインの1ファイルHTMLと�
 
 ## ベース仕様
 
-**デザイントークン・基本スタイル・編集JS・モーダル・トースト** は `/make-lightblue-doc` ワークフロー（`.agent/workflows/make-lightblue-doc.md`）の仕様に **完全準拠** する。本ワークフローでは、それに加える **実装計画固有の差分** のみを定義する。
+**デザイントークン・基本スタイル・編集JS・モーダル・トースト** は `/make-lightblue-doc` ワークフロー（`.agents/workflows/make-lightblue-doc.md`）の仕様に **完全準拠** する。本ワークフローでは、それに加える **実装計画固有の差分** のみを定義する。
 
 ---
 

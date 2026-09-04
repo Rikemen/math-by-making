@@ -10,7 +10,7 @@ description: コミットメッセージ生成（英語）
 Generate a clean Conventional Commits message from staged changes **in English**.
 
 > **Note:** This workflow reads git state but does NOT modify any files.
-> All commit rules are defined in `.agent/rules/git-commit-rules.md`.
+> All commit rules are defined in `.agents/rules/git-commit-rules.md`.
 
 ---
 
@@ -30,7 +30,7 @@ Generate a clean Conventional Commits message from staged changes **in English**
 ## 3. Generate Commit Message
 - **Goal:** Produce a ready-to-use commit message.
 - **Action:**
-  - Follow all rules in `.agent/rules/git-commit-rules.md`.
+  - Follow all rules in `.agents/rules/git-commit-rules.md`.
   - **Language:** English.
   - **Description:** Imperative mood, present tense, capitalize first letter, max 50 chars, no trailing period.
   - **Body (optional):** After a blank line, explain the reason and impact. Wrap at 72 chars.

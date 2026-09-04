@@ -35,7 +35,7 @@ description: 計画する
   - タスク用: `task.md`
 
 ## 3. 計画内容の要件
-（`./.agent/rules/language-strategies.md` で定義された戦略に従ってください）
+（`./.agents/rules/language-strategies.md` で定義された戦略に従ってください）
 生成されるマークダウンファイルには、以下のセクションを含める必要があります:
 1.  **目的:** 達成すべき内容の明確な要約。
 2.  **分析（現状分析）:** 現状 vs 理想の状態。
