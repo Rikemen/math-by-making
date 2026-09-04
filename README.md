@@ -235,11 +235,11 @@ firebase deploy --only hosting:mock
 
 > **📝 開発ログ:** 開発中にハマったポイントやトラブルシューティングの詳細は `DEVLOG.md`（または `DEVLOG.html`）に記録しています。問題に遭遇した際は、まずそちらを確認してください。
 
-## 🤖 AIエージェント設定（`.agent/`）
+## 🤖 AIエージェント設定（`.agents/`）
 
-このプロジェクトには、AIコーディングアシスタント（Antigravity等）向けのワークフロー・スキル・ルールが `.agent/` ディレクトリに格納されています。
+このプロジェクトには、AIコーディングアシスタント（Antigravity等）向けのワークフロー・スキル・ルールが `.agents/` ディレクトリに格納されています。
 
-### ワークフロー（`.agent/workflows/`）
+### ワークフロー（`.agents/workflows/`）
 
 チャットで `/コマンド名` を入力すると、対応するワークフローが起動します。
 
@@ -258,7 +258,7 @@ firebase deploy --only hosting:mock
 | `/plan` | 実装計画を `implementation_plan.md` として生成する（コード変更は行わない） |
 | `/review` | コードまたはテキストをレビューし、重大な問題・提案・称賛に分類して報告する |
 
-### スキル（`.agent/skills/`）
+### スキル（`.agents/skills/`）
 
 エージェントが特定の状況で自動的に、または明示的な指示で使用する拡張機能です。
 
@@ -268,7 +268,7 @@ firebase deploy --only hosting:mock
 | `knowledge-cutoff-awareness` | システムの現在日時を取得し、知識カットオフによる事実の捏造を防止する |
 | `sync-readme-html` | `README.md` の変更時に `README.html` を水色ベースのデザインシステムで自動同期する |
 
-### ルール（`.agent/rules/`）
+### ルール（`.agents/rules/`）
 
 エージェントの行動規範・コーディング規約を定義するファイル群です。`git-commit-rules.md`（コミットメッセージ規約）、`indexing-codebase.md`（構造認識）、`language-strategies.md`（言語戦略）、`senior-engineer-conduct.md`（行動規範）が含まれています。
 
