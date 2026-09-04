@@ -1,21 +1,21 @@
 #!/bin/bash
 
 # プロジェクト構造認識 (Indexing Awareness) 検証スクリプト
-# ドキュメント (README.md) と実ファイル (.agent/**/*) の整合性をチェックします。
+# ドキュメント (README.md) と実ファイル (.agents/**/*) の整合性をチェックします。
 
 # プロジェクトルートへ移動（スクリプトがどこから呼ばれても動作するように）
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
 cd "$PROJECT_ROOT" || exit 1
 
-echo "🔍 Verifying consistency between README.md and .agent files..."
+echo "🔍 Verifying consistency between README.md and .agents files..."
 echo "   Project root: $PROJECT_ROOT"
 echo "============================================================"
 
 README_FILE="README.md"
-RULES_DIR=".agent/rules"
-WORKFLOWS_DIR=".agent/workflows"
-SKILLS_DIR=".agent/skills"
+RULES_DIR=".agents/rules"
+WORKFLOWS_DIR=".agents/workflows"
+SKILLS_DIR=".agents/skills"
 
 EXIT_CODE=0
 

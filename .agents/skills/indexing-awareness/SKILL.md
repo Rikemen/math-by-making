@@ -28,16 +28,16 @@ Antigravity はリポジトリの事前インデックス化を行わないた�
 
 ```bash
 # 実行権限の付与（初回のみ）
-chmod +x .agent/skills/indexing-awareness/scripts/index-structure.sh
+chmod +x .agents/skills/indexing-awareness/scripts/index-structure.sh
 
 # プロジェクト全体のインデックス
-./.agent/skills/indexing-awareness/scripts/index-structure.sh
+./.agents/skills/indexing-awareness/scripts/index-structure.sh
 
 # 探索深度を指定（デフォルト: 4）
-./.agent/skills/indexing-awareness/scripts/index-structure.sh --depth 6
+./.agents/skills/indexing-awareness/scripts/index-structure.sh --depth 6
 
 # 特定ディレクトリのみ
-./.agent/skills/indexing-awareness/scripts/index-structure.sh --dir src/
+./.agents/skills/indexing-awareness/scripts/index-structure.sh --dir src/
 ```
 
 ### 2. trace-dependencies.sh (依存関係トレース)
@@ -45,16 +45,16 @@ chmod +x .agent/skills/indexing-awareness/scripts/index-structure.sh
 ファイルまたはシンボルの依存関係を **双方向** に検索します。
 
 ```bash
-chmod +x .agent/skills/indexing-awareness/scripts/trace-dependencies.sh
+chmod +x .agents/skills/indexing-awareness/scripts/trace-dependencies.sh
 
 # ファイルモード: 依存関係の双方向トレース
-./.agent/skills/indexing-awareness/scripts/trace-dependencies.sh src/utils/auth.ts
+./.agents/skills/indexing-awareness/scripts/trace-dependencies.sh src/utils/auth.ts
 
 # シンボルモード: 定義元と使用箇所の検索
-./.agent/skills/indexing-awareness/scripts/trace-dependencies.sh handleLogin
+./.agents/skills/indexing-awareness/scripts/trace-dependencies.sh handleLogin
 
 # 検索範囲を限定
-./.agent/skills/indexing-awareness/scripts/trace-dependencies.sh UserService src/
+./.agents/skills/indexing-awareness/scripts/trace-dependencies.sh UserService src/
 ```
 
 **ファイルモード出力:**
@@ -69,11 +69,11 @@ chmod +x .agent/skills/indexing-awareness/scripts/trace-dependencies.sh
 
 ### 3. verify-structure.sh (ドキュメント整合性チェック)
 
-`.agent/` 内のルール・ワークフロー・スキルと `README.md` の記載整合性を検証します。
+`.agents/` 内のルール・ワークフロー・スキルと `README.md` の記載整合性を検証します。
 
 ```bash
-chmod +x .agent/skills/indexing-awareness/scripts/verify-structure.sh
-./.agent/skills/indexing-awareness/scripts/verify-structure.sh
+chmod +x .agents/skills/indexing-awareness/scripts/verify-structure.sh
+./.agents/skills/indexing-awareness/scripts/verify-structure.sh
 ```
 
 ## Troubleshooting
