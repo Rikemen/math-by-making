@@ -1,6 +1,6 @@
 ---
 name: indexing-awareness
-description: プロジェクトの構造インデックスと依存関係トレースにより、RAG的なコンテキスト取得を実現するスキル
+description: 初見のプロジェクト、構造変更後、対象が不明な調査、またはAPI・依存関係・ファイル配置の変更時に、必要な範囲の構造と参照関係を確認する。文言のみの修正や確認済み対象の再調査では自動実行しない。
 ---
 
 # Indexing Awareness Skill
@@ -10,15 +10,16 @@ Antigravity はリポジトリの事前インデックス化を行わないた�
 
 ## Triggers (自動実行のタイミング)
 
-エージェントは以下の状況で、対応するスクリプトを **自発的に** 実行すること。
-人間からの指示を待たず、ルール `indexing-codebase.md` に従って自律判断する。
+適用条件は `indexing-codebase.md` に従う。必要な調査に対応するスクリプトだけを使い、既存の検索結果で足りる場合は実行しない。
 
-| 状況 | 実行するスクリプト |
+| 状況 | 利用できるスクリプト |
 |---|---|
-| 初見のプロジェクト・新しいタスク開始時 | `index-structure.sh` |
-| ファイルの変更・追加・削除を行う前 | `trace-dependencies.sh <対象ファイル>` |
-| 未知の関数・クラス・シンボルを参照する前 | `trace-dependencies.sh <シンボル名>` |
-| ルール・ワークフロー・スキルの構成を変更した後 | `verify-structure.sh` |
+| 初見・構造変更後・対象不明で全体像が必要 | `index-structure.sh` |
+| API・依存関係・ファイル配置の変更で影響調査が必要 | `trace-dependencies.sh <対象ファイル>` |
+| 未知のシンボルの定義・使用箇所が必要 | `trace-dependencies.sh <シンボル名>` |
+| ルール・ワークフロー・スキルを追加・削除・リネームした後 | `verify-structure.sh` |
+
+同じ対象の確認結果は前提が変わらない限り再利用する。文言のみの修正では依存関係トレースを省略できる。
 
 ## Scripts
 
@@ -69,7 +70,7 @@ chmod +x .agents/skills/indexing-awareness/scripts/trace-dependencies.sh
 
 ### 3. verify-structure.sh (ドキュメント整合性チェック)
 
-`.agents/` 内のルール・ワークフロー・スキルと `README.md` の記載整合性を検証します。
+`.agents/` 内のルール・ワークフロー・スキルと `README.md` の記載整合性を検証します。Skillの未掲載は通常は警告です。READMEに全Skill一覧を維持する方針が明示されている場合だけ `--require-skill-list` を指定して必須チェックにします。
 
 ```bash
 chmod +x .agents/skills/indexing-awareness/scripts/verify-structure.sh
@@ -80,4 +81,4 @@ chmod +x .agents/skills/indexing-awareness/scripts/verify-structure.sh
 
 - **`trace-dependencies.sh` の結果がノイジー**: 第2引数で検索範囲を限定してください。
 - **`index-structure.sh` の出力が長すぎる**: `--depth 2` でツリーの深さを制限してください。
-- **`verify-structure.sh` で "Missing in README" エラー**: `README.md` に適切な記述を追加してください。
+- **Skillの "Missing in README" 警告**: 全Skill一覧を維持する方針がなければ、READMEの追記は不要です。必須チェックのエラーは、対象一覧と実ファイルのどちらを直すべきか確認してください。READMEを実際に変更した場合だけHTML同期を適用します。

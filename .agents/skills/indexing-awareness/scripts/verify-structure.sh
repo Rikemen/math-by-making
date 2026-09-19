@@ -18,6 +18,14 @@ WORKFLOWS_DIR=".agents/workflows"
 SKILLS_DIR=".agents/skills"
 
 EXIT_CODE=0
+WARNINGS=0
+REQUIRE_SKILL_LIST=0
+if [ "$#" -eq 1 ] && [ "$1" = "--require-skill-list" ]; then
+    REQUIRE_SKILL_LIST=1
+elif [ "$#" -ne 0 ]; then
+    echo "Usage: $0 [--require-skill-list]" >&2
+    exit 2
+fi
 
 # README.md の存在チェック
 if [ ! -f "$README_FILE" ]; then
@@ -74,9 +82,14 @@ for dir in "$SKILLS_DIR"/*; do
     if [ -d "$dir" ]; then
         found_skills=1
         skill_name=$(basename "$dir")
-        if ! grep -q "$skill_name" "$README_FILE"; then
-            echo "❌ Missing in README: $skill_name"
-            EXIT_CODE=1
+        if ! grep -Fq -- "$skill_name" "$README_FILE"; then
+            if [ "$REQUIRE_SKILL_LIST" -eq 1 ]; then
+                echo "❌ Missing in README: $skill_name"
+                EXIT_CODE=1
+            else
+                echo "⚠️  Missing in README (optional skill listing): $skill_name"
+                WARNINGS=$((WARNINGS + 1))
+            fi
         else
             echo "✅ Found: $skill_name"
         fi
@@ -90,9 +103,9 @@ shopt -u nullglob
 
 echo "============================================================"
 if [ $EXIT_CODE -eq 0 ]; then
-    echo "🎉 All checks passed! Project is well-indexed."
+    echo "✅ Required checks passed. Optional skill listing warnings: $WARNINGS"
 else
-    echo "⚠️  Some inconsistencies found. Please update README.md."
+    echo "⚠️  Required checks failed. Review the listed entries and their documentation."
 fi
 
 exit $EXIT_CODE
