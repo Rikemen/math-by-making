@@ -19,7 +19,7 @@ Check if the extension is already installed before proceeding:
    - `gemini skills list` -> Output should include `firebase-basic`.
 
 ### 2. Restart and Verify Connection
-1. **Restart Gemini CLI**: Instruct the user to restart the Gemini CLI if any new installation occurred. **Stop and wait** for their confirmation before proceeding.
+1. **Reconnect if needed**: After an actual installation or configuration change, check whether the integration is already available. Request a restart only if the change requires it and reconnection has not succeeded. Wait only for work that depends on that connection; skip restart confirmation when tool evidence already shows it is ready.
 
 ---
 
@@ -36,4 +36,4 @@ If the user only wants to use the MCP server for the current project:
 3. **Verify Configuration**: Re-run `gemini mcp list` to confirm `firebase-tools` is connected.
 
 ### 2. Restart and Verify Connection
-1. **Restart Gemini CLI**: Instruct the user to restart the Gemini CLI. **Stop and wait** for their confirmation before proceeding.
+1. **Reconnect if needed**: After an actual installation or configuration change, check whether the integration is already available. Request a restart only if the change requires it and reconnection has not succeeded. Wait only for work that depends on that connection; skip restart confirmation when tool evidence already shows it is ready.

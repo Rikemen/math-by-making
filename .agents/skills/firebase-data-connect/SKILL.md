@@ -34,7 +34,7 @@ Always default to **Native GraphQL**. **Native SQL lacks type safety** and bypas
 
 ## Development Workflow
 
-Follow this strict workflow to build your application. You **must** read the linked reference files for each step to understand the syntax and available features.
+Use only the steps needed for the requested change and read only their relevant reference sections. Reuse sections already checked for the same task; a partial change does not require running the full workflow. Read Native SQL guidance only when using Native SQL.
 
 ### 1. Define Data Model (`schema/schema.gql`)
 Define your GraphQL types, tables, and relationships.
@@ -51,7 +51,7 @@ Write the queries and mutations your client will use. Data Connect generates the
 > *   **Upserts**: Use `_upsert` to "insert or update" records (CRITICAL for user profiles).
 > *   **Transactions**: use `@transaction` for multi-step atomic operations.
 > 
-> **Read [reference/native_sql.md](reference/native_sql.md)** for Native SQL operations:
+> **Only when using Native SQL, read [reference/native_sql.md](reference/native_sql.md)** for:
 > *   Embedding raw SQL with `_select`, `_selectFirst`, `_execute`
 > *   Strict rules for positional parameters (`$1`, `$2`), quoting, and CTEs
 > *   Advanced PostgreSQL features (PostGIS, Window Functions)
@@ -89,7 +89,7 @@ If you need to implement a specific feature, consult the mapped reference file:
 
 ## Deployment & CLI
 
-> **Read [reference/config.md](reference/config.md)** for deep dive on configuration.
+> When changing configuration or deploying, consult the relevant section of [reference/config.md](reference/config.md).
 
 Common commands (run from project root):
 ```bash

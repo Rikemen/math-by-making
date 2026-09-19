@@ -9,38 +9,20 @@ description: >-
 ---
 # Prerequisites
 
-Complete these setup steps before proceeding:
+Check only the prerequisites needed for the requested operation. Reuse results while the environment, account, and target project remain unchanged.
 
-1. **Local Environment Setup:** Verify the environment is properly set up so we can use Firebase tools:
-   - Run `npx -y firebase-tools@latest --version` to check if the Firebase CLI is installed.
-   - Verify if the Firebase MCP server is installed using your existing tools.
-   - **CRITICAL**: Before configuring any extensions or agent environments below, you MUST read [references/local-env-setup.md](references/local-env-setup.md).
-   - To fully manage Firebase, ensure you have installed the necessary agent skills and MCP server for your environment:
-     - **Gemini CLI**: Review [references/setup/gemini_cli.md](references/setup/gemini_cli.md)
-     - **Antigravity**: Review [references/setup/antigravity.md](references/setup/antigravity.md)
-     - **Claude Code**: Review [references/setup/claude_code.md](references/setup/claude_code.md)
-     - **Cursor**: Review [references/setup/cursor.md](references/setup/cursor.md)
-     - **GitHub Copilot**: Review [references/setup/github_copilot.md](references/setup/github_copilot.md)
-     - **Other Agents**: Review [references/setup/other_agents.md](references/setup/other_agents.md)
+1. **CLI commands:** Use `npx -y firebase-tools@latest`. Check `--version` when CLI availability is unknown or a version check is requested. Version/help commands do not require login, a project, or an MCP server.
+2. **Authenticated remote operations:** Use existing authentication when available; inspect `login:list` if its status is unknown. Run `login` (or `login --no-localhost` in a browserless environment) only when authentication is missing or expired and the operation requires it.
+3. **Project-scoped operations:** Resolve the target from the user's instruction, explicit `--project`, or existing project configuration. Ask only when the required target remains missing or ambiguous. Do not change aliases or create a project unless the task calls for it.
+4. **Environment or agent setup:** Only when setup is requested or a required capability is missing, read [references/local-env-setup.md](references/local-env-setup.md) and the one matching agent guide:
+   - [Gemini CLI](references/setup/gemini_cli.md)
+   - [Antigravity](references/setup/antigravity.md)
+   - [Claude Code](references/setup/claude_code.md)
+   - [Cursor](references/setup/cursor.md)
+   - [GitHub Copilot](references/setup/github_copilot.md)
+   - [Other Agents](references/setup/other_agents.md)
 
-2. **Authentication:**
-   Ensure you are logged in to Firebase so that commands have the correct permissions. Run `npx -y firebase-tools@latest login`. For environments without a browser (e.g., remote shells), use `npx -y firebase-tools@latest login --no-localhost`.
-   - The command should output the current user. 
-   - If you are not logged in, follow the interactive instructions from this command to authenticate.
-
-3. **Active Project:**
-   Most Firebase tasks require an active project context. Check the current project by running `npx -y firebase-tools@latest use`.
-   - If the command outputs `Active Project: <project-id>`, you can proceed with your task.
-   - If not, ask the user if they have an existing Firebase Project ID.
-     - If yes: Set it as the active project and add a default alias by running:
-       ```bash
-       npx -y firebase-tools@latest use --add <PROJECT_ID>
-       ```
-     - If no: Follow these steps to create a new Firebase project from the CLI:
-       ```bash
-       npx -y firebase-tools@latest projects:create <project-id> --display-name "<display-name>"
-       ```
-       *Note: The `<project-id>` must be 6-30 characters, lowercase, and can contain digits and hyphens. It must be globally unique.*
+SDK explanations and local code changes do not require remote login or MCP setup. Install or configure agent integrations only within the requested scope; their absence must not block tasks that can use the available CLI or local files.
 
 # Firebase Usage Principles
 
@@ -49,7 +31,7 @@ Adhere to these principles:
 1. **Use npx for CLI commands:** To ensure you always use the latest version of the Firebase CLI, always prepend commands with `npx -y firebase-tools@latest` instead of just `firebase`. For example, use `npx -y firebase-tools@latest --version`. NEVER suggest the naked `firebase` command as an alternative.
 2. **Prioritize official knowledge:** For any Firebase-related knowledge, consult the `developerknowledge_search_documents` MCP tool before falling back to Google Search or your internal knowledge base. Including "Firebase" in your search query significantly improves relevance.
 3. **Follow Agent Skills for implementation guidance:** Skills provide opinionated workflows (CUJs), security rules, and best practices. Always consult them to understand *how* to implement Firebase features correctly instead of relying on general knowledge.
-4. **Use Firebase MCP Server tools instead of direct API calls:** Whenever you need to interact with remote Firebase APIs (such as fetching Crashlytics logs or executing Data Connect queries), use the tools provided by the Firebase MCP Server instead of attempting manual API calls.
+4. **Prefer available Firebase MCP Server tools:** For remote Firebase operations, use the relevant MCP tool when available. Otherwise use an available CLI command that supports the operation; do not require MCP setup when the CLI suffices. Configure a missing integration only within the requested scope.
 5. **Keep Plugin / Agent Skills updated:** Since Firebase best practices evolve quickly, remind the user to regularly check for and install updates to their Firebase plugin or Agent Skills, ensuring you both operate with the latest workflows. Similarly, if you encounter issues with outdated tools or commands, follow the steps below based on your agent environment:
    - **Antigravity**: Follow [references/refresh/antigravity.md](references/refresh/antigravity.md)
    - **Gemini CLI**: Follow [references/refresh/gemini-cli.md](references/refresh/gemini-cli.md)

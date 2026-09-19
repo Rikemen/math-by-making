@@ -59,5 +59,5 @@ The MCP server allows Cursor to interact directly with Firebase projects.
 4. **Verify Configuration**: Save the file and confirm the `firebase` block is present and properly formatted JSON.
 
 ### 3. Restart and Verify Connection
-1. **Restart Cursor**: Instruct the user to restart the Cursor application. **Stop and wait** for their confirmation before proceeding.
+1. **Reconnect if needed**: After an actual installation or configuration change, check whether the integration is already available. Request a restart only if the change requires it and reconnection has not succeeded. Wait only for work that depends on that connection; skip restart confirmation when tool evidence already shows it is ready.
 2. **Confirm Connection**: Check the MCP server list in the Cursor UI to confirm that the Firebase MCP server is connected.

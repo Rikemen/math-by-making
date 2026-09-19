@@ -1,6 +1,6 @@
 ---
 name: firebase-firestore-enterprise-native-mode
-description: Comprehensive guide for Firestore enterprise native including provisioning, data model, security rules, and SDK usage. Use this skill when the user needs help setting up Firestore Enterprise with the Native mode, writing security rules, or using the Firestore SDK in their application.
+description: Provision, model, secure, or use the SDK for Firestore Enterprise Native only when this edition and mode are explicitly requested or confirmed for the target database. General Firestore rules or SDK questions do not establish Enterprise usage.
 compatibility: This skill is best used with the Firebase CLI, but does not require it. Firebase CLI can be accessed through `npx -y firebase-tools@latest`.
 ---
 
@@ -29,3 +29,7 @@ To learn how to use Firestore Enterprise Native Mode in your application code, s
 ## Indexes
 
 Indexes help improve query performance and speed up slow queries. For checking index types, query support tables, and best practices, see [indexes.md](references/indexes.md).
+
+## Edition selection
+
+Use the edition confirmed for the target database; do not load both Standard and Enterprise guides for the same operation. If the edition is unknown, inspect existing configuration and ask only when the difference affects the task. An explicit edition comparison may use both guides.
