@@ -38,8 +38,7 @@ Generate a clean Conventional Commits message from staged changes **in English**
 ---
 
 **Output Rules:**
-- Output ONLY the commit message text (ready to copy).
-- NO meta-commentary, NO introductions, NO explanations, NO thought process.
+- Normally output only the commit message text (ready to copy). A necessary split proposal may be stated briefly and separately. Do not include internal reasoning or unrelated commentary.
 - Example:
   ```
   feat(auth): add OAuth2 login endpoint
