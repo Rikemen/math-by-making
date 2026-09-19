@@ -1,6 +1,6 @@
 ---
 name: firebase-firestore-standard
-description: Comprehensive guide for Firestore Standard Edition, including provisioning, security rules, and SDK usage. Use this skill when the user needs help setting up Firestore, writing security rules, or using the Firestore SDK in their application.
+description: Provision, secure, or use the SDK for Firestore Standard Edition when Standard is requested or confirmed for the target database. Resolve an unknown edition from context before using edition-specific guidance; do not apply to confirmed Enterprise Native databases.
 compatibility: This skill is best used with the Firebase CLI, but does not require it. Firebase CLI can be accessed through `npx -y firebase-tools@latest`. 
 ---
 
@@ -25,3 +25,7 @@ To learn how to use Cloud Firestore in your application code, choose your platfo
 ## Indexes
 
 For checking index types, query support tables, and best practices, see [indexes.md](references/indexes.md).
+
+## Edition selection
+
+Use only the guide for the target database edition. Do not load Enterprise guidance unless Enterprise Native is explicitly requested or confirmed, or an edition comparison is requested. Ask about an unknown edition only when it affects the task.

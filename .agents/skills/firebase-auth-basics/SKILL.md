@@ -6,8 +6,8 @@ compatibility: This skill is best used with the Firebase CLI, but does not requi
 
 ## Prerequisites
 
-- **Firebase Project**: Created via `npx -y firebase-tools@latest projects:create` (see `firebase-basics`).
-- **Firebase CLI**: Installed and logged in (see `firebase-basics`).
+- **Firebase Project**: Use the existing project. Create one only when requested.
+- **Remote configuration**: Check CLI availability and authentication only when the requested operation needs them (see `firebase-basics`). SDK explanations and local code changes do not require login or MCP setup.
 
 ## Core Concepts
 

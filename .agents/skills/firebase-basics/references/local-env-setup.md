@@ -1,6 +1,6 @@
 # Firebase Local Environment Setup
 
-This skill documents the bare minimum setup required for a full Firebase experience for the agent. Before starting to use any Firebase features, you MUST verify that each of the following steps has been completed.
+Use this reference only for requested environment setup or a missing capability required by the task. Check only the relevant steps and reuse successful checks from the current environment.
 
 ## 1. Verify Node.js
 - **Action**: Run `node --version`.
@@ -46,11 +46,11 @@ This skill documents the bare minimum setup required for a full Firebase experie
 
 ## 3. Verify Firebase Authentication
 You must be authenticated to manage Firebase projects.
-- **Action**: Run `npx -y firebase-tools@latest login`.
+- **Action**: For authenticated remote operations only, inspect existing authentication with `npx -y firebase-tools@latest login:list` if unknown. Run `npx -y firebase-tools@latest login` only if authentication is missing or expired.
 - **Handling**: If the environment is remote or restricted (no browser access), run `npx -y firebase-tools@latest login --no-localhost` instead.
 
 ## 4. Install Agent Skills and MCP Server
-To fully manage Firebase, the agent needs specific skills and the Firebase MCP server installed. Refer to the main `SKILL.md` for direct links to the installation instructions specific to your agent environment.
+Install agent skills or an MCP server only when requested or required by the chosen operation. Use the one matching setup guide linked from `SKILL.md`; skip this step when available CLI or local tools suffice.
 
 ---
-**CRITICAL AGENT RULE:** Do NOT proceed with any other Firebase tasks until EVERY step above has been successfully verified and completed.
+Only an unmet prerequisite needed by the current operation should block that operation. Continue independent work. Request manual installation or restart only when necessary and not already completed; do not repeat confirmation after tool evidence establishes readiness.

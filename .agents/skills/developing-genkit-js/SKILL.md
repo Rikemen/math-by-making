@@ -1,6 +1,6 @@
 ---
 name: developing-genkit-js
-description: Develop AI-powered applications using Genkit in Node.js/TypeScript. Use when the user asks about Genkit, AI agents, flows, or tools in JavaScript/TypeScript, or when encountering Genkit errors, validation issues, type errors, or API problems.
+description: Develop or troubleshoot Genkit in Node.js/TypeScript when the user explicitly requests Genkit or the target code uses Genkit dependencies or APIs. General AI agents, flows, tools, and unrelated type or API errors do not activate this skill.
 metadata:
   genkit-managed: true
 ---
@@ -9,7 +9,7 @@ metadata:
 
 ## Prerequisites
 
-Ensure the `genkit` CLI is available.
+When the requested operation needs the `genkit` CLI, ensure it is available. Explanations and source inspection can use the relevant references without installing the CLI. Reuse a known version check while the environment is unchanged.
 -   Run `genkit --version` to verify. Minimum CLI version needed: **1.29.0**
 -   If not found or if an older version (1.x < 1.29.0) is present, install/upgrade it: `npm install -g genkit-cli@^1.29.0`.
 
@@ -54,24 +54,14 @@ See [Common Errors](references/common-errors.md) for a list of deprecated APIs (
 
 ## Error Troubleshooting Protocol
 
-**When you encounter ANY error related to Genkit (ValidationError, API errors, type errors, 404s, etc.):**
+For errors attributable to Genkit APIs, first inspect the relevant section of [Common Errors](references/common-errors.md), unless it has already been checked for this error. If no pattern matches, inspect the affected source and consult targeted documentation. Do not reread the same reference on each failure. Unrelated application or type errors should be investigated in their own source.
 
-1. **MANDATORY FIRST STEP**: Read [Common Errors](references/common-errors.md)
-2. Identify if the error matches a known pattern
-3. Apply the documented solution
-4. Only if not found in common-errors.md, then consult other sources (e.g. `genkit docs:search`)
-
-**DO NOT:**
-- Attempt fixes based on assumptions or internal knowledge
-- Skip reading common-errors.md "because you think you know the fix"
-- Rely on patterns from pre-1.0 Genkit
-
-**This protocol is non-negotiable for error handling.**
+Verify API assumptions against current documentation or source rather than using pre-1.0 patterns.
 
 ## Development Workflow
 
 1.  **Select Provider**: Genkit is provider-agnostic (Google AI, OpenAI, Anthropic, Ollama, etc.).
-    -   If the user does not specify a provider, default to **Google AI**.
+    -   Use the user-specified provider, otherwise preserve the existing provider configuration, otherwise default to **Google AI**. Do not ask for a provider when this order resolves the choice.
     -   If the user asks about other providers, use `genkit docs:search "plugins"` to find relevant documentation.
 2.  **Detect Framework**: Check `package.json` to identify the runtime (Next.js, Firebase, Express).
     -   Look for `@genkit-ai/next`, `@genkit-ai/firebase`, or `@genkit-ai/google-cloud`.
@@ -81,11 +71,7 @@ See [Common Errors](references/common-errors.md) for a list of deprecated APIs (
     -   **Be Minimal**: Only specify options that differ from defaults. When unsure, check docs/source.
 4.  **Ensure Correctness**:
     -   Run type checks (e.g., `npx tsc --noEmit`) after making changes.
-    -   If type checks fail, consult [Common Errors](references/common-errors.md) before searching source code.
-5.  **Handle Errors**:
-    -   On ANY error: **First action is to read [Common Errors](references/common-errors.md)**
-    -   Match error to documented patterns
-    -   Apply documented fixes before attempting alternatives
+    -   Investigate failures in the affected source; use the Error Troubleshooting Protocol above for Genkit-related failures.
 
 ## Finding Documentation
 

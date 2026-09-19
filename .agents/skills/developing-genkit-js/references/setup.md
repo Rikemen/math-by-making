@@ -3,13 +3,12 @@
 Follow these instructions to set up Genkit in the current codebase. These instructions are general-purpose and have not been written with specific codebase knowledge, so use your best judgement when following them.
 
 0. Tell the user "I'm going to check out your workspace and set you up to use Genkit for GenAI workflows."
-1. If the current workspace is empty or is a starter template, your goal will be to create a simple image generation flow that allows someone to generate an image based on a prompt and selectable style. If the current workspace is not empty, you will create a simple example flow to help get the user started.
+1. Set up only what the user requested. Create a specific flow when it is part of the request; setup alone does not require an example flow.
 2. Check to see if any Genkit provider plugin (such as `@genkit-ai/google-genai` or `@genkit-ai/oai-compat` or others, may start with `genkitx-*`) is installed.
-   - If not, ask the user which provider they want to use.
+   - Use the user-specified provider, otherwise preserve existing provider configuration, otherwise default to Google AI. Ask only if conflicting requirements leave the choice unresolved.
    - **For non-Google providers**: Use `genkit docs:search "plugins"` to find the correct package and installation instructions.
-   - If they have no preference, default to `@genkit-ai/google-genai` for a quick start.
    - If this is a Next.js app, install `@genkit-ai/next` as well.
-3. Search the codebase for the exact string `genkit(` (remember to escape regexes properly) which would indicate that the user has already set up Genkit in the codebase. If found, no need to set it up again, tell the user "Genkit is already configured in this app." and exit this workflow.
+3. Search the codebase for the exact string `genkit(` (remember to escape regexes properly) which would indicate that the user has already set up Genkit in the codebase. If found, reuse the configuration and skip redundant setup. Continue any requested flow implementation using that configuration.
 4. Create an `ai` directory in the primary source directory of the project (this may be e.g. `src` but is project-dependent). Adapt this path if your project uses a different structure.
 5. Create `{sourceDir}/ai/genkit.ts` and populate it using the example below. DO NOT add a `next` plugin to the file, ONLY add a model provider plugin to the plugins array:
 
@@ -37,7 +36,7 @@ import './genkit.js';
 ```
 
 8. Add a `genkit:ui` script to `package.json` that runs `genkit start -- npx tsx --watch {sourceDir}/ai/index.ts` (or `npx genkit-cli` or `pnpm dlx` or `yarn dlx` for those package managers, if CLI is not locally installed). DO NOT try to run the script now.
-9. Tell the user "Genkit is now configured and ready for use." as setup is now complete. Also remind them to set appropriate env variables (e.g. `GEMINI_API_KEY` for Google providers). Wait for the user to prompt further before creating any specific flows.
+9. Tell the user "Genkit is now configured and ready for use." as setup is now complete. Also remind them to set appropriate env variables (e.g. `GEMINI_API_KEY` for Google providers). If flow implementation was also requested, continue with it. Otherwise finish setup without adding unsolicited flows or asking for the same instruction again.
 
 ## Next Steps & Troubleshooting
 
