@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="READMEを基にしたMath by Makingのインクリメント開発計画">
+  <title>Math by Making 開発計画</title>
+  <style>
+    :root {
+      --color-primary: #0284c7;
+      --color-primary-dark: #075985;
+      --color-ink: #ffffff;
+      --color-on-primary: #0f172a;
+      --color-on-primary-mute: #334155;
+      --color-canvas-night: #f0f9ff;
+      --color-canvas-night-soft: #ffffff;
+      --color-canvas-light: #ffffff;
+      --color-canvas-cool: #e0f2fe;
+      --color-hairline-on-dark: #bae6fd;
+      --color-hairline-on-light: #e0f2fe;
+      --color-link-on-dark: #0284c7;
+      --color-ink-mute: #64748b;
+      --font-display: "D-DIN-Bold", "Arial Narrow", "Noto Sans JP", Arial, sans-serif;
+      --font-body: "D-DIN", "Noto Sans JP", Arial, sans-serif;
+      --font-mono: "Source Code Pro", Consolas, monospace;
+      --font-display-xxl-size: 32px;
+      --font-display-xl-size: 22px;
+      --font-display-lg-size: 17px;
+      --font-body-lg-size: 15px;
+      --font-body-md-size: 14px;
+      --font-button-cap-size: 11px;
+      --font-button-cap-tracking: 1.17px;
+      --radius-xs: 2px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-pill: 32px;
+      --space-xs: 8px;
+      --space-sm: 12px;
+      --space-md: 16px;
+      --space-lg: 18px;
+      --space-xl: 24px;
+      --space-xxl: 32px;
+      --space-huge: 48px;
+      --sidebar-width: 280px;
+      --header-height: 56px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--color-canvas-night);
+      color: var(--color-on-primary);
+      font-family: var(--font-body);
+      font-size: var(--font-body-md-size);
+      line-height: 1.7;
+    }
+    a { color: var(--color-link-on-dark); }
+    button, select, textarea { font: inherit; }
+    code {
+      background: var(--color-canvas-cool);
+      border-radius: var(--radius-xs);
+      color: var(--color-primary-dark);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 2px 5px;
+    }
+
+    .site-header {
+      align-items: center;
+      backdrop-filter: blur(12px);
+      background: rgba(240, 249, 255, 0.92);
+      border-bottom: 1px solid var(--color-hairline-on-dark);
+      display: flex;
+      height: var(--header-height);
+      left: 0;
+      padding: 0 var(--space-xl);
+      position: fixed;
+      right: 0;
+      top: 0;
+      z-index: 100;
+    }
+    .site-header__title {
+      color: var(--color-primary-dark);
+      font-family: var(--font-display);
+      font-size: var(--font-body-lg-size);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .site-header__badge {
+      background: var(--color-canvas-night-soft);
+      border: 1px solid var(--color-hairline-on-dark);
+      border-radius: var(--radius-pill);
+      color: var(--color-primary);
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      margin-left: 10px;
+      padding: 2px 10px;
+    }
+    .site-header__hamburger {
+      background: none;
+      border: none;
+      color: var(--color-primary-dark);
+      cursor: pointer;
+      display: none;
+      font-size: 22px;
+      margin-right: 12px;
+      padding: 6px;
+    }
+    .sidebar-overlay {
+      background: rgba(15, 23, 42, 0.4);
+      display: none;
+      inset: 0;
+      position: fixed;
+      z-index: 89;
+    }
+    .sidebar {
+      background: var(--color-canvas-night-soft);
+      border-right: 1px solid var(--color-hairline-on-dark);
+      height: calc(100vh - var(--header-height));
+      left: 0;
+      overflow-y: auto;
+      padding: 20px 0;
+      position: fixed;
+      top: var(--header-height);
+      width: var(--sidebar-width);
+      z-index: 90;
+    }
+    .sidebar__label {
+      color: var(--color-ink-mute);
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      padding: 0 22px 10px;
+      text-transform: uppercase;
+    }
+    .sidebar__nav { list-style: none; }
+    .sidebar__nav a {
+      border-left: 3px solid transparent;
+      color: var(--color-on-primary-mute);
+      display: block;
+      padding: 9px 22px;
+      text-decoration: none;
+      transition: 0.15s ease;
+    }
+    .sidebar__nav a:hover,
+    .sidebar__nav a.active {
+      background: var(--color-canvas-night);
+      border-left-color: var(--color-primary);
+      color: var(--color-primary-dark);
+    }
+    .main-content {
+      margin-left: var(--sidebar-width);
+      margin-top: var(--header-height);
+      max-width: 1220px;
+      padding: var(--space-huge) var(--space-huge) 120px;
+    }
+    .hero-banner { margin-bottom: var(--space-xl); padding: var(--space-md) 0 var(--space-xs); }
+    .eyebrow {
+      color: var(--color-primary);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      margin-bottom: var(--space-xs);
+      text-transform: uppercase;
+    }
+    .hero-banner h1 {
+      color: var(--color-primary-dark);
+      font-family: var(--font-display);
+      font-size: var(--font-display-xxl-size);
+      line-height: 1.2;
+      margin-bottom: var(--space-xs);
+    }
+    .hero-banner p { color: var(--color-on-primary-mute); font-size: var(--font-body-lg-size); max-width: 760px; }
+    .meta-row { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-md); }
+    .meta-chip {
+      background: var(--color-canvas-night-soft);
+      border: 1px solid var(--color-hairline-on-dark);
+      border-radius: var(--radius-pill);
+      color: var(--color-on-primary-mute);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+    }
+    .editable-section {
+      background: var(--color-canvas-night-soft);
+      border: 1px solid var(--color-hairline-on-dark);
+      border-radius: var(--radius-md);
+      box-shadow: 0 1px 3px rgba(2, 132, 199, 0.05);
+      margin-bottom: var(--space-xl);
+      padding: var(--space-xl);
+      position: relative;
+      scroll-margin-top: 76px;
+    }
+    .editable-section.is-editing { background: var(--color-canvas-night); outline: 2px solid var(--color-primary); }
+    .editable-section h2 {
+      color: var(--color-primary-dark);
+      font-family: var(--font-display);
+      font-size: var(--font-display-xl-size);
+      line-height: 1.3;
+      margin-bottom: var(--space-md);
+      padding-right: 92px;
+    }
+    .editable-section h3 { color: var(--color-on-primary); font-size: var(--font-display-lg-size); margin: var(--space-lg) 0 var(--space-xs); }
+    .editable-section p + p { margin-top: var(--space-sm); }
+    .editable-section ul,
+    .editable-section ol { padding-left: 1.4rem; }
+    .editable-section li + li { margin-top: 5px; }
+    .section-number {
+      align-items: center;
+      background: var(--color-canvas-cool);
+      border-radius: 50%;
+      color: var(--color-primary-dark);
+      display: inline-flex;
+      font-size: 12px;
+      height: 28px;
+      justify-content: center;
+      margin-right: 10px;
+      vertical-align: 2px;
+      width: 28px;
+    }
+    .edit-btn {
+      background: transparent;
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-pill);
+      color: var(--color-primary);
+      cursor: pointer;
+      font-size: var(--font-button-cap-size);
+      font-weight: 700;
+      letter-spacing: var(--font-button-cap-tracking);
+      opacity: 0.3;
+      padding: var(--space-xs) var(--space-md);
+      position: absolute;
+      right: var(--space-md);
+      top: var(--space-md);
+      transition: all 0.15s;
+    }
+    .editable-section:hover .edit-btn { opacity: 1; }
+    .edit-btn:hover { background: var(--color-primary); color: var(--color-ink); }
+    .editable-section.is-editing .edit-btn { display: none; }
+    .edit-actions { display: none; gap: var(--space-sm); margin-top: var(--space-xl); }
+    .editable-section.is-editing .edit-actions { display: flex; }
+    .btn-save, .btn-cancel, .modal-btn {
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      font-size: var(--font-button-cap-size);
+      font-weight: 700;
+      padding: var(--space-xs) var(--space-lg);
+    }
+    .btn-save, .modal-btn--primary { background: var(--color-primary); color: var(--color-ink); }
+    .btn-cancel, .modal-btn--secondary { background: transparent; color: var(--color-primary); }
+    .callout {
+      background: var(--color-canvas-night);
+      border: 1px solid var(--color-hairline-on-dark);
+      border-left: 3px solid var(--color-primary);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      line-height: 1.65;
+      margin: var(--space-md) 0;
+      padding: var(--space-md) var(--space-lg);
+    }
+    .callout strong { color: var(--color-primary-dark); }
+    .grid-two { display: grid; gap: var(--space-md); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .mini-card { background: var(--color-canvas-night); border: 1px solid var(--color-hairline-on-dark); border-radius: var(--radius-sm); padding: var(--space-md); }
+    .mini-card h3 { margin-top: 0; }
+
+    .table-wrap {
+      border: 1px solid var(--color-hairline-on-dark);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--space-md);
+      overflow-x: auto;
+    }
+    table { border-collapse: collapse; font-size: 13px; line-height: 1.6; width: 100%; }
+    thead th {
+      background: var(--color-canvas-night);
+      border-bottom: 1px solid var(--color-hairline-on-dark);
+      color: var(--color-primary-dark);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 12px 14px;
+      text-align: left;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    tbody td { border-bottom: 1px solid var(--color-hairline-on-light); color: var(--color-on-primary-mute); padding: 12px 14px; vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #f8fcff; }
+    td strong { color: var(--color-on-primary); }
+    .status-select {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-pill);
+      color: #64748b;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      outline: none;
+      padding: 3px 8px;
+      transition: all 0.15s;
+    }
+    .status-select:hover { border-color: var(--color-primary); }
+    .task-detail { min-width: 370px; }
+    .task-detail b { color: var(--color-primary-dark); }
+    .phase-note { color: var(--color-ink-mute); font-size: 12px; margin: -8px 0 var(--space-md); }
+
+    .floating-toolbar { bottom: var(--space-xl); display: flex; gap: var(--space-xs); position: fixed; right: var(--space-xl); z-index: 50; }
+    .toolbar-btn {
+      backdrop-filter: blur(4px);
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-pill);
+      color: var(--color-primary-dark);
+      cursor: pointer;
+      font-size: var(--font-button-cap-size);
+      font-weight: 700;
+      padding: var(--space-xs) var(--space-md);
+    }
+    .modal { align-items: center; background: rgba(15, 23, 42, 0.6); display: none; inset: 0; justify-content: center; position: fixed; z-index: 600; }
+    .modal.is-open { display: flex; }
+    .modal-body { background: var(--color-canvas-night-soft); border: 1px solid var(--color-hairline-on-dark); border-radius: var(--radius-md); padding: var(--space-xl); width: min(640px, 90vw); }
+    .modal-body h2 { color: var(--color-primary-dark); margin-bottom: var(--space-sm); }
+    .modal-body textarea { background: var(--color-canvas-night); border: 1px solid var(--color-hairline-on-dark); border-radius: var(--radius-xs); color: var(--color-on-primary); font-family: var(--font-mono); font-size: 12px; margin: var(--space-md) 0; min-height: 220px; padding: var(--space-md); width: 100%; }
+    .modal-actions { display: flex; gap: var(--space-xs); justify-content: flex-end; }
+    .toast { background: rgba(15, 23, 42, 0.95); border: 1px solid var(--color-hairline-on-dark); border-radius: var(--radius-pill); bottom: var(--space-huge); color: #ffffff; font-size: 12px; left: 50%; opacity: 0; padding: var(--space-xs) var(--space-lg); position: fixed; transform: translateX(-50%) translateY(20px); transition: all 0.2s; z-index: 700; }
+    .toast.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 860px) {
+      .site-header { padding: 0 var(--space-md); }
+      .site-header__hamburger { display: block; }
+      .site-header__badge { display: none; }
+      .sidebar { transform: translateX(-100%); transition: transform 0.2s ease; }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.open { display: block; }
+      .main-content { margin-left: 0; padding: var(--space-xl) var(--space-md) 110px; }
+      .grid-two { grid-template-columns: 1fr; }
+      .hero-banner h1 { font-size: 26px; }
+      .editable-section { padding: var(--space-lg); }
+      .floating-toolbar { bottom: var(--space-md); right: var(--space-md); }
+    }
+
+    @media print {
+      .site-header, .sidebar, .sidebar-overlay, .floating-toolbar, .edit-btn, .edit-actions, .modal, .toast { display: none !important; }
+      body { background: #fff; }
+      .main-content { margin-left: 0; max-width: 100%; padding: 0; }
+      .editable-section { border: none; box-shadow: none; break-inside: avoid; margin-bottom: var(--space-xxl); padding: 0; }
+      .status-select { appearance: none; background: transparent !important; border: none !important; color: inherit !important; padding: 0; pointer-events: none; }
+      .table-wrap { overflow: visible; }
+      .task-detail { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <button class="site-header__hamburger" id="menuToggle" type="button" aria-label="目次を開閉" aria-controls="sidebar" aria-expanded="false">☰</button>
+    <span class="site-header__title">Math by Making</span>
+    <span class="site-header__badge">DEVELOPMENT PLAN</span>
+  </header>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar" aria-label="開発計画の目次">
+    <span class="sidebar__label">目次</span>
+    <ul class="sidebar__nav" id="sidebarNav">
+      <li><a href="#sec-overview">概要</a></li>
+      <li><a href="#sec-scope">ゴール / スコープ</a></li>
+      <li><a href="#sec-assumptions">前提とリスク</a></li>
+      <li><a href="#sec-phase0">Phase 0: 外部連携</a></li>
+      <li><a href="#sec-phase1">Phase 1: 土台</a></li>
+      <li><a href="#sec-phase2">Phase 2: 記事カタログ</a></li>
+      <li><a href="#sec-phase3">Phase 3: ホーム・科目</a></li>
+      <li><a href="#sec-phase4">Phase 4: 最初の記事</a></li>
+      <li><a href="#sec-phase5">Phase 5: 学習体験</a></li>
+      <li><a href="#sec-phase6">Phase 6: 動画・モバイル</a></li>
+      <li><a href="#sec-phase7">Phase 7: 公開</a></li>
+      <li><a href="#sec-verification">検証戦略</a></li>
+      <li><a href="#sec-followup">ロールバック</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="hero-banner">
+      <div class="eyebrow">README-driven incremental plan</div>
+      <h1>Math by Making 開発計画</h1>
+      <p>「創って学ぶ」数学学習サイトを、1タスク約15分のTDDループで縦切りMVPから公開まで進める計画です。</p>
+      <div class="meta-row">
+        <span class="meta-chip">全52タスク</span>
+        <span class="meta-chip">8 Phases</span>
+        <span class="meta-chip">1タスク 約15分</span>
+        <span class="meta-chip">作成日 2026-10-12</span>
+      </div>
+    </div>
+
+    <section class="editable-section" data-section="overview" id="sec-overview">
+      <button class="edit-btn" type="button" onclick="startEdit(this)">✏️ 編集</button>
+      <div class="editable-content">
+        <h2><span class="section-number">0</span>概要</h2>
+        <div class="callout"><strong>最初の完成単位:</strong> アカウントなしで、ホーム → 線形代数 → 線形写像の記事へ進み、座学・コード・p5.js可視化・4択問題まで体験できる縦切りMVP。</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Phase</th><th>成果</th><th>Tasks</th><th>完了判定</th></tr></thead>
+            <tbody>
+              <tr><td><strong>0</strong></td><td>Git・GitHub・Firebase連携</td><td>0.1–0.20</td><td>新GitHubとFirebase Hostingへ安全に接続し初回公開を確認</td></tr>
+              <tr><td><strong>1</strong></td><td>スターターから学習サイトの土台へ</td><td>1.1–1.4</td><td>登録なしで学習サイトの共通UIが表示される</td></tr>
+              <tr><td><strong>2</strong></td><td>記事カタログとフォルダ契約</td><td>2.1–2.4</td><td>記事追加の必須情報とファイル不足を自動検出できる</td></tr>
+              <tr><td><strong>3</strong></td><td>ホームと科目ナビゲーション</td><td>3.1–3.5</td><td>線形代数と準備中科目を区別して案内できる</td></tr>
+              <tr><td><strong>4</strong></td><td>最初の記事を公開品質へ</td><td>4.1–4.6</td><td>線形写像教材がスマホとキーボードで使える</td></tr>
+              <tr><td><strong>5</strong></td><td>読むから創って確かめるへ</td><td>5.1–5.4</td><td>目標確認・4択・進捗復元が機能する</td></tr>
+              <tr><td><strong>6</strong></td><td>動画・共有・モバイル品質</td><td>6.1–6.3</td><td>未設定値に強く、共有・狭幅表示が整う</td></tr>
+              <tr><td><strong>7</strong></td><td>品質保証とHosting公開</td><td>7.1–7.6</td><td>ローカル・配信・公開URLを分けて確認できる</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>詳細なTDD手順と同じ計画は <code>DEVLOG.md</code> に記録する。HTMLは進捗確認・共有用、Markdownは実装時の手順確認用として併用する。</p>
+      </div>
+      <div class="edit-actions"><button class="btn-cancel" type="button" onclick="cancelEdit(this)">キャンセル</button><button class="btn-save" type="button" onclick="saveEdit(this)">💾 保存</button></div>
+    </section>
+
+    <section class="editable-section" data-section="scope" id="sec-scope">
+      <button class="edit-btn" type="button" onclick="startEdit(this)">✏️ 編集</button>
+      <div class="editable-content">
+        <h2><span class="section-number">1</span>ゴール / スコープ</h2>
+        <div class="grid-two">
+          <div class="mini-card">
+            <h3>最小の完成形</h3>
+            <ul>
+              <li>登録なしでホームと教材へアクセス</li>
+              <li>線形代数の記事一覧から線形写像を選択</li>
+              <li>座学・コード・p5.js・4択を1記事で体験</li>
+              <li>スマートフォンで主要操作を完了</li>
+              <li>記事ごとの自己完結フォルダを維持</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h3>今回の非ゴール</h3>
+            <ul>
+              <li>アカウント、クラウド進捗同期、CMS</li>
+              <li>全12科目の記事制作</li>
+              <li>動画撮影・編集・投稿</li>
+              <li>汎用ブロックエディタ</li>
+              <li>Firestore / Functionsの新規機能</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout"><strong>責務境界:</strong> Vue/Viteはトップ・科目一覧・共通導線を担当し、教材本体は <code>public/articles/&lt;subject&gt;/&lt;slug&gt;/</code> の自己完結フォルダとして配信する。</div>
+      </div>
+      <div class="edit-actions"><button class="btn-cancel" type="button" onclick="cancelEdit(this)">キャンセル</button><button class="btn-save" type="button" onclick="saveEdit(this)">💾 保存</button></div>
+    </section>
+
+    <section class="editable-section" data-section="assumptions-and-risks" id="sec-assumptions">
+      <button class="edit-btn" type="button" onclick="startEdit(this)">✏️ 編集</button>
+      <div class="editable-content">
+        <h2><span class="section-number">2</span>前提とリスク</h2>
+        <ul>
+          <li>現在の <code>src/</code> はVue/Firebaseスターター画面で、README記載の学習体験は未実装。</li>
+          <li><code>sample/</code> の線形写像教材を最初の縦切りMVPとして使う。原本は公開配置が安定するまで保持する。</li>
+          <li>キャラクターは一旦 <code>public/fermiquest/01_Feru.png</code> を使い、後からメタデータで差し替え可能にする。</li>
+          <li>YouTube URLとGitHub URLは未確定。値がない場合は空リンクを表示しない。</li>
+          <li>Firebase設定はプレースホルダーのため、Phase 0完了前に機能開発やデプロイを始めない。</li>
+          <li>MathJax/p5.js CDNは通信に依存する。MVPで検証し、必要時だけローカル配布へ切り替える。</li>
+          <li>日本語をMVP対象にし、既存i18n基盤は壊さない。英語教材は後続計画に分ける。</li>
+        </ul>
+        <h3>連携の現在地（2026-10-12確認）</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>領域</th><th>確認済み</th><th>未完了 / 問題</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Git</strong></td><td><code>dev</code>は既存mainの祖先でdev固有コミットなし</td><td>未コミット変更あり。mainには後続merge履歴4件</td></tr>
+            <tr><td><strong>GitHub</strong></td><td>専用リポジトリは参照可能だがbranchなし</td><td>originはスターター。GitHub CLIトークン無効</td></tr>
+            <tr><td><strong>Firebase CLI</strong></td><td>15.33.0、ログイン済み</td><td>ローカルproject alias未設定</td></tr>
+            <tr><td><strong>Firebase Project</strong></td><td>projectとHostingサイトはACTIVE</td><td>Web Appが0件</td></tr>
+            <tr><td><strong>ローカル設定</strong></td><td>Hosting target名は<code>app</code></td><td>.firebasercとSDK設定が仮値</td></tr>
+            <tr><td><strong>Firebase MCP</strong></td><td>MCP自体は検出済み</td><td>別projectを向き認証401。修正前は使用禁止</td></tr>
+          </tbody>
+        </table></div>
+        <div class="callout"><strong>Phase 1へのゲート:</strong> origin/upstream、main単一ブランチ、GitHub認証、Firebase alias/target/Web App/SDK/MCP、test・lint・build、初回Hosting公開、公開URL確認がすべて完了していること。専用リポジトリは <code>https://github.com/Rikemen/math-by-making.git</code> とする。</div>
+        <p>ユーザー指定により、このリポジトリは<code>main</code>単一ブランチで運用する。main上でも1タスク1コミットとpush前レビューを維持する。</p>
+      </div>
+      <div class="edit-actions"><button class="btn-cancel" type="button" onclick="cancelEdit(this)">キャンセル</button><button class="btn-save" type="button" onclick="saveEdit(this)">💾 保存</button></div>
+    </section>
+
+    <section class="editable-section" data-section="phase-0-integrations" id="sec-phase0">
+      <button class="edit-btn" type="button" onclick="startEdit(this)">✏️ 編集</button>
+      <div class="editable-content">
+        <h2><span class="section-number">3</span>Phase 0: Git・GitHub・Firebase連携</h2>
+        <p class="phase-note">最優先 / 成果: 新GitHubとFirebase Hostingへの接続を完了し、初回公開を確認してから機能開発へ進む。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>ステータス</th><th>タスクID</th><th>タスク内容（約15分）</th><th>具体的な実装内容 ＆ 確認手順</th></tr></thead>
+          <tbody>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.1</strong></td><td>GitHub CLIを再認証</td><td class="task-detail"><b>現状:</b> 2アカウントともトークン無効。<br><b>操作:</b> ユーザーが<code>gh auth login -h github.com</code>でRikemenを認証。<br><b>確認:</b> <code>gh auth status</code></td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.2</strong></td><td>現在差分をコミット分割</td><td class="task-detail"><b>分類:</b> ①README・sample・画像、②DEVLOG・計画HTML。<br><b>確認:</b> <code>git status --short</code>と<code>git diff --stat</code><br><b>制約:</b> Firebase設定はまだ含めない。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.3</strong></td><td>初期コンテンツをコミット</td><td class="task-detail"><b>対象:</b> README・sample・キャラクター素材。<br><b>確認:</b> <code>git diff --cached</code>後に1タスク1コミット。<br><b>完了:</b> 計画ファイルを混ぜない。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.4</strong></td><td>開発計画をコミット</td><td class="task-detail"><b>対象:</b> DEVLOGと開発計画HTMLだけ。<br><b>確認:</b> <code>git diff --cached</code>と<code>git show --stat</code><br><b>完了:</b> 計画専用コミット。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.5</strong></td><td>新コミットをmainへ移す</td><td class="task-detail"><b>前提:</b> devはmainの祖先。新規2コミットのhashを記録。<br><b>操作:</b> mainへ切替えて古い順にcherry-pick。<br><b>完了:</b> main固有のmerge履歴を保持。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.6</strong></td><td>devブランチを廃止</td><td class="task-detail"><b>前提:</b> mainに新規内容が存在。<br><b>操作:</b> 元dev先端に復旧用ローカルタグを付けてdevを削除。<br><b>確認:</b> ローカルbranchはmainだけ。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.7</strong></td><td>Git remoteの役割を整理</td><td class="task-detail"><b>操作:</b> 現originをupstreamへ改名し、専用repoをoriginへ追加。<br><b>確認:</b> <code>git remote -v</code><br><b>完了:</b> push先と参照元が分離。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.8</strong></td><td>mainだけをGitHubへ登録</td><td class="task-detail"><b>操作:</b> <code>git push -u origin main</code>。<br><b>禁止:</b> <code>--all</code>と<code>--tags</code>。<br><b>完了:</b> GitHubにはmainだけが存在。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.9</strong></td><td>Firebase aliasを設定</td><td class="task-detail"><b>操作:</b> <code>npx -y firebase-tools@latest use --add</code>でmath-by-makingをdefaultに設定。<br><b>確認:</b> <code>... use</code><br><b>完了:</b> .firebasercの仮値なし。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.10</strong></td><td>Hosting targetを設定</td><td class="task-detail"><b>操作:</b> <code>target:apply hosting app math-by-making</code><br><b>確認:</b> target一覧と.firebaserc。<br><b>完了:</b> 既存default siteへ接続。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.11</strong></td><td>Firebase Web Appを登録</td><td class="task-detail"><b>現状:</b> Web Appは0件。<br><b>操作:</b> <code>apps:create web math-by-making --project math-by-making</code><br><b>確認:</b> apps:listで1件とApp ID。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.12</strong></td><td>SDK設定を反映</td><td class="task-detail"><b>取得:</b> <code>apps:sdkconfig web &lt;APP_ID&gt;</code><br><b>実装:</b> project.tsの仮値を公式値へ置換。<br><b>確認:</b> projectIdがmath-by-making。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.13</strong></td><td>Firebase設定を静的検証</td><td class="task-detail"><b>検査:</b> alias・target・SDK project IDの一致。<br><b>確認:</b> <code>npm run build</code><br><b>整理:</b> project値の不要な重複を増やさない。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.14</strong></td><td>Firebase MCPを接続し直す</td><td class="task-detail"><b>現状:</b> chloe-pilot向き・401。<br><b>操作:</b> Project Directoryを本repoへ変更し再接続。<br><b>確認:</b> environmentがmath-by-makingを返す。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.15</strong></td><td>品質コマンドを通す</td><td class="task-detail"><b>確認:</b> <code>npm test</code>、<code>npm run lint</code>、<code>npm run build</code>を個別実行。<br><b>記録:</b> 終了コードと件数。<br><b>制約:</b> 機能追加なし。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.16</strong></td><td>Hostingエミュレータ確認</td><td class="task-detail"><b>前提:</b> 最新dist。<br><b>確認:</b> トップ・既存ルート・404・SPA rewrite。<br><b>完了:</b> Hosting経由の主要URLが期待値を返す。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.17</strong></td><td>Firebase連携をコミット</td><td class="task-detail"><b>対象:</b> .firebaserc・project.ts・必要な検証だけ。<br><b>確認:</b> <code>git diff --cached</code><br><b>除外:</b> build成果物・トークン・キャッシュ。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.18</strong></td><td>mainの連携変更をpush</td><td class="task-detail"><b>前提:</b> worktree clean、push対象を確認。<br><b>操作:</b> <code>git push origin main</code><br><b>完了:</b> GitHub mainとローカルHEADが一致。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.19</strong></td><td>Hostingを初回デプロイ</td><td class="task-detail"><b>前提:</b> mainでtest/build、project/target再確認。<br><b>操作:</b> <code>deploy --project math-by-making --only hosting:app</code><br><b>除外:</b> Functions・Rules。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 0.20</strong></td><td>公開URLを確認</td><td class="task-detail"><b>確認:</b> <code>https://math-by-making.web.app</code>のHTTP 200・CSS/JS・SPA fallback・コンソール。<br><b>記録:</b> 日時と未確認項目。<br><b>完了:</b> deployと画面を別々に証明。</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="edit-actions"><button class="btn-cancel" type="button" onclick="cancelEdit(this)">キャンセル</button><button class="btn-save" type="button" onclick="saveEdit(this)">💾 保存</button></div>
+    </section>
+
+    <section class="editable-section" data-section="phase-1-foundation" id="sec-phase1">
+      <button class="edit-btn" type="button" onclick="startEdit(this)">✏️ 編集</button>
+      <div class="editable-content">
+        <h2><span class="section-number">4</span>Phase 1: 学習サイトの土台</h2>
+        <p class="phase-note">依存: Phase 0 / 成果: スターター固有画面と初期版で不要な認証導線を外し、共通UIを整える。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>ステータス</th><th>タスクID</th><th>タスク内容（約15分）</th><th>具体的な実装内容 ＆ 確認手順</th></tr></thead>
+          <tbody>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 1.1</strong></td><td>ホームの受け入れ条件を固定</td><td class="task-detail"><b>Test:</b> <code>Home.test.ts</code> にサイト名・価値・線形代数を期待。<br><b>実装:</b> スターターロゴを最小見出しへ置換。<br><b>確認:</b> <code>npm test -- src/views/__tests__/Home.test.ts</code></td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 1.2</strong></td><td>デザイントークンを定義</td><td class="task-detail"><b>Test:</b> 主要CSS変数の存在を検査。<br><b>実装:</b> <code>src/styles/base/tokens.css</code> とresetを追加。<br><b>整理:</b> <code>index.css</code> はimport順だけを管理。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 1.3</strong></td><td>共通ヘッダーを実装</td><td class="task-detail"><b>Test:</b> サイト名・ホーム・科目リンクを検査。<br><b>実装:</b> <code>AppHeader.vue</code> を追加。<br><b>整理:</b> 固有CSSはscopedで所有。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 1.4</strong></td><td>アカウント導線を外す</td><td class="task-detail"><b>Test:</b> account/mypageルートがないことを検査。<br><b>実装:</b> 不要ルートと認証監視を外す。Firebase基盤は削除しない。<br><b>確認:</b> 未ログインで全MVP画面へ到達。</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="edit-actions"><button class="btn-cancel" type="button" onclick="cancelEdit(this)">キャンセル</button><button class="btn-save" type="button" onclick="saveEdit(this)">💾 保存</button></div>
+    </section>
+
+    <section class="editable-section" data-section="phase-2-catalog" id="sec-phase2">
+      <button class="edit-btn" type="button" onclick="startEdit(this)">✏️ 編集</button>
+      <div class="editable-content">
+        <h2><span class="section-number">5</span>Phase 2: 記事カタログとフォルダ契約</h2>
+        <p class="phase-note">依存: Phase 1 / 成果: 記事追加に必要な情報とファイルをテストで固定する。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>ステータス</th><th>タスクID</th><th>タスク内容（約15分）</th><th>具体的な実装内容 ＆ 確認手順</th></tr></thead>
+          <tbody>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 2.1</strong></td><td>記事メタデータ型を定義</td><td class="task-detail"><b>Test:</b> 必須項目と公開状態の型を検証。<br><b>実装:</b> <code>SubjectMeta</code> / <code>ArticleMeta</code> を追加。<br><b>完了:</b> slug・status・href・任意URLを表現。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 2.2</strong></td><td>カタログ検証を追加</td><td class="task-detail"><b>Test:</b> 重複slug・空タイトル・不正hrefを失敗させる。<br><b>実装:</b> 純粋な <code>validateCatalog</code> を追加。<br><b>整理:</b> 記事ID付きエラーへ統一。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 2.3</strong></td><td>線形写像の記事を登録</td><td class="task-detail"><b>Test:</b> 線形代数と線形写像が1件取得できる。<br><b>実装:</b> subjects/articlesデータを追加。<br><b>完了:</b> hrefは <code>/articles/linear-algebra/linear-mapping/</code>。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 2.4</strong></td><td>教材ファイル契約を固定</td><td class="task-detail"><b>Test:</b> index.html・sketch.js・主要クラスの存在を <code>node:fs</code> で検査。<br><b>整理:</b> requiredFilesを記事間で共有。<br><b>確認:</b> <code>npm test -- tests/articles/article-assets.test.ts</code></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="edit-actions"><button class="btn-cancel" type="button" onclick="cancelEdit(this)">キャンセル</button><button class="btn-save" type="button" onclick="saveEdit(this)">💾 保存</button></div>
+    </section>
+
+    <section class="editable-section" data-section="phase-3-navigation" id="sec-phase3">
+      <button class="edit-btn" type="button" onclick="startEdit(this)">✏️ 編集</button>
+      <div class="editable-content">
+        <h2><span class="section-number">6</span>Phase 3: ホームと科目ナビゲーション</h2>
+        <p class="phase-note">依存: Phase 2 / 成果: 公開中と準備中を区別し、最初の記事へ迷わず進める。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>ステータス</th><th>タスクID</th><th>タスク内容（約15分）</th><th>具体的な実装内容 ＆ 確認手順</th></tr></thead>
+          <tbody>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 3.1</strong></td><td>ホームのヒーローを実装</td><td class="task-detail"><b>Test:</b> 見出し・説明・線形代数CTAを検査。<br><b>実装:</b> <code>LearningHero.vue</code> を追加。<br><b>完了:</b> CTAが科目ページを指す。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 3.2</strong></td><td>キャラクター導入を実装</td><td class="task-detail"><b>Test:</b> src・alt・loadingを検査。<br><b>実装:</b> Feru画像を案内役として表示。<br><b>整理:</b> パスはコンテンツ設定から受け取る。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 3.3</strong></td><td>科目カードを実装</td><td class="task-detail"><b>Test:</b> 公開中と準備中の表示差を検査。<br><b>実装:</b> <code>SubjectCard.vue</code> とカード一覧を追加。<br><b>整理:</b> メタデータ入力だけで描画。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 3.4</strong></td><td>科目別ページを追加</td><td class="task-detail"><b>Test:</b> 動的ルートで科目名・記事カードを期待。<br><b>実装:</b> <code>Subject.vue</code> とselectorを追加。<br><b>完了:</b> 不明slugはNotFound。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 3.5</strong></td><td>準備中表示を追加</td><td class="task-detail"><b>Test:</b> plannedはリンクなし、publishedはリンクあり。<br><b>実装:</b> 公開状態ラベルを追加。<br><b>完了:</b> 未公開URLへ誤遷移しない。</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="edit-actions"><button class="btn-cancel" type="button" onclick="cancelEdit(this)">キャンセル</button><button class="btn-save" type="button" onclick="saveEdit(this)">💾 保存</button></div>
+    </section>
+
+    <section class="editable-section" data-section="phase-4-first-article" id="sec-phase4">
+      <button class="edit-btn" type="button" onclick="startEdit(this)">✏️ 編集</button>
+      <div class="editable-content">
+        <h2><span class="section-number">7</span>Phase 4: 最初の記事を公開品質へ</h2>
+        <p class="phase-note">依存: Phase 3 / 成果: sampleの線形写像教材を自己完結した公開記事へ育てる。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>ステータス</th><th>タスクID</th><th>タスク内容（約15分）</th><th>具体的な実装内容 ＆ 確認手順</th></tr></thead>
+          <tbody>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 4.1</strong></td><td>サンプル教材を公開配置</td><td class="task-detail"><b>Test:</b> 公開先の必須ファイル検査を先に失敗させる。<br><b>実装:</b> 必要ファイルを <code>public/articles/...</code> へ安全に複製。<br><b>確認:</b> build後も相対構造を維持。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 4.2</strong></td><td>教材内パスを整備</td><td class="task-detail"><b>Test:</b> ローカルsrc/hrefの実在を検査。<br><b>実装:</b> ファイル名と読み込み順を修正。<br><b>完了:</b> 404候補ゼロ。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 4.3</strong></td><td>記事共通シェルを追加</td><td class="task-detail"><b>Test:</b> サイト名・パンくず・目標・戻るリンクを検査。<br><b>実装:</b> semantic header/nav/mainを追加。<br><b>整理:</b> 共通部と教材固有部を分離。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 4.4</strong></td><td>タブ操作を改善</td><td class="task-detail"><b>Test:</b> role・aria-selected・矢印キー操作。<br><b>実装:</b> 状態更新をVanilla JSで追加。<br><b>完了:</b> キーボードだけで両パネルを選択。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 4.5</strong></td><td>p5キャンバスをレスポンシブ化</td><td class="task-detail"><b>Test:</b> 表示幅からサイズを返す純粋関数。<br><b>実装:</b> container幅とwindowResizedへ対応。<br><b>完了:</b> 360pxで横スクロールなし。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 4.6</strong></td><td>ソース取得導線を追加</td><td class="task-detail"><b>Test:</b> URL未設定は非表示、設定済みは安全な外部リンク。<br><b>実装:</b> メタデータから閲覧・取得ボタンを描画。<br><b>完了:</b> ダミーURLを公開しない。</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="edit-actions"><button class="btn-cancel" type="button" onclick="cancelEdit(this)">キャンセル</button><button class="btn-save" type="button" onclick="saveEdit(this)">💾 保存</button></div>
+    </section>
+
+    <section class="editable-section" data-section="phase-5-learning" id="sec-phase5">
+      <button class="edit-btn" type="button" onclick="startEdit(this)">✏️ 編集</button>
+      <div class="editable-content">
+        <h2><span class="section-number">8</span>Phase 5: 読むから創って確かめるへ</h2>
+        <p class="phase-note">依存: Phase 4 / 成果: 学習目標・問題・フィードバック・端末内進捗を一続きにする。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>ステータス</th><th>タスクID</th><th>タスク内容（約15分）</th><th>具体的な実装内容 ＆ 確認手順</th></tr></thead>
+          <tbody>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 5.1</strong></td><td>学習目標チェックを追加</td><td class="task-detail"><b>Test:</b> 初期未完了と切替を検査。<br><b>実装:</b> 3項目のチェックリスト。<br><b>整理:</b> 目標文を配列データへ分離。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 5.2</strong></td><td>4択問題データを追加</td><td class="task-detail"><b>Test:</b> 選択肢4件・正解1件・解説あり。<br><b>実装:</b> <code>quiz-data.js</code> とradio選択肢。<br><b>整理:</b> データとDOM生成を分離。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 5.3</strong></td><td>回答フィードバックを実装</td><td class="task-detail"><b>Test:</b> 未選択・正解・不正解を検査。<br><b>実装:</b> 理由と再回答操作を表示。<br><b>完了:</b> 結果を読み上げ、色だけに依存しない。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 5.4</strong></td><td>端末内の進捗保存を追加</td><td class="task-detail"><b>Test:</b> 保存・復元・壊れたJSON。<br><b>実装:</b> article slug単位でlocalStorageへ保存。<br><b>完了:</b> 保存不可でも学習を継続。</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="edit-actions"><button class="btn-cancel" type="button" onclick="cancelEdit(this)">キャンセル</button><button class="btn-save" type="button" onclick="saveEdit(this)">💾 保存</button></div>
+    </section>
+
+    <section class="editable-section" data-section="phase-6-media-mobile" id="sec-phase6">
+      <button class="edit-btn" type="button" onclick="startEdit(this)">✏️ 編集</button>
+      <div class="editable-content">
+        <h2><span class="section-number">9</span>Phase 6: 動画・共有・モバイル品質</h2>
+        <p class="phase-note">依存: Phase 5 / 成果: 未確定の外部URLに強く、共有と狭幅表示が整う。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>ステータス</th><th>タスクID</th><th>タスク内容（約15分）</th><th>具体的な実装内容 ＆ 確認手順</th></tr></thead>
+          <tbody>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 6.1</strong></td><td>動画導線を追加</td><td class="task-detail"><b>Test:</b> URLなし・YouTube・不許可ホスト。<br><b>実装:</b> URLがある時だけプライバシー強化埋め込み。<br><b>完了:</b> 空iframeを作らない。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 6.2</strong></td><td>ページメタ情報を設定</td><td class="task-detail"><b>Test:</b> Home・科目のtitle/description生成。<br><b>実装:</b> <code>@unhead/vue</code> と記事HTMLのmetaを設定。<br><b>整理:</b> タイトル書式を共通化。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 6.3</strong></td><td>モバイル回帰テストを追加</td><td class="task-detail"><b>Test:</b> ナビ・カード1列・横はみ出し防止。<br><b>実装:</b> 所有コンポーネント内のmedia query。<br><b>完了:</b> 主要操作は44px相当。</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="edit-actions"><button class="btn-cancel" type="button" onclick="cancelEdit(this)">キャンセル</button><button class="btn-save" type="button" onclick="saveEdit(this)">💾 保存</button></div>
+    </section>
+
+    <section class="editable-section" data-section="phase-7-release" id="sec-phase7">
+      <button class="edit-btn" type="button" onclick="startEdit(this)">✏️ 編集</button>
+      <div class="editable-content">
+        <h2><span class="section-number">10</span>Phase 7: 品質保証とHosting公開</h2>
+        <p class="phase-note">依存: Phase 6 / 成果: ローカル成功・配信成功・公開URLの操作成功を分けて確認する。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>ステータス</th><th>タスクID</th><th>タスク内容（約15分）</th><th>具体的な実装内容 ＆ 確認手順</th></tr></thead>
+          <tbody>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 7.1</strong></td><td>キーボード・読み上げ確認</td><td class="task-detail"><b>Test:</b> 見出し・ランドマーク・名前・フォーカス順。<br><b>実装:</b> 必要なラベルとfocus-visibleを追加。<br><b>完了:</b> ホームから回答までキーボードで到達。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 7.2</strong></td><td>画像と初期表示を最適化</td><td class="task-detail"><b>Test:</b> lazy・寸法・過大ファイル検知。<br><b>実装:</b> 画像指定と必要な圧縮版を整備。<br><b>完了:</b> レイアウトシフト要因を削減。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 7.3</strong></td><td>品質コマンドを通す</td><td class="task-detail"><b>確認:</b> <code>npm test</code> → <code>npm run lint</code> → <code>npm run build</code>。<br><b>制約:</b> 新機能や広範な設計変更を混ぜない。<br><b>完了:</b> 全結果を説明可能。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 7.4</strong></td><td>Hostingエミュレータで確認</td><td class="task-detail"><b>Test:</b> build後の静的記事実在。<br><b>確認:</b> /・科目・記事・404をエミュレータでスモーク。<br><b>完了:</b> SPA rewriteと記事が競合しない。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 7.5</strong></td><td>連携設定を再確認</td><td class="task-detail"><b>Test:</b> alias・target・SDKの識別子一致を再検査。<br><b>実装:</b> 不一致時だけPhase 0の記録に沿って修正。<br><b>確認:</b> 全接続先がmath-by-making。</td></tr>
+            <tr><td><select class="status-select"><option value="未着手" selected>未着手</option><option value="進行中">進行中</option><option value="完了">完了</option><option value="保留">保留</option></select></td><td><strong>Task 7.6</strong></td><td>MVPをHostingへ再配信</td><td class="task-detail"><b>事前:</b> test/buildを再実行。<br><b>実装:</b> Phase 0後のMVP変更だけを<code>hosting:app</code>へ配信。<br><b>完了:</b> 公開URLで学習導線を確認。</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="edit-actions"><button class="btn-cancel" type="button" onclick="cancelEdit(this)">キャンセル</button><button class="btn-save" type="button" onclick="saveEdit(this)">💾 保存</button></div>
+    </section>
+
+    <section class="editable-section" data-section="verification-strategy" id="sec-verification">
+      <button class="edit-btn" type="button" onclick="startEdit(this)">✏️ 編集</button>
+      <div class="editable-content">
+        <h2><span class="section-number">11</span>検証戦略</h2>
+        <ol>
+          <li>各Taskで対象テストを赤→緑にし、整理後に同じテストを再実行する。</li>
+          <li>Phase終端で関連テスト群をまとめて実行する。</li>
+          <li>Phase 4以降は360px、768px、1280px相当で表示確認する。</li>
+          <li>Phase 7で <code>npm test</code>、<code>npm run lint</code>、<code>npm run build</code> を通す。</li>
+          <li>ローカル成功、Hostingデプロイ成功、公開URL上の操作成功を別々に記録する。</li>
+          <li>実機タッチ・読み上げ・動画再生は、実施したものだけを確認済みにする。</li>
+        </ol>
+      </div>
+      <div class="edit-actions"><button class="btn-cancel" type="button" onclick="cancelEdit(this)">キャンセル</button><button class="btn-save" type="button" onclick="saveEdit(this)">💾 保存</button></div>
+    </section>
+
+    <section class="editable-section" data-section="rollback-and-followup" id="sec-followup">
+      <button class="edit-btn" type="button" onclick="startEdit(this)">✏️ 編集</button>
+      <div class="editable-content">
+        <h2><span class="section-number">12</span>ロールバック / フォローアップ</h2>
+        <ul>
+          <li>各Phaseを独立した小さなコミット候補にし、問題時は直前Phaseへ戻せるようにする。</li>
+          <li><code>sample/</code> と既存キャラクター画像は、公開配置が安定するまで削除・改名しない。</li>
+          <li>認証・Firestore・Functionsは削除せず、MVPの画面導線からだけ外す。</li>
+          <li>次の記事は同じフォルダ契約と資産テストを使って追加する。</li>
+          <li>4択で学習効果を確認後、ブロック式問題の汎用設計を別計画に分ける。</li>
+        </ul>
+      </div>
+      <div class="edit-actions"><button class="btn-cancel" type="button" onclick="cancelEdit(this)">キャンセル</button><button class="btn-save" type="button" onclick="saveEdit(this)">💾 保存</button></div>
+    </section>
+  </main>
+
+  <div class="floating-toolbar" aria-label="ドキュメント操作">
+    <button class="toolbar-btn" type="button" onclick="exportJSON()">JSONエクスポート</button>
+    <button class="toolbar-btn" type="button" onclick="openImportModal()">JSONインポート</button>
+  </div>
+
+  <div class="modal" id="importModal" role="dialog" aria-modal="true" aria-labelledby="importTitle">
+    <div class="modal-body">
+      <h2 id="importTitle">JSONをインポート</h2>
+      <p>この計画からエクスポートしたJSONを貼り付けてください。</p>
+      <textarea id="importTextarea" aria-label="インポートするJSON"></textarea>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn--secondary" type="button" onclick="closeImportModal()">キャンセル</button>
+        <button class="modal-btn modal-btn--primary" type="button" onclick="executeImport()">インポート</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const editSnapshots = new Map();
+
+    function applySelectColor(select) {
+      const map = {
+        '完了': { border: '#16a34a', color: '#166534', bg: '#dcfce7' },
+        '進行中': { border: '#0284c7', color: '#075985', bg: '#e0f2fe' },
+        '保留': { border: '#d97706', color: '#92400e', bg: '#fef3c7' }
+      };
+      const style = map[select.value] || { border: '#cbd5e1', color: '#64748b', bg: '#f1f5f9' };
+      select.style.borderColor = style.border;
+      select.style.color = style.color;
+      select.style.background = style.bg;
+    }
+
+    function startEdit(buttonElement) {
+      const section = buttonElement.closest('.editable-section');
+      const content = section.querySelector('.editable-content');
+      editSnapshots.set(section.dataset.section, content.innerHTML);
+      content.setAttribute('contenteditable', 'true');
+      section.classList.add('is-editing');
+      content.focus();
+    }
+
+    function saveEdit(buttonElement) {
+      const section = buttonElement.closest('.editable-section');
+      const content = section.querySelector('.editable-content');
+      content.removeAttribute('contenteditable');
+      section.classList.remove('is-editing');
+      editSnapshots.delete(section.dataset.section);
+      showToast('保存しました', 'success');
+    }
+
+    function cancelEdit(buttonElement) {
+      const section = buttonElement.closest('.editable-section');
+      const content = section.querySelector('.editable-content');
+      const snapshot = editSnapshots.get(section.dataset.section);
+      if (snapshot !== undefined) {
+        content.innerHTML = snapshot;
+        editSnapshots.delete(section.dataset.section);
+      }
+      content.removeAttribute('contenteditable');
+      section.classList.remove('is-editing');
+      section.querySelectorAll('.status-select').forEach(applySelectColor);
+      showToast('編集をキャンセルしました', 'info');
+    }
+
+    function exportJSON() {
+      document.querySelectorAll('.status-select').forEach((select) => {
+        Array.from(select.options).forEach((option) => {
+          if (option.value === select.value) option.setAttribute('selected', 'selected');
+          else option.removeAttribute('selected');
+        });
+      });
+      const exportData = {
+        version: '1.0',
+        exportedAt: new Date().toISOString(),
+        title: document.title,
+        sections: {}
+      };
+      document.querySelectorAll('.editable-section').forEach((section) => {
+        exportData.sections[section.dataset.section] = section.querySelector('.editable-content').innerHTML.trim();
+      });
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = `math-by-making-plan-${new Date().toISOString().slice(0, 10)}.json`;
+      anchor.click();
+      URL.revokeObjectURL(url);
+      showToast('JSONをエクスポートしました', 'success');
+    }
+
+    function openImportModal() {
+      document.getElementById('importModal').classList.add('is-open');
+      const textarea = document.getElementById('importTextarea');
+      textarea.value = '';
+      textarea.focus();
+    }
+
+    function closeImportModal() {
+      document.getElementById('importModal').classList.remove('is-open');
+    }
+
+    function executeImport() {
+      const jsonText = document.getElementById('importTextarea').value.trim();
+      if (!jsonText) { showToast('JSONを入力してください', 'error'); return; }
+      let importData;
+      try {
+        importData = JSON.parse(jsonText);
+      } catch (error) {
+        showToast('JSONの解析に失敗しました', 'error');
+        return;
+      }
+      if (!importData.sections || typeof importData.sections !== 'object') {
+        showToast('sectionsがないJSONです', 'error');
+        return;
+      }
+      let updatedCount = 0;
+      Object.entries(importData.sections).forEach(([key, html]) => {
+        const section = document.querySelector(`.editable-section[data-section="${key}"]`);
+        if (!section || typeof html !== 'string') return;
+        section.querySelector('.editable-content').innerHTML = html;
+        section.querySelectorAll('.status-select').forEach(applySelectColor);
+        updatedCount += 1;
+      });
+      closeImportModal();
+      showToast(`${updatedCount}セクションを更新しました`, 'success');
+    }
+
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast toast-${type} is-visible`;
+      window.setTimeout(() => toast.classList.remove('is-visible'), 2500);
+    }
+
+    document.addEventListener('change', (event) => {
+      if (event.target.classList.contains('status-select')) applySelectColor(event.target);
+    });
+    document.querySelectorAll('.status-select').forEach(applySelectColor);
+    document.getElementById('importModal').addEventListener('click', (event) => {
+      if (event.target === event.currentTarget) closeImportModal();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeImportModal();
+    });
+
+    (function setupSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      const toggle = document.getElementById('menuToggle');
+      const navLinks = document.querySelectorAll('#sidebarNav a');
+      function open() { sidebar.classList.add('open'); overlay.classList.add('open'); toggle.setAttribute('aria-expanded', 'true'); }
+      function close() { sidebar.classList.remove('open'); overlay.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); }
+      toggle.addEventListener('click', () => sidebar.classList.contains('open') ? close() : open());
+      overlay.addEventListener('click', close);
+      navLinks.forEach((link) => link.addEventListener('click', () => { if (innerWidth <= 860) close(); }));
+      const sections = [];
+      navLinks.forEach((link) => {
+        const element = document.getElementById(link.getAttribute('href').replace('#', ''));
+        if (element) sections.push({ link, element });
+      });
+      function update() {
+        const top = scrollY + 80;
+        let current = sections[0];
+        sections.forEach((section) => { if (section.element.offsetTop <= top) current = section; });
+        navLinks.forEach((link) => link.classList.remove('active'));
+        if (current) current.link.classList.add('active');
+      }
+      let tick = false;
+      addEventListener('scroll', () => {
+        if (!tick) {
+          requestAnimationFrame(() => { update(); tick = false; });
+          tick = true;
+        }
+      });
+      update();
+    })();
+  </script>
+</body>
+</html>
