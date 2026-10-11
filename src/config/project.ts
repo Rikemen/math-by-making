@@ -1,10 +1,9 @@
 export const firebaseConfig = {
-  databaseURL: "https://your-database-name.firebaseio.com",
-  messageKey: "your-message-key",
-  apiKey: "your-api-key",
-  authDomain: "your-project-id.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project-id.firebasestorage.app",
-  messagingSenderId: "your-messaging-sender-id",
-  appId: "your-app-id",
+  apiKey: "AIzaSyDXi9L_29iO9JYTwWem5SGOqzJRYIDTfFM",
+  authDomain: "math-by-making.firebaseapp.com",
+  projectId: "math-by-making",
+  storageBucket: "math-by-making.firebasestorage.app",
+  messagingSenderId: "100626450816",
+  appId: "1:100626450816:web:3f460cfb02d8ceba4a1965",
+  measurementId: "G-RWX4NYR4PB",
 };

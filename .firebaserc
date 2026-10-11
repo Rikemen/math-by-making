@@ -1,13 +1,12 @@
 {
   "projects": {
-    "default": "your-project-id",
-    "demo": "your-project-id"
+    "default": "math-by-making"
   },
   "targets": {
-    "your-project-id": {
+    "math-by-making": {
       "hosting": {
         "app": [
-          "your-project-id"
+          "math-by-making"
         ]
       }
     }
