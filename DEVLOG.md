@@ -84,27 +84,55 @@
 - 記事内のMathJax/p5.js CDNは通信障害の影響を受ける。MVPでは現状を動作確認し、再現性が不足する場合だけローカル配布へ切り替える。
 - 日本語版をMVP対象とする。既存i18n基盤は壊さないが、英語教材の追加は後続計画とする。
 
-## 連携の現在地（2026-10-12確認）
+## Phase 0 実行記録（2026-10-12）
 
-| 領域 | 確認済み | 未完了 / 問題 |
+| Loop | 状態 | 結果 |
 | --- | --- | --- |
-| Git | `dev`上で作業中。`dev`は既存`main`の祖先で、dev固有のコミットはない | 未コミット変更あり。mainにはdev後のmerge履歴が4件あるため単純改名は禁止 |
-| GitHub | 専用リポジトリ`Rikemen/math-by-making`は参照可能だがbranch参照がなく空 | `origin`はスターターキットを向き、GitHub CLIのトークンは無効 |
-| Firebase CLI | `firebase-tools` 15.33.0、CLIログイン済み | ローカルproject aliasは未設定 |
-| Firebase Project | `math-by-making`はACTIVE、Hostingサイトも存在 | Firebase Web Appが0件 |
-| ローカルFirebase設定 | `firebase.json`のHosting target名は`app` | `.firebaserc`と`src/config/project.ts`がプレースホルダー |
-| Firebase MCP | MCP自体は利用可能 | 作業先が`chloe-pilot`で認証も401。修正前は使用禁止 |
+| 0.1 | 完了 | `Rikemen`をGitHub CLIのactive accountとして再認証し、外部接続ありの`gh auth status`で確認 |
+| 0.2 | 完了 | 既存差分を初期コンテンツと開発計画の2単位へ分割 |
+| 0.3 | 完了 | 初期コンテンツを`7a20ace`としてmainへ記録 |
+| 0.4 | 完了 | 開発計画を`832a74c`としてmainへ記録 |
+| 0.5 | 完了 | 既存mainのmerge履歴を保持して2コミットをcherry-pick |
+| 0.6 | 完了 | 復旧タグ`migration/dev-before-main-only-2026-10-12`を残し、ローカルdevを削除 |
+| 0.7 | 完了 | `origin`を専用リポジトリ、`upstream`をスターターキットへ設定 |
+| 0.8 | ユーザー操作待ち | 実行環境の公開操作ガードが`git push`を拒否。`git push -u origin main`をユーザー端末で1回実行する |
+| 0.9 | 完了 | `.firebaserc`のdefault aliasを`math-by-making`へ設定 |
+| 0.10 | 完了 | Hosting target `app`を既存サイト`math-by-making`へ関連付け |
+| 0.11 | 完了 | Web App `Math by Making Web`を1件作成。App IDは`1:100626450816:web:3f460cfb02d8ceba4a1965` |
+| 0.12 | 完了 | 公式SDK設定を`src/config/project.ts`へ反映し、プレースホルダー0件を確認 |
+| 0.13 | 完了 | alias・target・SDKのproject ID一致とbuild成功を確認 |
+| 0.14 | 完了 | Firebase MCPを本リポジトリ、`math-by-making`、`lisp8.i.t.gin@gmail.com`へ切り替え |
+| 0.15 | 完了 | test 2件成功、lint成功、build成功。既存の`no-console`警告4件のみ |
+| 0.16 | 完了 | HostingエミュレータのトップがHTTP 200。公開環境でSPAルート・JS資産・未定義ルートのrewriteもHTTP 200 |
+| 0.17 | 完了 | Firebase連携を`9353467`として独立コミット |
+| 0.18 | ユーザー操作待ち | Loop 0.8と同じ1回のpushで連携コミットまで反映される |
+| 0.19 | 完了 | Hosting `app`だけをデプロイ。Functions・Rulesは未配信 |
+| 0.20 | 完了 | `https://math-by-making.web.app`のHTTP 200、主要資産、ブラウザ表示を確認 |
+
+### 連携の現在地
+
+| 領域 | 確認済み | 未完了 / 注意点 |
+| --- | --- | --- |
+| Git | ローカル開発ブランチは`main`だけ。worktreeは実行記録更新前までclean | ローカル復旧タグは意図どおりpushしない |
+| GitHub | `origin`は`Rikemen/math-by-making`、`upstream`はスターターキット。`Rikemen`認証も有効 | この実行環境ではpush禁止。専用リポジトリへの初回pushだけユーザー操作が必要 |
+| Firebase CLI | `firebase-tools` 15.33.0、CLIログイン済み、defaultは`math-by-making` | なし |
+| Firebase Project | `math-by-making`はACTIVE。HostingサイトとWeb Appが各1件存在 | Billingは無効。今回のHostingには不要 |
+| ローカルFirebase設定 | alias・Hosting target・SDK設定を`math-by-making`へ統一 | なし |
+| Firebase MCP | Project Directory、active project、authenticated userを本作業用へ切り替え済み | MCPのDetected App IDsは`<NONE>`だが、CLIではWeb App 1件を確認済み |
+| Hosting | デプロイと公開画面を確認済み | 未配備の3 Functions rewriteについて警告あり。該当APIはPhase 0の対象外 |
 
 ## 最優先の完了ゲート
 
 Phase 1へ進む条件は次のすべてを満たすこと。
 
-1. `origin`が `https://github.com/Rikemen/math-by-making.git`、`upstream`がスターターキットを指す。
-2. ローカルとGitHubの開発ブランチは`main`だけで、`dev`ブランチが存在しない。
-3. `gh auth status`が`Rikemen`を有効なactive accountとして示す。
-4. `.firebaserc`、Hosting target、`src/config/project.ts`がすべて`math-by-making`に一致する。
-5. Firebase Web Appが1件登録され、Firebase MCPのProject Directoryも本リポジトリになる。
-6. test・lint・build・Hostingエミュレータ・初回Hostingデプロイ・公開URL確認がそれぞれ記録される。
+1. [x] `origin`が `https://github.com/Rikemen/math-by-making.git`、`upstream`がスターターキットを指す。
+2. [ ] ローカルとGitHubの開発ブランチは`main`だけで、`dev`ブランチが存在しない。ローカルは完了、GitHubは初回push待ち。
+3. [x] `gh auth status`が`Rikemen`を有効なactive accountとして示す。
+4. [x] `.firebaserc`、Hosting target、`src/config/project.ts`がすべて`math-by-making`に一致する。
+5. [x] Firebase Web Appが1件登録され、Firebase MCPのProject Directoryも本リポジトリになる。
+6. [x] test・lint・build・Hostingエミュレータ・初回Hostingデプロイ・公開URL確認がそれぞれ記録される。
+
+残るゲートは`git push -u origin main`の1操作だけ。完了後にGitHubのbranch一覧とローカル追跡先を再確認する。
 
 このリポジトリはユーザー指定により`main`単一ブランチで運用する。通常のdevブランチ運用は採用せず、main上でも1タスク1コミットとpush前レビューを維持する。
 
@@ -152,7 +180,7 @@ Phase 1へ進む条件は次のすべてを満たすこと。
 
 #### Loop 0.5 — 新コミットをmainへ移す
 
- - **目的:** 既存mainのmerge履歴を残したまま、Loop 0.3・0.4の内容をmainへ移す。
+- **目的:** 既存mainのmerge履歴を残したまま、Loop 0.3・0.4の内容をmainへ移す。
 - **事前確認:** `dev`が`main`の祖先で、main側に4件のmerge履歴があることを確認済み。新規2コミットのhashを記録。
 - **最小実装:** `git switch main`後、記録した2コミットを古い順に`git cherry-pick`する。
 - **確認:** `git log --oneline --decorate -6`と対象ファイルの差分。
