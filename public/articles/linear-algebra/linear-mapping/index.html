@@ -3,9 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>線形写像</title>
     <meta name="article:github-url" content="https://github.com/Rikemen/math-by-making/tree/main/public/articles/linear-algebra/linear-mapping">
     <link rel="stylesheet" href="article.css">
+    <link rel="stylesheet" href="article-mobile.css">
     <!-- MathJax for rendering math equations beautifully -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -37,7 +39,7 @@
         <article>
             <header class="article-header">
                 <p class="article-kicker">線形代数</p>
-                <h1>線形写像 (Linear Mapping)</h1>
+                <h1>線形写像 <span class="article-title__english" lang="en">(Linear Mapping)</span></h1>
                 <p class="article-lead">定義を読み、行列による実装と動くグリッドで線形写像を確かめます。</p>
                 <section class="learning-goals" aria-labelledby="learning-goals-title">
                     <h2 id="learning-goals-title">この教材の学習目標</h2>
@@ -50,8 +52,8 @@
             </header>
 
             <div class="tab-nav" role="tablist" aria-label="教材の表示切り替え">
-                <button id="tab-theory-button" class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="tab-theory" tabindex="0">📚 座学 (Theory)</button>
-                <button id="tab-practice-button" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="tab-practice" tabindex="-1">💻 実装 (Practice)</button>
+                <button id="tab-theory-button" class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="tab-theory" tabindex="0"><span aria-hidden="true">📚</span> 座学 <span class="tab-btn__secondary" lang="en">Theory</span></button>
+                <button id="tab-practice-button" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="tab-practice" tabindex="-1"><span aria-hidden="true">💻</span> 実装 <span class="tab-btn__secondary" lang="en">Practice</span></button>
             </div>
 
     <!-- ==================== 座学タブ ==================== -->

@@ -106,6 +106,10 @@ h1 {
     line-height: 1.2;
 }
 
+.article-title__english {
+    white-space: nowrap;
+}
+
 .article-lead {
     margin: 0;
     color: var(--article-muted);
@@ -168,8 +172,14 @@ h3 {
     color: var(--article-ink);
 }
 
+p,
+li {
+    overflow-wrap: break-word;
+}
+
 .math-block {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     margin: 15px 0;
     padding: 15px;
     border-radius: 8px;
@@ -177,6 +187,12 @@ h3 {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     font-size: 1.1em;
     text-align: center;
+}
+
+mjx-container[display="true"] {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .math-block--theorem {
@@ -275,6 +291,14 @@ details > div {
     color: var(--article-blue-600);
 }
 
+.tab-btn__secondary::before {
+    content: "(";
+}
+
+.tab-btn__secondary::after {
+    content: ")";
+}
+
 .tab-content {
     display: none;
 }
@@ -298,6 +322,7 @@ details > div {
 
 pre {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     margin: 15px 0;
     padding: 15px;
     border-radius: 6px;
