@@ -7,7 +7,9 @@
     <title>線形写像</title>
     <meta name="article:github-url" content="https://github.com/Rikemen/math-by-making/tree/main/public/articles/linear-algebra/linear-mapping">
     <link rel="stylesheet" href="article.css">
+    <link rel="stylesheet" href="../../shared/article-header.css">
     <link rel="stylesheet" href="article-mobile.css">
+    <script type="module" src="../../shared/article-header.js"></script>
     <!-- MathJax for rendering math equations beautifully -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -22,10 +24,26 @@
 </head>
 
 <body>
-    <header class="site-header">
+    <header class="site-header" data-article-header>
         <div class="site-header__inner">
-            <a class="site-brand" href="/ja/">Math by Making</a>
-            <nav aria-label="パンくずリスト">
+            <div class="site-header__top">
+                <a class="site-brand" href="/ja/" aria-label="Math by Making ホーム">
+                    <span class="site-brand__mark" aria-hidden="true">M²</span>
+                    <span>Math by Making</span>
+                </a>
+                <nav class="site-header__nav" aria-label="主要ナビゲーション">
+                    <a class="site-header__link" href="/ja/">ホーム</a>
+                    <a class="site-header__link" href="/ja/#subjects">科目から学ぶ</a>
+                </nav>
+                <button class="site-header__update" type="button" data-pwa-update>
+                    <span aria-hidden="true">↻</span>
+                    <span data-pwa-update-label>更新</span>
+                </button>
+            </div>
+            <p class="site-header__status" data-pwa-update-status role="status" hidden>
+                更新できませんでした。通信を確認してください。
+            </p>
+            <nav class="site-header__breadcrumbs" aria-label="パンくずリスト">
                 <ol class="breadcrumbs">
                     <li><a href="/ja/">ホーム</a></li>
                     <li><a href="/ja/subjects/linear-algebra">線形代数</a></li>

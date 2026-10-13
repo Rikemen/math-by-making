@@ -42,43 +42,10 @@ button:focus-visible {
     outline-offset: 3px;
 }
 
-.site-header {
-    background: var(--article-surface);
-    border-bottom: 1px solid var(--article-border);
-}
-
-.site-header__inner,
 .article-container,
 .site-footer__inner {
     width: min(100% - 32px, 880px);
     margin-inline: auto;
-}
-
-.site-header__inner {
-    padding-block: 16px;
-}
-
-.site-brand {
-    color: var(--article-blue-700);
-    font-size: 1.1rem;
-    font-weight: 800;
-    text-decoration: none;
-}
-
-.breadcrumbs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 8px 0 0;
-    padding: 0;
-    color: var(--article-muted);
-    font-size: 0.9rem;
-    list-style: none;
-}
-
-.breadcrumbs li:not(:last-child)::after {
-    margin-left: 6px;
-    content: "/";
 }
 
 .article-container {

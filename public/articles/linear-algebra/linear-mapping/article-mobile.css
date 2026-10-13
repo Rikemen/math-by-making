@@ -1,21 +1,7 @@
 @media (max-width: 40rem) {
-    .site-header__inner,
     .article-container,
     .site-footer__inner {
         width: min(100% - 24px, 880px);
-    }
-
-    .site-header__inner {
-        padding-block: 12px;
-    }
-
-    .breadcrumbs {
-        gap: 4px;
-        font-size: 0.85rem;
-    }
-
-    .breadcrumbs li:not(:last-child)::after {
-        margin-left: 4px;
     }
 
     .article-container {

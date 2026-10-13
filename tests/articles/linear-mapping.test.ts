@@ -25,7 +25,15 @@ describe("linear mapping local assets", () => {
       .map((element) => element.getAttribute("src") ?? "")
       .filter(isLocalReference);
 
-    expect(localScripts).toEqual(["VectorSpaceElement.js", "Matrix.js", "canvas-size.js", "sketch.js", "tabs.js", "source-link.js"]);
+    expect(localScripts).toEqual([
+      "../../shared/article-header.js",
+      "VectorSpaceElement.js",
+      "Matrix.js",
+      "canvas-size.js",
+      "sketch.js",
+      "tabs.js",
+      "source-link.js",
+    ]);
   });
 });
 
@@ -40,6 +48,22 @@ describe("linear mapping article shell", () => {
     expect(breadcrumb?.textContent).toContain("線形代数");
     expect(document.querySelector("main article h1")?.textContent).toContain("線形写像");
     expect(backLink?.textContent).toContain("教材一覧へ戻る");
+  });
+
+  it("記事ヘッダーに主要メニューとPWA更新状態を示す", () => {
+    const document = parseArticle();
+    const primaryNavigation = document.querySelector<HTMLElement>('nav[aria-label="主要ナビゲーション"]');
+    const updateButton = document.querySelector<HTMLButtonElement>("[data-pwa-update]");
+    const updateStatus = document.querySelector<HTMLElement>("[data-pwa-update-status]");
+
+    expect(primaryNavigation?.querySelector<HTMLAnchorElement>('a[href="/ja/"]')?.textContent).toContain("ホーム");
+    expect(primaryNavigation?.querySelector<HTMLAnchorElement>('a[href="/ja/#subjects"]')?.textContent).toContain(
+      "科目から学ぶ",
+    );
+    expect(updateButton?.type).toBe("button");
+    expect(updateButton?.textContent).toContain("更新");
+    expect(updateStatus?.getAttribute("role")).toBe("status");
+    expect(updateStatus?.hasAttribute("hidden")).toBe(true);
   });
 
   it("記事の学習目標を3項目示す", () => {
