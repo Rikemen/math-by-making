@@ -5,11 +5,19 @@ import { describe, expect, it } from "vitest";
 import { requiredFiles, validateRequiredFiles } from "./articleAssetContract";
 
 const sampleDirectory = path.resolve(process.cwd(), "sample");
+const publishedDirectory = path.resolve(process.cwd(), "public/articles/linear-algebra/linear-mapping");
 
-const linearMappingAssets = requiredFiles("線形写像", sampleDirectory, ["index.html", "sketch.js", "Matrix.js", "VectorSpaceElement.js", "Polynomial.js"]);
+const linearMappingAssets = requiredFiles("線形写像", publishedDirectory, [
+  "README.md",
+  "index.html",
+  "sketch.js",
+  "Matrix.js",
+  "VectorSpaceElement.js",
+  "Polynomial.js",
+]);
 
 describe("article asset contract", () => {
-  it("線形写像の原本に必須ファイルが揃っている", () => {
+  it("線形写像の公開フォルダに必須ファイルが揃っている", () => {
     expect(validateRequiredFiles(linearMappingAssets)).toEqual([]);
   });
 
