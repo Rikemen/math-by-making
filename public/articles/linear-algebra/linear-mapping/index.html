@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>線形写像</title>
+    <meta name="article:github-url" content="https://github.com/Rikemen/math-by-making/tree/main/public/articles/linear-algebra/linear-mapping">
     <link rel="stylesheet" href="article.css">
     <!-- MathJax for rendering math equations beautifully -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -15,6 +16,7 @@
     <script src="canvas-size.js"></script>
     <script src="sketch.js"></script>
     <script src="tabs.js" defer></script>
+    <script src="source-link.js" defer></script>
 </head>
 
 <body>
@@ -187,6 +189,11 @@ let BA = Matrix.multiplyMatrices(B, A);
         </p>
         <div id="linear-mapping-canvas" class="canvas-container" aria-label="線形写像による基底変換の可視化"></div>
     </div> <!-- //tab-practice -->
+            <section class="source-card" aria-labelledby="source-card-title">
+                <h2 id="source-card-title">コードを手元で試す</h2>
+                <p>教材で使っているHTML・JavaScriptをGitHubで確認し、自分の環境へ取得できます。</p>
+                <a id="source-link" class="source-link" hidden>GitHubでコードを見る・取得する</a>
+            </section>
         </article>
     </main>
 

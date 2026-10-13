@@ -10,6 +10,7 @@ export const linearMappingArticle: ArticleMeta = {
   description: "線形写像の定義を読み、JavaScriptの実装と可視化で確かめます。",
   status: "published",
   href: `/articles/${linearAlgebraSubject.slug}/${linearMappingSlug}/`,
+  githubUrl: "https://github.com/Rikemen/math-by-making/tree/main/public/articles/linear-algebra/linear-mapping",
 };
 
 export const articles: readonly ArticleMeta[] = [linearMappingArticle];

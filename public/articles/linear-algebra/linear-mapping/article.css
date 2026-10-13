@@ -337,3 +337,33 @@ pre code {
     display: block;
     max-width: 100%;
 }
+
+.source-card {
+    margin-top: 48px;
+    padding: clamp(20px, 4vw, 32px);
+    border: 1px solid var(--article-border);
+    border-radius: var(--article-radius);
+    background: var(--article-surface);
+    box-shadow: var(--article-shadow);
+}
+
+.source-card h2 {
+    margin-top: 0;
+}
+
+.source-link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: var(--article-blue-700);
+    color: #ffffff;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.source-link:hover {
+    background: var(--article-blue-600);
+}

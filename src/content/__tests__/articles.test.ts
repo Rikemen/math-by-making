@@ -100,6 +100,7 @@ describe("content catalog", () => {
         title: "線形写像",
         status: "published",
         href: linearMappingHref,
+        githubUrl: "https://github.com/Rikemen/math-by-making/tree/main/public/articles/linear-algebra/linear-mapping",
       }),
     );
   });

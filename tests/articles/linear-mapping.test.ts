@@ -25,7 +25,7 @@ describe("linear mapping local assets", () => {
       .map((element) => element.getAttribute("src") ?? "")
       .filter(isLocalReference);
 
-    expect(localScripts).toEqual(["VectorSpaceElement.js", "Matrix.js", "canvas-size.js", "sketch.js", "tabs.js"]);
+    expect(localScripts).toEqual(["VectorSpaceElement.js", "Matrix.js", "canvas-size.js", "sketch.js", "tabs.js", "source-link.js"]);
   });
 });
 
