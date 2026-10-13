@@ -7,6 +7,7 @@ import router from "./router";
 
 import i18nConf from "./i18n/index";
 import { i18nUtils } from "./i18n/utils";
+import { registerPwa } from "./pwa/appUpdate";
 
 const i18n = createI18n(i18nConf);
 const app = createApp(App);
@@ -18,3 +19,9 @@ app.use(i18nUtils);
 app.use(head);
 
 app.mount("#app");
+
+if (import.meta.env.PROD) {
+  registerPwa().catch(() => {
+    document.documentElement.dataset.pwaStatus = "registration-failed";
+  });
+}

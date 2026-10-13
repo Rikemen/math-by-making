@@ -9,23 +9,56 @@
       <nav class="app-header__nav" :aria-label="$t('header.primaryNavigation')">
         <router-link class="app-header__link" :to="localizedUrl('/')">{{ $t("header.home") }}</router-link>
         <router-link class="app-header__link" :to="localizedUrl('/#subjects')">{{ $t("header.subjects") }}</router-link>
+        <button class="app-header__update" type="button" :disabled="isUpdating" @click="handleUpdate">
+          <span aria-hidden="true">↻</span>
+          <span>{{ isUpdating ? $t("header.updating") : $t("header.update") }}</span>
+        </button>
       </nav>
+      <p v-if="updateFailed" class="app-header__status" role="status">
+        {{ $t("header.updateError") }}
+      </p>
     </div>
   </header>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 
+import { refreshPwaContent } from "@/pwa/appUpdate";
 import { useLang } from "@/utils/utils";
 
 export default defineComponent({
   name: "AppHeader",
   setup() {
     const { localizedUrl } = useLang();
+    const isUpdating = ref(false);
+    const updateFailed = ref(false);
+    const setUpdating = (value: boolean): void => {
+      isUpdating.value = value;
+    };
+
+    const handleUpdate = async (): Promise<void> => {
+      if (isUpdating.value) {
+        return;
+      }
+
+      setUpdating(true);
+      updateFailed.value = false;
+
+      try {
+        await refreshPwaContent();
+      } catch {
+        updateFailed.value = true;
+      } finally {
+        setUpdating(false);
+      }
+    };
 
     return {
+      handleUpdate,
+      isUpdating,
       localizedUrl,
+      updateFailed,
     };
   },
 });
@@ -81,17 +114,43 @@ export default defineComponent({
   gap: var(--space-2);
 }
 
-.app-header__link {
+.app-header__link,
+.app-header__update {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
   border-radius: var(--radius-md);
   color: var(--color-brand-900);
+  font: inherit;
   font-weight: 700;
   padding: var(--space-2) var(--space-4);
   text-decoration: none;
 }
 
-.app-header__link:hover {
+.app-header__update {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.app-header__link:hover,
+.app-header__update:hover:not(:disabled) {
   background: var(--color-brand-50);
   color: var(--color-brand-700);
+}
+
+.app-header__update:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.app-header__status {
+  margin: 0;
+  color: #b42318;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
 }
 
 @media (max-width: 40rem) {
@@ -106,9 +165,14 @@ export default defineComponent({
     width: 100%;
   }
 
-  .app-header__link {
+  .app-header__link,
+  .app-header__update {
     flex: 1;
     text-align: center;
+  }
+
+  .app-header__status {
+    width: 100%;
   }
 }
 </style>

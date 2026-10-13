@@ -238,6 +238,15 @@ Phase 3完了。次はPhase 4で線形写像のサンプル教材を公開配置
 - Hostingのみを配信し、Functions・Firestore・Rulesは対象外。未配信の `hono_server`、`express_server`、`express_server_v2` を参照する既存rewriteについて警告が出たが、Hostingの公開は成功。
 - GitHub教材リンクは `main` の未pushコミットを参照するため、push完了までは到達未確認。実機スマートフォンのタッチ操作と音声読み上げも未確認。
 
+### PWA手動更新機能 実行記録（2026-10-13 17:19 JST）
+
+- Web App ManifestとルートスコープのService Workerを追加し、同一オリジンの最新レスポンスを優先してアプリ用キャッシュへ保存する構成に変更。
+- ヘッダーメニューへ「更新」ボタンを追加。オンライン確認と現在ページの再取得に成功してから、`math-by-making-` で始まるキャッシュだけを削除して再読込する。
+- 更新中はボタンを無効化し、オフラインまたは再取得失敗時は既存キャッシュを残して通信確認メッセージを表示する。
+- `npm test`（17ファイル、63テスト）、`npm run lint`、`npm run build`、`node --check public/sw.js` が成功。
+- ローカル本番buildで更新ボタンによる再読込とManifest参照を確認。390px相当の表示で更新ボタンが約44pxの高さを持ち、横スクロールがないことを確認。
+- Firebase Hostingへのデプロイと、インストール済みPWAでの記事追加後の更新確認は未実施。
+
 Phase 4完了。次はPhase 5で学習目標チェック、4択問題、回答フィードバック、端末内進捗保存を追加する。
 
 ## 詳細ループ

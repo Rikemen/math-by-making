@@ -9,6 +9,9 @@ const lang = {
     homeLabel: "Math by Making home",
     primaryNavigation: "Primary navigation",
     subjects: "Browse subjects",
+    update: "Refresh",
+    updating: "Refreshing…",
+    updateError: "Could not refresh. Check your connection and try again.",
   },
   home: {
     eyebrow: "Understand university mathematics by making",

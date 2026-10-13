@@ -1,0 +1,19 @@
+{
+  "name": "Math by Making",
+  "short_name": "Math by Making",
+  "description": "理論を読み、コードを書き、動かして確かめる数学学習アプリ",
+  "lang": "ja",
+  "start_url": "/ja/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f6fbff",
+  "theme_color": "#155b8f",
+  "icons": [
+    {
+      "src": "/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

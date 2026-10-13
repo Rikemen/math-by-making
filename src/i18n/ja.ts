@@ -9,6 +9,9 @@ const lang = {
     homeLabel: "Math by Making ホーム",
     primaryNavigation: "主要ナビゲーション",
     subjects: "科目から学ぶ",
+    update: "更新",
+    updating: "更新中…",
+    updateError: "更新できませんでした。通信を確認してください。",
   },
   home: {
     eyebrow: "大学数学を、手を動かして理解する",
