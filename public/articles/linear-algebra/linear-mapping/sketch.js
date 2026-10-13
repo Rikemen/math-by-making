@@ -5,9 +5,16 @@ let targetBasisMatrix;
 let currentT = 0;
 let isAnimating = true;
 
+function getResponsiveCanvasSize() {
+    const container = document.getElementById('linear-mapping-canvas');
+    return MathByMakingCanvas.calculateCanvasSize(container ? container.clientWidth : 0, window.innerWidth);
+}
+
 function setup() {
-    let canvas = createCanvas(600, 600);
-    canvas.parent('tab-practice');
+    const canvasSize = getResponsiveCanvasSize();
+    const canvas = createCanvas(canvasSize, canvasSize);
+    canvas.parent('linear-mapping-canvas');
+    canvas.attribute('aria-label', '基底ベクトルが変化する線形写像のアニメーション');
 
     // 任意のベクトル x を [3, 3]^T とする
     fixedVector = new Matrix(2, 1);
@@ -62,7 +69,7 @@ function draw() {
     drawGrid(v1x, v1y, v2x, v2y);
 
     // 固定ベクトル x の描画
-    let scaleFactor = 40; // 1メモリのピクセル数
+    let scaleFactor = width / 15; // 600px時に1目盛り40px
     stroke(231, 76, 60); // 赤色
     strokeWeight(4);
     drawArrow(0, 0, fixedVector.data[0][0] * scaleFactor, fixedVector.data[1][0] * scaleFactor);
@@ -81,7 +88,7 @@ function draw() {
 }
 
 function drawGrid(v1x, v1y, v2x, v2y) {
-    let scaleFactor = 40;
+    let scaleFactor = width / 15;
     stroke(220);
     strokeWeight(1);
 
@@ -126,7 +133,7 @@ function drawInfo(v1x, v1y, v2x, v2y) {
 
     fill(255, 240);
     noStroke();
-    rect(10, 10, 220, 110, 8);
+    rect(10, 10, Math.min(220, width - 20), 110, 8);
 
     fill(50);
     textSize(14);
@@ -147,8 +154,24 @@ function drawInfo(v1x, v1y, v2x, v2y) {
     text(`基底 v2: ( ${v2x.toFixed(2)}, ${v2y.toFixed(2)} )`, 20, 105);
 }
 
-function mousePressed() {
-    if (mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) {
+function toggleAnimationAt(pointerX, pointerY) {
+    if (pointerX >= 0 && pointerX <= width && pointerY >= 0 && pointerY <= height) {
         isAnimating = !isAnimating;
+        return false;
     }
+
+    return true;
+}
+
+function mousePressed() {
+    return toggleAnimationAt(mouseX, mouseY);
+}
+
+function touchStarted() {
+    return toggleAnimationAt(mouseX, mouseY);
+}
+
+function windowResized() {
+    const canvasSize = getResponsiveCanvasSize();
+    resizeCanvas(canvasSize, canvasSize);
 }

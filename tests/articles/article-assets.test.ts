@@ -10,6 +10,7 @@ const publishedDirectory = path.resolve(process.cwd(), "public/articles/linear-a
 const linearMappingAssets = requiredFiles("線形写像", publishedDirectory, [
   "README.md",
   "article.css",
+  "canvas-size.js",
   "index.html",
   "sketch.js",
   "Matrix.js",

@@ -12,6 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
     <script src="VectorSpaceElement.js"></script>
     <script src="Matrix.js"></script>
+    <script src="canvas-size.js"></script>
     <script src="sketch.js"></script>
     <script src="tabs.js" defer></script>
 </head>
@@ -184,7 +185,7 @@ let BA = Matrix.multiplyMatrices(B, A);
         <p class="highlight">
             💡 <strong>画面をクリック</strong>すると、アニメーションの再生 / 停止を切り替えることができます。
         </p>
-        <!-- sketch.js のキャンバスが親要素としてここに追加されます -->
+        <div id="linear-mapping-canvas" class="canvas-container" aria-label="線形写像による基底変換の可視化"></div>
     </div> <!-- //tab-practice -->
         </article>
     </main>
