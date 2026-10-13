@@ -245,7 +245,17 @@ Phase 3完了。次はPhase 4で線形写像のサンプル教材を公開配置
 - 更新中はボタンを無効化し、オフラインまたは再取得失敗時は既存キャッシュを残して通信確認メッセージを表示する。
 - `npm test`（17ファイル、63テスト）、`npm run lint`、`npm run build`、`node --check public/sw.js` が成功。
 - ローカル本番buildで更新ボタンによる再読込とManifest参照を確認。390px相当の表示で更新ボタンが約44pxの高さを持ち、横スクロールがないことを確認。
-- Firebase Hostingへのデプロイと、インストール済みPWAでの記事追加後の更新確認は未実施。
+- Firebase Hostingへのデプロイと本番Web画面での手動更新確認は完了。インストール済みPWAで、将来の記事追加前後をまたぐ更新確認は未実施。
+
+### PWA手動更新機能 Hosting配信記録（2026-10-13 20:12 JST）
+
+- 配信前に `npm test`（17ファイル、63テスト）、`npm run lint`、`npm run build`、`node --check public/sw.js` がすべて成功。
+- `npx -y firebase-tools@latest deploy --only hosting:app --project math-by-making` を実行し、`dist` の26ファイル（新規アップロード6ファイル）を `https://math-by-making.web.app` へ公開。
+- 本番が新しい `index-BaJlO5tb.js` を読み込み、Web App Manifestとヘッダーの「更新」ボタンを表示することを確認。
+- 本番の更新ボタンから同じURLへ再読込し、完了後にボタンが通常状態へ戻り、通信エラーが表示されないことを確認。
+- 本番の `/manifest.webmanifest` でルートスコープとstandalone表示を確認し、`/sw.js` でアプリ用キャッシュ、`SKIP_WAITING`、ネットワーク取得処理を確認。
+- Hostingのみを配信し、Functions・Firestore・Rulesは対象外。既存の3つのFunctions rewrite警告は出たが、Hostingのリリースは成功。
+- 本番タブへの画面幅上書きは反映されなかったため、本番モバイル幅は未確認。ローカル本番buildの390px確認のみ完了し、実機にインストールしたPWAでの記事追加後更新は未確認のまま。
 
 Phase 4完了。次はPhase 5で学習目標チェック、4択問題、回答フィードバック、端末内進捗保存を追加する。
 
