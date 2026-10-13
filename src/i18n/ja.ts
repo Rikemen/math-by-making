@@ -18,7 +18,7 @@ const lang = {
     cta: "線形代数から始める",
     guideImageAlt: "数学の実験を案内するキャラクター、フェル",
     subjectsTitle: "科目から学ぶ",
-    linearAlgebra: "線形代数",
+    subjectsDescription: "現在学べる科目と、これから追加する科目を紹介します。",
   },
   languages,
 };

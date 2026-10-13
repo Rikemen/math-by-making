@@ -18,7 +18,7 @@ const lang = {
     cta: "Start with linear algebra",
     guideImageAlt: "Feru, the guide to mathematical experiments",
     subjectsTitle: "Learn by subject",
-    linearAlgebra: "Linear algebra",
+    subjectsDescription: "Explore the subjects available now and those planned for later.",
   },
   languages,
 };
