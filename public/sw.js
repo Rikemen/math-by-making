@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "math-by-making-";
-const RUNTIME_CACHE = `${CACHE_PREFIX}runtime-v1`;
+const RUNTIME_CACHE = `${CACHE_PREFIX}runtime-v2`;
 const APP_SHELL = ["/", "/ja/", "/favicon.ico", "/manifest.webmanifest", "/app-icon.svg"];
 
 self.addEventListener("install", (event) => {
@@ -36,7 +36,7 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-    fetch(request)
+    fetch(request, { cache: "no-store" })
       .then((response) => {
         if (response.ok && response.type === "basic") {
           const cachedResponse = response.clone();

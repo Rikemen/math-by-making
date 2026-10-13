@@ -38,6 +38,7 @@ describe("PWA assets", () => {
 
     expect(serviceWorker).toContain('const CACHE_PREFIX = "math-by-making-"');
     expect(serviceWorker).toContain('event.data?.type === "SKIP_WAITING"');
-    expect(serviceWorker).toContain("fetch(request)");
+    expect(serviceWorker).toContain('const RUNTIME_CACHE = `${CACHE_PREFIX}runtime-v2`');
+    expect(serviceWorker).toContain('fetch(request, { cache: "no-store" })');
   });
 });

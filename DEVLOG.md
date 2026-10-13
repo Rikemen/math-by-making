@@ -268,6 +268,17 @@ Phase 3完了。次はPhase 4で線形写像のサンプル教材を公開配置
 - ローカル本番buildを320px、390px、768px、1280px相当で確認し、全幅でページ全体の横スクロールなし。実装タブではコードだけ内部横スクロールし、キャンバスが記事幅内に収まることを確認。
 - Firebase Hostingへのデプロイと実機スマートフォンでの確認は未実施。
 
+### 線形写像記事 スマホUI Hosting配信記録（2026-10-13 20:27 JST）
+
+- 配信前とService Worker修正後に `npm test`（18ファイル、66テスト）、`npm run lint`、`npm run build` がすべて成功。
+- `npx -y firebase-tools@latest deploy --only hosting:app --project math-by-making` を実行し、`dist` の27ファイルを `https://math-by-making.web.app` へ公開。記事UIの初回配信では3ファイル、Service Workerの再配信では1ファイルを新規アップロード。
+- 本番記事を320×568と390×844で確認し、ページ全体の横スクロールがないこと、英語題名が副題表示になること、座学・実装タブが操作できることを確認。
+- 320pxの実装タブではコードだけが内部横スクロール（296px表示領域に対して346px）し、キャンバスは296pxの親要素内へ288pxで収まることを確認。390pxでもキャンバスが記事幅内に収まることを確認。
+- 既存PWAキャッシュでは更新ボタン実行後も記事の通常URLにブラウザHTTPキャッシュが残る問題を本番確認で検出。Service Workerを `runtime-v2` へ更新し、同一オリジンのネットワーク取得を `cache: "no-store"` にして、公開記事を優先取得するよう修正。
+- 本番の通常記事URLでviewport、`article-mobile.css`、英語題名の新構造を取得でき、本番 `/sw.js` で `runtime-v2` とHTTPキャッシュ非使用の取得処理を確認。
+- Hostingのみを配信し、Functions・Firestore・Rulesは対象外。既存の3つのFunctions rewrite警告は出たが、Hostingのリリースは成功。
+- 実機にインストール済みのPWAを更新前後でまたいだ確認、実機タッチ操作、音声読み上げは未確認。
+
 Phase 4完了。次はPhase 5で学習目標チェック、4択問題、回答フィードバック、端末内進捗保存を追加する。
 
 ## 詳細ループ
