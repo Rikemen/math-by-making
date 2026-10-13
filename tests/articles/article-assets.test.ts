@@ -13,6 +13,7 @@ const linearMappingAssets = requiredFiles("線形写像", publishedDirectory, [
   "index.html",
   "sketch.js",
   "Matrix.js",
+  "tabs.js",
   "VectorSpaceElement.js",
 ]);
 

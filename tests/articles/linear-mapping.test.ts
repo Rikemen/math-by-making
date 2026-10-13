@@ -3,10 +3,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-export const articleDirectory = path.resolve(process.cwd(), "public/articles/linear-algebra/linear-mapping");
-export const articleHtml = fs.readFileSync(path.resolve(articleDirectory, "index.html"), "utf8");
-
-export const parseArticle = (): Document => new DOMParser().parseFromString(articleHtml, "text/html");
+import { articleDirectory, parseArticle } from "./linearMappingFixture";
 
 const isLocalReference = (reference: string): boolean =>
   !reference.startsWith("http://") && !reference.startsWith("https://") && !reference.startsWith("//");
@@ -28,7 +25,7 @@ describe("linear mapping local assets", () => {
       .map((element) => element.getAttribute("src") ?? "")
       .filter(isLocalReference);
 
-    expect(localScripts).toEqual(["VectorSpaceElement.js", "Matrix.js", "sketch.js"]);
+    expect(localScripts).toEqual(["VectorSpaceElement.js", "Matrix.js", "sketch.js", "tabs.js"]);
   });
 });
 

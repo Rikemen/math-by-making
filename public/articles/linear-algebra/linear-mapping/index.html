@@ -13,6 +13,7 @@
     <script src="VectorSpaceElement.js"></script>
     <script src="Matrix.js"></script>
     <script src="sketch.js"></script>
+    <script src="tabs.js" defer></script>
 </head>
 
 <body>
@@ -45,13 +46,13 @@
                 </section>
             </header>
 
-            <div class="tab-nav">
-                <button class="tab-btn active" onclick="switchTab('theory')">📚 座学 (Theory)</button>
-                <button class="tab-btn" onclick="switchTab('practice')">💻 実装 (Practice)</button>
+            <div class="tab-nav" role="tablist" aria-label="教材の表示切り替え">
+                <button id="tab-theory-button" class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="tab-theory" tabindex="0">📚 座学 (Theory)</button>
+                <button id="tab-practice-button" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="tab-practice" tabindex="-1">💻 実装 (Practice)</button>
             </div>
 
     <!-- ==================== 座学タブ ==================== -->
-    <div id="tab-theory" class="tab-content active">
+    <div id="tab-theory" class="tab-content active" role="tabpanel" aria-labelledby="tab-theory-button">
 
         <h2>1. 写像とは何か？</h2>
         <p>
@@ -132,7 +133,7 @@
     </div> <!-- //tab-theory -->
 
     <!-- ==================== 実装タブ ==================== -->
-    <div id="tab-practice" class="tab-content">
+    <div id="tab-practice" class="tab-content" role="tabpanel" aria-labelledby="tab-practice-button" hidden>
         <h2>1. 線形写像の実装</h2>
         <p>
             理論編で学んだ「線形写像」を、プログラム上の <code>Matrix</code> クラスでどのように実現するかを解説します。
@@ -195,20 +196,6 @@ let BA = Matrix.multiplyMatrices(B, A);
         </div>
     </footer>
 
-    <script>
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-            if (tabId === 'theory') {
-                document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('tab-theory').classList.add('active');
-            } else {
-                document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('tab-practice').classList.add('active');
-            }
-        }
-    </script>
 </body>
 
 </html>
