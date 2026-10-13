@@ -15,6 +15,8 @@ const loadCanvasSizeApi = (): CanvasSizeApi => {
   return initialize({}) as CanvasSizeApi;
 };
 
+const sketchSource = fs.readFileSync(path.resolve(articleDirectory, "sketch.js"), "utf8");
+
 describe("linear mapping canvas", () => {
   it("表示領域に収まる正方形サイズを返す", () => {
     const { calculateCanvasSize } = loadCanvasSizeApi();
@@ -34,5 +36,11 @@ describe("linear mapping canvas", () => {
     expect(container?.getAttribute("aria-label")).toContain("線形写像");
     expect(status?.getAttribute("aria-live")).toBe("polite");
     expect(status?.textContent).toContain("再生中");
+  });
+
+  it("Canvas要素のクリックだけでアニメーションを切り替える", () => {
+    expect(sketchSource).toContain("canvas.elt.addEventListener('click', toggleAnimation)");
+    expect(sketchSource).not.toMatch(/function touchStarted\s*\(/);
+    expect(sketchSource).not.toMatch(/function mousePressed\s*\(/);
   });
 });

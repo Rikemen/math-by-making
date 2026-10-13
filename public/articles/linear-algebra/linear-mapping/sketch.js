@@ -23,6 +23,7 @@ function setup() {
     const canvas = createCanvas(canvasSize, canvasSize);
     canvas.parent('linear-mapping-canvas');
     canvas.attribute('aria-label', '基底ベクトルが変化する線形写像のアニメーション');
+    canvas.elt.addEventListener('click', toggleAnimation);
     updateAnimationStatus();
 
     // 任意のベクトル x を [3, 3]^T とする
@@ -163,22 +164,9 @@ function drawInfo(v1x, v1y, v2x, v2y) {
     text(`基底 v2: ( ${v2x.toFixed(2)}, ${v2y.toFixed(2)} )`, 20, 105);
 }
 
-function toggleAnimationAt(pointerX, pointerY) {
-    if (pointerX >= 0 && pointerX <= width && pointerY >= 0 && pointerY <= height) {
-        isAnimating = !isAnimating;
-        updateAnimationStatus();
-        return false;
-    }
-
-    return true;
-}
-
-function mousePressed() {
-    return toggleAnimationAt(mouseX, mouseY);
-}
-
-function touchStarted() {
-    return toggleAnimationAt(mouseX, mouseY);
+function toggleAnimation() {
+    isAnimating = !isAnimating;
+    updateAnimationStatus();
 }
 
 function windowResized() {
