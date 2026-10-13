@@ -1,4 +1,4 @@
-import { mount } from "@vue/test-utils";
+import { mount, RouterLinkStub } from "@vue/test-utils";
 import { createI18n } from "vue-i18n";
 import { describe, expect, it } from "vitest";
 
@@ -16,6 +16,9 @@ const mountHome = () =>
           messages: { ja },
         }),
       ],
+      stubs: {
+        RouterLink: RouterLinkStub,
+      },
     },
   });
 
@@ -26,6 +29,14 @@ describe("Home", () => {
     expect(wrapper.get("h1").text()).toContain("Math by Making");
     expect(wrapper.text()).toContain("創って学ぶ");
     expect(wrapper.text()).toContain("線形代数");
+  });
+
+  it("線形代数の学習を始めるCTAを表示する", () => {
+    const wrapper = mountHome();
+    const cta = wrapper.getComponent(RouterLinkStub);
+
+    expect(cta.text()).toContain("線形代数から始める");
+    expect(cta.props("to")).toBe("/ja/subjects/linear-algebra");
   });
 
   it("スターターキット固有の表示を残さない", () => {

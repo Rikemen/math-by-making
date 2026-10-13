@@ -15,6 +15,7 @@ const lang = {
     title: "Math by Making",
     tagline: "創って学ぶ数学",
     description: "理論を読み、コードを書き、動かして確かめる学習サイトです。",
+    cta: "線形代数から始める",
     subjectsTitle: "科目から学ぶ",
     linearAlgebra: "線形代数",
   },
