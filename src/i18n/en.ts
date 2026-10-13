@@ -1,6 +1,15 @@
 import languages from "./languages";
 
 const lang = {
+  site: {
+    name: "Math by Making",
+  },
+  header: {
+    home: "Home",
+    homeLabel: "Math by Making home",
+    primaryNavigation: "Primary navigation",
+    subjects: "Browse subjects",
+  },
   message: {
     hello: "hello world",
   },

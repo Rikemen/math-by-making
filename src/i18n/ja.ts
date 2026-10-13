@@ -1,6 +1,15 @@
 import languages from "./languages";
 
 const lang = {
+  site: {
+    name: "Math by Making",
+  },
+  header: {
+    home: "ホーム",
+    homeLabel: "Math by Making ホーム",
+    primaryNavigation: "主要ナビゲーション",
+    subjects: "科目から学ぶ",
+  },
   message: {
     hello: "こんにちは、世界",
   },

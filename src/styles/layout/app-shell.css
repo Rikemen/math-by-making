@@ -14,6 +14,26 @@
   text-rendering: optimizeLegibility;
 }
 
+.layout {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.layout__main {
+  width: 100%;
+  flex: 1;
+}
+
+.layout__footer {
+  display: flex;
+  max-width: var(--content-max-width);
+  justify-content: flex-end;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-6);
+  width: 100%;
+}
+
 a {
   color: inherit;
 }
