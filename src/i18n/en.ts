@@ -10,9 +10,6 @@ const lang = {
     primaryNavigation: "Primary navigation",
     subjects: "Browse subjects",
   },
-  message: {
-    hello: "hello world",
-  },
   home: {
     eyebrow: "Understand university mathematics by making",
     title: "Math by Making",

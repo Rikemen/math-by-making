@@ -10,9 +10,6 @@ const lang = {
     primaryNavigation: "主要ナビゲーション",
     subjects: "科目から学ぶ",
   },
-  message: {
-    hello: "こんにちは、世界",
-  },
   home: {
     eyebrow: "大学数学を、手を動かして理解する",
     title: "Math by Making",

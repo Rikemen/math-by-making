@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import ja from "@/i18n/ja";
 import Home from "@/views/Home.vue";
+import appShellHtml from "../../../index.html?raw";
 
 const mountHome = () =>
   mount(Home, {
@@ -33,5 +34,10 @@ describe("Home", () => {
     expect(wrapper.text()).not.toContain("hello world");
     expect(wrapper.find('img[alt="Firebase logo"]').exists()).toBe(false);
     expect(wrapper.find('img[alt="Vue logo"]').exists()).toBe(false);
+  });
+
+  it("ブラウザタブにサイト名を表示する", () => {
+    expect(appShellHtml).toContain("<title>Math by Making</title>");
+    expect(appShellHtml).not.toContain("firebase-vue3-startup-kit");
   });
 });
