@@ -4,196 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>線形写像</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            padding: 20px;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: auto;
-            background-color: #f0f8ff;
-            color: #333;
-        }
-
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-        }
-
-        h2 {
-            color: #34495e;
-            border-bottom: 2px solid #bdc3c7;
-            padding-bottom: 5px;
-            margin-top: 40px;
-        }
-
-        h3 {
-            color: #2c3e50;
-            margin-top: 30px;
-        }
-
-        .math-block {
-            background-color: #ffffff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            overflow-x: auto;
-            margin: 15px 0;
-            text-align: center;
-            font-size: 1.1em;
-        }
-
-        .instruction {
-            background-color: #fff3cd;
-            border-left: 4px solid #ffecb5;
-            padding: 15px;
-            margin-bottom: 20px;
-            color: #856404;
-            border-radius: 4px;
-        }
-
-        .column {
-            background-color: #e9ecef;
-            border: 1px solid #ced4da;
-            border-left: 5px solid #2c3e50;
-            padding: 25px;
-            border-radius: 8px;
-            margin-top: 30px;
-        }
-
-        .column h4 {
-            color: #2c3e50;
-            margin-top: 0;
-            font-size: 1.1em;
-        }
-
-        footer {
-            margin-top: 50px;
-            font-size: 0.9em;
-            color: #777;
-            text-align: center;
-        }
-
-        ul.axioms {
-            text-align: left;
-            margin: 0 auto;
-            padding-left: 20px;
-            max-width: 600px;
-        }
-
-        ul.axioms li {
-            margin-bottom: 8px;
-        }
-
-        details {
-            background-color: #fff;
-            padding: 12px 15px;
-            border-radius: 6px;
-            border: 1px solid #ced4da;
-            margin-bottom: 10px;
-        }
-
-        summary {
-            font-weight: bold;
-            color: #2c3e50;
-            cursor: pointer;
-            outline: none;
-            list-style-position: inside;
-        }
-
-        summary:hover {
-            color: #3498db;
-        }
-
-        details>div {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px dashed #ccc;
-            font-size: 0.95em;
-            line-height: 1.8;
-            color: #555;
-        }
-
-        /* タブメニュー用CSS */
-        .tab-nav {
-            display: flex;
-            border-bottom: 2px solid #ced4da;
-            margin-bottom: 30px;
-            margin-top: 20px;
-            gap: 10px;
-        }
-
-        .tab-btn {
-            background: transparent;
-            border: none;
-            font-size: 16px;
-            font-weight: bold;
-            color: #6c757d;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
-        }
-
-        .tab-btn:hover {
-            color: #2c3e50;
-            background-color: rgba(0, 0, 0, 0.03);
-            border-radius: 4px 4px 0 0;
-        }
-
-        .tab-btn.active {
-            color: #0284c7;
-            border-bottom: 3px solid #0284c7;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        pre {
-            background-color: #2d2d2d;
-            color: #ccc;
-            padding: 15px;
-            border-radius: 6px;
-            overflow-x: auto;
-            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-            font-size: 0.9em;
-            line-height: 1.5;
-            margin: 15px 0;
-        }
-
-        code {
-            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-            background-color: #f1f3f5;
-            color: #d63384;
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-size: 0.95em;
-        }
-
-        pre code {
-            background-color: transparent;
-            color: inherit;
-            padding: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="article.css">
     <!-- MathJax for rendering math equations beautifully -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -205,12 +16,39 @@
 </head>
 
 <body>
-    <h1>線形写像 (Linear Mapping)</h1>
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a class="site-brand" href="/ja/">Math by Making</a>
+            <nav aria-label="パンくずリスト">
+                <ol class="breadcrumbs">
+                    <li><a href="/ja/">ホーム</a></li>
+                    <li><a href="/ja/subjects/linear-algebra">線形代数</a></li>
+                    <li aria-current="page">線形写像</li>
+                </ol>
+            </nav>
+        </div>
+    </header>
 
-    <div class="tab-nav">
-        <button class="tab-btn active" onclick="switchTab('theory')">📚 座学 (Theory)</button>
-        <button class="tab-btn" onclick="switchTab('practice')">💻 実装 (Practice)</button>
-    </div>
+    <main class="article-container">
+        <article>
+            <header class="article-header">
+                <p class="article-kicker">線形代数</p>
+                <h1>線形写像 (Linear Mapping)</h1>
+                <p class="article-lead">定義を読み、行列による実装と動くグリッドで線形写像を確かめます。</p>
+                <section class="learning-goals" aria-labelledby="learning-goals-title">
+                    <h2 id="learning-goals-title">この教材の学習目標</h2>
+                    <ul>
+                        <li>線形写像が保つ加法とスカラー倍を説明できる。</li>
+                        <li>線形写像を行列の積として実装できる。</li>
+                        <li>像・核・次元定理を可視化と結び付けて理解できる。</li>
+                    </ul>
+                </section>
+            </header>
+
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab('theory')">📚 座学 (Theory)</button>
+                <button class="tab-btn" onclick="switchTab('practice')">💻 実装 (Practice)</button>
+            </div>
 
     <!-- ==================== 座学タブ ==================== -->
     <div id="tab-theory" class="tab-content active">
@@ -285,7 +123,7 @@
         <p>
             線形写像において、入力空間の次元と、像の次元、核の次元の間には、非常に美しく強力な関係が成り立ちます。
         </p>
-        <div class="math-block" style="border: 2px solid #3498db;">
+        <div class="math-block math-block--theorem">
             \[ \dim(V) = \dim(\text{Im} f) + \dim(\text{Ker} f) \]
         </div>
         <p>
@@ -342,15 +180,19 @@ let BA = Matrix.multiplyMatrices(B, A);
             <code>sketch.js</code> では、標準基底で張られた元のグリッド空間が、線形写像（行列）によってどのように変形されるかをアニメーションで描画します。<br>
             マス目がどのように歪むか、あるいはペチャンコに潰れてしまう（次元が落ちる）様子を観察し、線形写像の幾何学的な意味を直感的に理解しましょう。
         </p>
-        <p class="highlight" style="padding:10px; background:#fff3cd; border-left:4px solid #ffc107; margin-bottom: 20px;">
+        <p class="highlight">
             💡 <strong>画面をクリック</strong>すると、アニメーションの再生 / 停止を切り替えることができます。
         </p>
         <!-- sketch.js のキャンバスが親要素としてここに追加されます -->
     </div> <!-- //tab-practice -->
+        </article>
+    </main>
 
-    <footer>
-        <hr style="border: 0; border-top: 1px solid #ccc; margin-bottom: 10px;">
-        <p>&copy; 理系の子. All rights reserved.</p>
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <a class="back-link" href="/ja/subjects/linear-algebra">← 線形代数の教材一覧へ戻る</a>
+            <p class="copyright">&copy; 理系の子. All rights reserved.</p>
+        </div>
     </footer>
 
     <script>

@@ -1,0 +1,322 @@
+/* Article shell */
+:root {
+    color-scheme: light;
+    --article-blue-50: #eff8ff;
+    --article-blue-100: #dbeeff;
+    --article-blue-600: #0369a1;
+    --article-blue-700: #075985;
+    --article-ink: #18324a;
+    --article-muted: #52677a;
+    --article-border: #c7dcea;
+    --article-surface: #ffffff;
+    --article-warning: #fff8db;
+    --article-code: #202938;
+    --article-radius: 12px;
+    --article-shadow: 0 12px 32px rgba(15, 75, 120, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: var(--article-blue-50);
+    color: var(--article-ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.75;
+}
+
+a {
+    color: var(--article-blue-700);
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid #f59e0b;
+    outline-offset: 3px;
+}
+
+.site-header {
+    background: var(--article-surface);
+    border-bottom: 1px solid var(--article-border);
+}
+
+.site-header__inner,
+.article-container,
+.site-footer__inner {
+    width: min(100% - 32px, 880px);
+    margin-inline: auto;
+}
+
+.site-header__inner {
+    padding-block: 16px;
+}
+
+.site-brand {
+    color: var(--article-blue-700);
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0 0;
+    padding: 0;
+    color: var(--article-muted);
+    font-size: 0.9rem;
+    list-style: none;
+}
+
+.breadcrumbs li:not(:last-child)::after {
+    margin-left: 6px;
+    content: "/";
+}
+
+.article-container {
+    padding-block: 40px 64px;
+}
+
+.article-header {
+    padding: clamp(24px, 5vw, 48px);
+    border: 1px solid var(--article-border);
+    border-radius: var(--article-radius);
+    background: var(--article-surface);
+    box-shadow: var(--article-shadow);
+}
+
+.article-kicker {
+    margin: 0;
+    color: var(--article-blue-600);
+    font-weight: 700;
+}
+
+h1 {
+    margin: 8px 0 12px;
+    color: var(--article-ink);
+    font-size: clamp(2rem, 7vw, 3.2rem);
+    line-height: 1.2;
+}
+
+.article-lead {
+    margin: 0;
+    color: var(--article-muted);
+    font-size: 1.05rem;
+}
+
+.learning-goals {
+    margin-top: 28px;
+    padding: 20px 24px;
+    border-left: 5px solid var(--article-blue-600);
+    border-radius: 8px;
+    background: var(--article-blue-50);
+}
+
+.learning-goals h2 {
+    margin: 0 0 8px;
+    border: 0;
+    padding: 0;
+    font-size: 1.2rem;
+}
+
+.learning-goals ul {
+    margin: 0;
+    padding-left: 1.3rem;
+}
+
+.site-footer {
+    border-top: 1px solid var(--article-border);
+    background: var(--article-surface);
+}
+
+.site-footer__inner {
+    padding-block: 28px;
+    text-align: center;
+}
+
+.back-link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    font-weight: 700;
+}
+
+.copyright {
+    margin: 8px 0 0;
+    color: var(--article-muted);
+    font-size: 0.9rem;
+}
+
+/* Linear mapping lesson */
+h2 {
+    margin-top: 40px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--article-border);
+    color: var(--article-ink);
+}
+
+h3 {
+    margin-top: 30px;
+    color: var(--article-ink);
+}
+
+.math-block {
+    overflow-x: auto;
+    margin: 15px 0;
+    padding: 15px;
+    border-radius: 8px;
+    background: var(--article-surface);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    font-size: 1.1em;
+    text-align: center;
+}
+
+.math-block--theorem {
+    border: 2px solid var(--article-blue-600);
+}
+
+.instruction,
+.highlight {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-left: 4px solid #f59e0b;
+    border-radius: 4px;
+    background: var(--article-warning);
+    color: #704f00;
+}
+
+.column {
+    margin-top: 30px;
+    padding: 25px;
+    border: 1px solid var(--article-border);
+    border-left: 5px solid var(--article-ink);
+    border-radius: 8px;
+    background: #eaf0f5;
+}
+
+.column h4 {
+    margin-top: 0;
+    color: var(--article-ink);
+    font-size: 1.1em;
+}
+
+ul.axioms {
+    max-width: 600px;
+    margin: 0 auto;
+    padding-left: 20px;
+    text-align: left;
+}
+
+ul.axioms li {
+    margin-bottom: 8px;
+}
+
+details {
+    margin-bottom: 10px;
+    padding: 12px 15px;
+    border: 1px solid var(--article-border);
+    border-radius: 6px;
+    background: var(--article-surface);
+}
+
+summary {
+    color: var(--article-ink);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+summary:hover {
+    color: var(--article-blue-600);
+}
+
+details > div {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--article-border);
+    color: var(--article-muted);
+    font-size: 0.95em;
+}
+
+.tab-nav {
+    display: flex;
+    gap: 10px;
+    margin: 32px 0 30px;
+    border-bottom: 2px solid var(--article-border);
+}
+
+.tab-btn {
+    min-height: 44px;
+    padding: 10px 20px;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    background: transparent;
+    color: var(--article-muted);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.tab-btn:hover {
+    border-radius: 4px 4px 0 0;
+    background: var(--article-blue-100);
+    color: var(--article-ink);
+}
+
+.tab-btn.active {
+    border-bottom-color: var(--article-blue-600);
+    color: var(--article-blue-600);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fade-in 0.25s ease;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+pre {
+    overflow-x: auto;
+    margin: 15px 0;
+    padding: 15px;
+    border-radius: 6px;
+    background: var(--article-code);
+    color: #e4eaf1;
+    font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
+code {
+    border-radius: 4px;
+    background: #edf1f5;
+    color: #a91f65;
+    font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+    font-size: 0.95em;
+}
+
+pre code {
+    padding: 0;
+    background: transparent;
+    color: inherit;
+}
