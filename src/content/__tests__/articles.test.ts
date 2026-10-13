@@ -79,9 +79,25 @@ describe("validateCatalog", () => {
 
     expect(issues).toContain(`${linearMappingId} のhrefは ${linearMappingHref} にしてください`);
   });
+
+  it("子記事の規約外hrefを検出する", () => {
+    const issues = validateCatalog({
+      subjects: [subject],
+      articles: [
+        {
+          ...article,
+          slug: "what-and-why",
+          parentSlug: "diagonalization",
+          href: "/articles/linear-algebra/what-and-why/",
+        },
+      ],
+    });
+
+    expect(issues).toContain("article:linear-algebra/diagonalization/what-and-why のhrefは /articles/linear-algebra/diagonalization/what-and-why/ にしてください");
+  });
 });
 
-describe("content catalog", () => {
+describe("content catalog subjects", () => {
   it("線形代数科目を登録する", () => {
     expect(subjects).toContainEqual(
       expect.objectContaining({
@@ -91,7 +107,9 @@ describe("content catalog", () => {
       }),
     );
   });
+});
 
+describe("content catalog articles", () => {
   it("線形写像の記事を公開URL付きで登録する", () => {
     expect(articles).toContainEqual(
       expect.objectContaining({
@@ -101,6 +119,34 @@ describe("content catalog", () => {
         status: "published",
         href: linearMappingHref,
         githubUrl: "https://github.com/Rikemen/math-by-making/tree/main/public/articles/linear-algebra/linear-mapping",
+      }),
+    );
+  });
+
+  it("行列の対角化のまとめ記事を公開URL付きで登録する", () => {
+    expect(articles).toContainEqual(
+      expect.objectContaining({
+        slug: "diagonalization",
+        subjectSlug: linearAlgebraSlug,
+        title: "行列の対角化",
+        status: "published",
+        isSummary: true,
+        href: `/articles/${linearAlgebraSlug}/diagonalization/`,
+        githubUrl: "https://github.com/Rikemen/math-by-making/tree/main/public/articles/linear-algebra/diagonalization",
+      }),
+    );
+  });
+
+  it("行列の対角化の第1回子記事を親スラッグ付きで登録する", () => {
+    expect(articles).toContainEqual(
+      expect.objectContaining({
+        slug: "what-and-why",
+        parentSlug: "diagonalization",
+        subjectSlug: linearAlgebraSlug,
+        title: "行列の対角化とは何か？なぜ対角化するか？",
+        status: "published",
+        href: `/articles/${linearAlgebraSlug}/diagonalization/what-and-why/`,
+        githubUrl: "https://github.com/Rikemen/math-by-making/tree/main/public/articles/linear-algebra/diagonalization/what-and-why",
       }),
     );
   });

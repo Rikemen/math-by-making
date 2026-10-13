@@ -33,6 +33,7 @@ const lang = {
   publication: {
     published: "Available",
     planned: "Coming soon",
+    summary: "Summary",
   },
   languages,
 };

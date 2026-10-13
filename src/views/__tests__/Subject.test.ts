@@ -37,8 +37,9 @@ const mountSubject = async () => {
 describe("content selectors", () => {
   it("slugから科目とその記事を取得する", () => {
     expect(getSubjectBySlug(linearAlgebraSlug)?.title).toBe("線形代数");
-    expect(getArticlesBySubjectSlug(linearAlgebraSlug)).toHaveLength(1);
+    expect(getArticlesBySubjectSlug(linearAlgebraSlug)).toHaveLength(2);
     expect(getArticlesBySubjectSlug(linearAlgebraSlug)[0]?.title).toBe("線形写像");
+    expect(getArticlesBySubjectSlug(linearAlgebraSlug)[1]?.title).toBe("行列の対角化");
   });
 });
 
@@ -48,6 +49,8 @@ describe("Subject", () => {
 
     expect(wrapper.get("h1").text()).toBe("線形代数");
     expect(wrapper.text()).toContain("線形写像");
+    expect(wrapper.text()).toContain("行列の対角化");
     expect(wrapper.get('a[href="/articles/linear-algebra/linear-mapping/"]').attributes("href")).toBe("/articles/linear-algebra/linear-mapping/");
+    expect(wrapper.get('a[href="/articles/linear-algebra/diagonalization/"]').attributes("href")).toBe("/articles/linear-algebra/diagonalization/");
   });
 });

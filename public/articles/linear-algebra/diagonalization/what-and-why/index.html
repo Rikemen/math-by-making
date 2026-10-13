@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>行列の対角化とは何か？なぜ対角化するか？</title>
+    <meta name="article:github-url" content="https://github.com/Rikemen/math-by-making/tree/main/public/articles/linear-algebra/diagonalization/what-and-why">
+    <link rel="stylesheet" href="../../../shared/tokens.css">
+    <link rel="stylesheet" href="article.css">
+    <link rel="stylesheet" href="../../../shared/article-header.css">
+    <link rel="stylesheet" href="article-mobile.css">
+    <script type="module" src="../../../shared/article-header.js"></script>
+    <!-- MathJax for rendering math equations beautifully -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- スクリプトの読み込み -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+    <script src="VectorSpaceElement.js"></script>
+    <script src="Matrix.js"></script>
+    <script src="canvas-size.js"></script>
+    <script src="sketch.js"></script>
+    <script src="tabs.js" defer></script>
+    <script src="source-link.js" defer></script>
+</head>
+
+<body>
+    <header class="site-header" data-article-header>
+        <div class="site-header__inner">
+            <div class="site-header__top">
+                <a class="site-brand" href="/ja/" aria-label="Math by Making ホーム">
+                    <span class="site-brand__mark" aria-hidden="true">M²</span>
+                    <span>Math by Making</span>
+                </a>
+                <nav class="site-header__nav" aria-label="主要ナビゲーション">
+                    <a class="site-header__link" href="/ja/">ホーム</a>
+                    <a class="site-header__link" href="/ja/#subjects">科目から学ぶ</a>
+                </nav>
+                <button class="site-header__update" type="button" data-pwa-update>
+                    <span aria-hidden="true">↻</span>
+                    <span data-pwa-update-label>更新</span>
+                </button>
+            </div>
+            <p class="site-header__status" data-pwa-update-status role="status" hidden>
+                更新できませんでした。通信を確認してください。
+            </p>
+            <nav class="site-header__breadcrumbs" aria-label="パンくずリスト">
+                <ol class="breadcrumbs">
+                    <li><a href="/ja/">ホーム</a></li>
+                    <li><a href="/ja/subjects/linear-algebra">線形代数</a></li>
+                    <li><a href="/articles/linear-algebra/diagonalization/">行列の対角化</a></li>
+                    <li aria-current="page">行列の対角化とは何か？なぜ対角化するか？</li>
+                </ol>
+            </nav>
+        </div>
+    </header>
+
+    <main class="article-container">
+        <article>
+            <header class="article-header">
+                <p class="article-kicker">行列の対角化 シリーズ 第1回</p>
+                <h1>行列の対角化とは何か？なぜ対角化するか？ <span class="article-title__english" lang="en">(What is Diagonalization and Why?)</span></h1>
+                <p class="article-lead">対角化の数学的定義と幾何学的意味を掴み、なぜわざわざ対角化を行うのか（計算高速化や応用）をコードと可視化で確かめます。</p>
+                <section class="learning-goals" aria-labelledby="learning-goals-title">
+                    <h2 id="learning-goals-title">この教材の学習目標</h2>
+                    <ul>
+                        <li>対角行列の計算上の圧倒的なメリット（累乗など）を説明できる。</li>
+                        <li>一般の行列を \( P^{-1} A P = D \) と変形する幾何学的な意味を説明できる。</li>
+                        <li>対角化が実世界（科学技術・シミュレーション・AI）で必要とされる理由を挙げられる。</li>
+                    </ul>
+                </section>
+            </header>
+
+            <div class="tab-nav" role="tablist" aria-label="教材の表示切り替え">
+                <button id="tab-theory-button" class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="tab-theory" tabindex="0">
+                    <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                    </svg>
+                    座学 <span class="tab-btn__secondary" lang="en">Theory</span>
+                </button>
+                <button id="tab-practice-button" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="tab-practice" tabindex="-1">
+                    <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="12" rx="2"></rect>
+                        <path d="m9 8-2 2 2 2"></path>
+                        <path d="m15 8 2 2-2 2"></path>
+                        <line x1="2" y1="20" x2="22" y2="20"></line>
+                    </svg>
+                    実装 <span class="tab-btn__secondary" lang="en">Practice</span>
+                </button>
+            </div>
+
+            <!-- ==================== 座学タブ ==================== -->
+            <div id="tab-theory" class="tab-content active" role="tabpanel" aria-labelledby="tab-theory-button">
+                <h2>1. 最も扱いやすい行列「対角行列」の秘密</h2>
+                <p>
+                    線形代数に登場する行列の中で、計算が最も簡単な行列は何でしょうか？それは<strong>対角行列 (Diagonal Matrix)</strong> です。
+                </p>
+                <p>
+                    対角行列とは、主対角線（左上から右下への対角成分）以外の成分がすべて \( 0 \) である正方行列のことです。
+                </p>
+                <p>
+                    \[
+                    D = \begin{pmatrix} d_1 & 0 & \cdots & 0 \\ 0 & d_2 & \cdots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \cdots & d_n \end{pmatrix}
+                    \]
+                </p>
+                <p>
+                    対角行列の何がそれほど強力なのでしょうか？最大の利点は<strong>「累乗計算の圧倒的な容易さ」</strong>にあります。
+                </p>
+                <p>
+                    一般の正方行列 \( A \) を \( n \) 回掛ける（\( A^n \)）には、膨大な回数の掛け算と足し算を繰り返す必要があります。しかし対角行列 \( D \) の場合、単に対角成分をそれぞれ \( n \) 乗するだけで計算が完了します。
+                </p>
+
+                <div class="theorem-box">
+                    <p class="definition-title">
+                        <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                            <polyline points="2 17 12 22 22 17"></polyline>
+                            <polyline points="2 12 12 17 22 12"></polyline>
+                        </svg>対角行列の累乗公式
+                    </p>
+                    <p>
+                        \[
+                        D^n = \begin{pmatrix} d_1^n & 0 & \cdots & 0 \\ 0 & d_2^n & \cdots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \cdots & d_n^n \end{pmatrix}
+                        \]
+                    </p>
+                </div>
+
+                <h2>2. 行列の対角化とは何か？</h2>
+                <p>
+                    世の中のほとんどの行列は、非対角成分に数値が詰まった「対角ではない行列」です。
+                </p>
+                <p>
+                    そこで、<strong>「一般の行列 \( A \) を、うまい具合に変形して対角行列 \( D \) に化けさせることはできないか？」</strong>という発想が生まれます。これが<strong>行列の対角化</strong>です。
+                </p>
+
+                <div class="definition-box">
+                    <p class="definition-title">
+                        <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>行列の対角化の定義
+                    </p>
+                    <p>
+                        \( n \) 次正方行列 \( A \) に対し、正則行列（逆行列をもつ行列）\( P \) が存在して、
+                        \[
+                        P^{-1} A P = D \quad (\text{ただし } D \text{ は対角行列})
+                        \]
+                        となる変形を行えるとき、行列 \( A \) は<strong>対角化可能 (Diagonalizable)</strong> であるといい、この操作を<strong>対角化</strong>と呼びます。
+                    </p>
+                </div>
+
+                <h3>2.1 幾何学的な意味：特等席の軸（固有基底）への乗り換え</h3>
+                <p>
+                    この式 \( P^{-1} A P = D \) は、幾何学的には<strong>「見る座標系を乗り換えている」</strong>ことを意味しています。
+                </p>
+                <p>
+                    標準的な \( x, y \) 座標系から見ると、行列 \( A \) による変換は空間を斜めにひしゃげさせたり回転させたりして、各成分が複雑に絡み合います。
+                </p>
+                <p>
+                    しかし、行列 \( P \) の各列として「行列 \( A \) を掛けても向きが変わらない特別なベクトル（固有ベクトル）」を採用するとどうなるでしょうか？
+                </p>
+                <p>
+                    その特別な軸の上では、ベクトルは向きを変えず、<strong>「ただ定数倍（固有値倍）されてまっすぐ伸び縮みするだけ」</strong>になります。対角化とは、この「特等席の座標系」に乗り換えて現象を観察することに他なりません。
+                </p>
+
+                <h2>3. なぜ対角化するのか？（4大モチベーション）</h2>
+                <p>
+                    対角化を学ぶ最大の理由は、複雑怪奇な計算や現象が、驚くほど単純な「1次元の独立した問題の集まり」へと解きほぐされるからです。
+                </p>
+
+                <div class="motivation-box">
+                    <p class="definition-title">
+                        <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                            <polyline points="2 17 12 22 22 17"></polyline>
+                            <polyline points="2 12 12 17 22 12"></polyline>
+                        </svg>対角化が必要とされる4つの理由
+                    </p>
+
+                    <h3>① 行列の累乗 \( A^n \) の高速計算</h3>
+                    <p>
+                        両辺に左から \( P \)、右から \( P^{-1} \) を掛けると \( A = P D P^{-1} \) と表せます。これを \( n \) 乗すると：
+                        \[
+                        A^n = (P D P^{-1})(P D P^{-1})\cdots(P D P^{-1}) = P D^n P^{-1}
+                        \]
+                        内側の \( P^{-1} P = I \)（単位行列）がドミノ倒しのようにすべて消え去り、両端の \( P, P^{-1} \) と中央の \( D^n \) だけが残ります！これにより、\( 1000 \) 乗であっても瞬時に計算できるようになります。
+                    </p>
+
+                    <h3>② フィボナッチ数列や連立漸化式の一般項</h3>
+                    <p>
+                        前後の項から次が決まる漸化式を行列で表し、その行列を対角化すると、累乗 \( A^n \) を経由して数列の一般項が直接求まります。フィボナッチ数列の一般項に無理数（黄金比 \( \frac{1+\sqrt{5}}{2} \)）が登場する理由は、遷移行列の固有値が黄金比だからです。
+                    </p>
+
+                    <h3>③ 連立微分方程式の変数分離</h3>
+                    <p>
+                        互いに影響し合って解けない連立微分方程式 \( \frac{d\vec{x}}{dt} = A \vec{x} \) も、\( \vec{y} = P^{-1}\vec{x} \) と変数変換すれば、各成分が互いに干渉しない独立な微分方程式 \( \frac{dy_i}{dt} = \lambda_i y_i \) に分離され、高校数学の知識だけで解けるようになります。
+                    </p>
+
+                    <h3>④ 科学技術・AI・データサイエンスへの応用</h3>
+                    <p>
+                        大量のデータの相関を対角化して本質的な特徴量を抽出する<strong>主成分分析 (PCA)</strong> や、量子力学で系のエネルギーを求める<strong>ハミルトニアンの対角化</strong>など、現代の高度なアルゴリズムの至るところで対角化が活用されています。
+                    </p>
+                </div>
+            </div> <!-- //tab-theory -->
+
+            <!-- ==================== 実装タブ ==================== -->
+            <div id="tab-practice" class="tab-content" role="tabpanel" aria-labelledby="tab-practice-button" hidden>
+                <h2>1. JavaScript による行列累乗の比較実験</h2>
+                <p>
+                    ここでは、行列の累乗 \( A^n \) を「愚直に掛け算を繰り返す方法」と「対角化 \( P D^n P^{-1} \) を使う方法」で計算し、結果が完全に一致することを確認します。
+                </p>
+
+                <h3>1.1 実験で使用する行列</h3>
+                <p>
+                    次の対称行列 \( A \) を考えます：
+                    \[
+                    A = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}
+                    \]
+                    この行列の固有値は \( \lambda_1 = 3, \lambda_2 = 1 \) であり、固有ベクトルを並べた行列 \( P \) とその対角行列 \( D \) は以下のようになります：
+                    \[
+                    P = \begin{pmatrix} 1 & -1 \\ 1 & 1 \end{pmatrix}, \quad D = \begin{pmatrix} 3 & 0 \\ 0 & 1 \end{pmatrix}
+                    \]
+                </p>
+
+                <pre><code>// 1. 通常の行列積による累乗（愚直に掛け算を繰り返す）
+function powerDirect(matrixA, n) {
+    let result = Matrix.createIdentity(matrixA.rows);
+    for (let i = 0; i < n; i++) {
+        result = Matrix.multiplyMatrices(result, matrixA);
+    }
+    return result;
+}
+
+// 2. 対角化による累乗 (A^n = P * D^n * P^-1)
+function powerDiagonalized(P, eigenvalues, n) {
+    // D^n は対角成分をそれぞれ n 乗するだけ
+    const Dn = new Matrix(eigenvalues.length, eigenvalues.length);
+    for (let i = 0; i < eigenvalues.length; i++) {
+        Dn.data[i][i] = Math.pow(eigenvalues[i], n);
+    }
+
+    const P_inv = P.inverse();
+    const temp = Matrix.multiplyMatrices(P, Dn);
+    return Matrix.multiplyMatrices(temp, P_inv);
+}</code></pre>
+
+                <p>
+                    \( n = 10 \) の場合、直接計算では \( 10 \) 回の行列掛け算（掛け算 \( 80 \) 回、足し算 \( 40 \) 回）が必要ですが、対角化法では \( 3^{10} = 59049 \) と \( 1^{10} = 1 \) を求めた後、わずか \( 2 \) 回の行列積で完了します。\( n = 1000 \) になれば、計算量の差は圧倒的になります。
+                </p>
+
+                <h2>2. 視覚的アニメーションの確認 (<code>sketch.js</code>)</h2>
+                <p>
+                    下のキャンバスでは、行列 \( A = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix} \) が空間を変形させていく様子をアニメーションで描画しています。
+                </p>
+                <ul>
+                    <li><strong>標準基底（赤 \( \vec{e}_1 \), 緑 \( \vec{e}_2 \)):</strong> 変換が進むにつれて向きが傾き、グリッド全体が斜めにひしゃげていきます。</li>
+                    <li><strong>固有ベクトル（青 \( \vec{v}_1 \), 紫 \( \vec{v}_2 \)):</strong> 点線で示した軸（\( y = x \) および \( y = -x \)）から一切回転せず、<strong>「軸に沿ってまっすぐ伸縮するだけ」</strong>であることが確認できます（青は3倍、紫は1倍のまま）。</li>
+                </ul>
+
+                <p class="highlight">
+                    <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg><strong>画面をクリック</strong>すると、アニメーションの再生 / 一時停止を切り替えることができます。
+                </p>
+
+                <p id="canvas-animation-status" class="canvas-status" aria-live="polite">アニメーション: 再生中</p>
+                <div id="diagonalization-canvas" class="canvas-container" aria-label="固有ベクトル方向への拡大縮小と対角化の幾何学的アニメーション" data-animation-state="playing"></div>
+            </div> <!-- //tab-practice -->
+
+            <section class="source-card" aria-labelledby="source-card-title">
+                <h2 id="source-card-title">コードを手元で試す</h2>
+                <p>教材で使っているHTML・JavaScriptをGitHubで確認し、自分の環境へ取得できます。</p>
+                <a id="source-link" class="source-link" hidden>GitHubでコードを見る・取得する</a>
+            </section>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <nav class="footer-nav" aria-label="ページ遷移">
+                <a class="back-link" href="/articles/linear-algebra/diagonalization/">← 行列の対角化 まとめへ戻る</a>
+                <a class="back-link" href="/ja/subjects/linear-algebra">線形代数の教材一覧へ戻る</a>
+            </nav>
+            <p class="copyright">&copy; 理系の子. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

@@ -12,6 +12,8 @@ export type SubjectMeta = ContentMeta;
 
 export interface ArticleMeta extends ContentMeta {
   subjectSlug: SubjectMeta["slug"];
+  parentSlug?: string;
+  isSummary?: boolean;
   thumbnailSrc?: string;
   videoUrl?: string;
   githubUrl?: string;

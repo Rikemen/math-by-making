@@ -1,12 +1,18 @@
 <template>
   <article class="article-card">
     <a v-if="published" class="article-card__link" :href="article.href">
-      <PublicationStatusBadge :status="article.status" />
+      <div class="article-card__badges">
+        <PublicationStatusBadge :status="article.status" />
+        <span v-if="article.isSummary" class="article-card__summary-badge">{{ $t("publication.summary") }}</span>
+      </div>
       <h3 class="article-card__title">{{ article.title }}</h3>
       <p class="article-card__description">{{ article.description }}</p>
     </a>
     <div v-else class="article-card__body">
-      <PublicationStatusBadge :status="article.status" />
+      <div class="article-card__badges">
+        <PublicationStatusBadge :status="article.status" />
+        <span v-if="article.isSummary" class="article-card__summary-badge">{{ $t("publication.summary") }}</span>
+      </div>
       <h3 class="article-card__title">{{ article.title }}</h3>
       <p class="article-card__description">{{ article.description }}</p>
     </div>
@@ -64,6 +70,30 @@ export default defineComponent({
 
 .article-card__link:hover {
   background: var(--color-brand-50);
+}
+
+.article-card__badges {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.article-card__badges :deep(.publication-badge) {
+  margin-bottom: 0;
+}
+
+.article-card__summary-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--color-brand-300);
+  border-radius: var(--radius-md);
+  background: var(--color-brand-700);
+  color: var(--color-surface);
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  line-height: 1;
+  padding: var(--space-2) var(--space-3);
 }
 
 .article-card__title {

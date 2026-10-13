@@ -28,7 +28,19 @@ const validateEntry = (entry: CatalogEntry): string[] => [...validateTitle(entry
 
 const subjectId = (subject: SubjectMeta): string => `subject:${subject.slug}`;
 
-const articleId = (article: ArticleMeta): string => `article:${article.subjectSlug}/${article.slug}`;
+const articleId = (article: ArticleMeta): string => {
+  if (article.parentSlug) {
+    return `article:${article.subjectSlug}/${article.parentSlug}/${article.slug}`;
+  }
+  return `article:${article.subjectSlug}/${article.slug}`;
+};
+
+const expectedArticleHref = (article: ArticleMeta): string => {
+  if (article.parentSlug) {
+    return `/articles/${article.subjectSlug}/${article.parentSlug}/${article.slug}/`;
+  }
+  return `/articles/${article.subjectSlug}/${article.slug}/`;
+};
 
 export const validateCatalog = ({ subjects, articles }: Catalog): string[] => {
   const entries: CatalogEntry[] = [
@@ -42,7 +54,7 @@ export const validateCatalog = ({ subjects, articles }: Catalog): string[] => {
       id: articleId(article),
       title: article.title,
       href: article.href,
-      expectedHref: `/articles/${article.subjectSlug}/${article.slug}/`,
+      expectedHref: expectedArticleHref(article),
     })),
   ];
   const duplicateIds = findDuplicates(entries.map(({ id }) => id));

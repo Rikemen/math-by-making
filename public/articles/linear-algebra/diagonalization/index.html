@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>行列の対角化</title>
+    <meta name="article:github-url" content="https://github.com/Rikemen/math-by-making/tree/main/public/articles/linear-algebra/diagonalization">
+    <link rel="stylesheet" href="../../shared/tokens.css">
+    <link rel="stylesheet" href="../../shared/article-header.css">
+    <link rel="stylesheet" href="article.css">
+    <script type="module" src="../../shared/article-header.js"></script>
+    <!-- MathJax for rendering math equations beautifully -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+    <header class="site-header" data-article-header>
+        <div class="site-header__inner">
+            <div class="site-header__top">
+                <a class="site-brand" href="/ja/" aria-label="Math by Making ホーム">
+                    <span class="site-brand__mark" aria-hidden="true">M²</span>
+                    <span>Math by Making</span>
+                </a>
+                <nav class="site-header__nav" aria-label="主要ナビゲーション">
+                    <a class="site-header__link" href="/ja/">ホーム</a>
+                    <a class="site-header__link" href="/ja/#subjects">科目から学ぶ</a>
+                </nav>
+                <button class="site-header__update" type="button" data-pwa-update>
+                    <span aria-hidden="true">↻</span>
+                    <span data-pwa-update-label>更新</span>
+                </button>
+            </div>
+            <p class="site-header__status" data-pwa-update-status role="status" hidden>
+                更新できませんでした。通信を確認してください。
+            </p>
+            <nav class="site-header__breadcrumbs" aria-label="パンくずリスト">
+                <ol class="breadcrumbs">
+                    <li><a href="/ja/">ホーム</a></li>
+                    <li><a href="/ja/subjects/linear-algebra">線形代数</a></li>
+                    <li aria-current="page">行列の対角化</li>
+                </ol>
+            </nav>
+        </div>
+    </header>
+
+    <main class="article-container">
+        <article>
+            <header class="article-header">
+                <p class="article-kicker">線形代数</p>
+                <h1>行列の対角化 <span class="article-title__english" lang="en">(Matrix Diagonalization)</span></h1>
+                <p class="article-lead">空間の変換を行列の「特等席」から見つめ直し、複雑な多次元計算を1次元の集まりに分解する強力な道具を学びます。</p>
+                <section class="learning-goals" aria-labelledby="learning-goals-title">
+                    <h2 id="learning-goals-title">この教材の学習目標</h2>
+                    <ul>
+                        <li>対角化が幾何学的に何を意味するかを説明できる。</li>
+                        <li>なぜ対角化を行うと計算が爆発的に簡単になるのかを理解できる。</li>
+                        <li>固有値・固有ベクトルから対角化へのロードマップを把握できる。</li>
+                    </ul>
+                </section>
+            </header>
+
+            <div class="article-content">
+                <h2>1. 対角化とは何か？（直感的なイメージ）</h2>
+                <p>
+                    一般の正方行列 \( A \) をベクトルに掛けると、空間内のベクトルは回転したり、せん断（ひしゃげる）されたりして、座標軸同士が複雑に混ざり合います。
+                </p>
+                <p>
+                    しかし、空間の向きを都合の良い方向へ「回転・乗り換え（基底変換）」して観察すると、<strong>「ただ各軸の方向に独立して拡大・縮小しているだけ」</strong>に見える特別な座標系が存在することがあります。
+                </p>
+
+                <div class="definition-box">
+                    <p class="definition-title">
+                        <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                            <polyline points="2 17 12 22 22 17"></polyline>
+                            <polyline points="2 12 12 17 22 12"></polyline>
+                        </svg>対角化の基本関係式
+                    </p>
+                    <p>
+                        正方行列 \( A \) に対し、適当な正則行列 \( P \) を選ぶことで、非対角成分がすべて \( 0 \) である対角行列 \( D \) に変形する操作を<strong>対角化</strong>と呼びます。
+                    </p>
+                    <p>
+                        \[
+                        P^{-1} A P = D = \begin{pmatrix} \lambda_1 & 0 & \cdots & 0 \\ 0 & \lambda_2 & \cdots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \cdots & \lambda_n \end{pmatrix}
+                        \]
+                    </p>
+                </div>
+
+                <h2>2. なぜ対角化するのか？（対角化のモチベーション）</h2>
+                <p>
+                    数学や工学において、なぜこれほどまでに対角化が重要視されるのでしょうか？その理由は、<strong>「多次元の絡み合った問題を、独立した1次元の問題に分解できるから」</strong>です。
+                </p>
+
+                <div class="motivation-box">
+                    <p class="definition-title">
+                        <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>対角化がもたらす4大メリット
+                    </p>
+                    <ol>
+                        <li><strong>行列の累乗 \( A^n \) の高速計算:</strong> \( A^n = P D^n P^{-1} \) となり、対角成分を \( n \) 乗するだけで瞬時に求まります。</li>
+                        <li><strong>連立漸化式・差分方程式の解法:</strong> フィボナッチ数列などの漸化式を行列で表し、対角化によって一般項を導けます。</li>
+                        <li><strong>連立微分方程式の変数分離:</strong> 互いに影響し合う連立方程式を、独立な1変数微分方程式の束へと分離して解くことができます。</li>
+                        <li><strong>科学技術とAIへの応用:</strong> データ分析の主成分分析（PCA）、GoogleのPageRankアルゴリズム、量子力学のエネルギー準位計算など、現代社会を支える技術の中核に対角化が存在します。</li>
+                    </ol>
+                </div>
+
+                <h2>3. シリーズの学習ロードマップ</h2>
+                <p>
+                    「行列の対角化」シリーズでは、基礎となる幾何学的動機から、固有値・固有ベクトルの計算手順、そしてプログラミング実装・可視化までを順を追って学びます。
+                </p>
+
+                <ul class="roadmap-list">
+                    <li class="roadmap-card roadmap-card--available">
+                        <div class="roadmap-card__header">
+                            <span class="roadmap-card__number">第1回</span>
+                            <span class="roadmap-card__status roadmap-card__status--published">公開中</span>
+                        </div>
+                        <h3 class="roadmap-card__title">
+                            <a href="what-and-why/">行列の対角化とは何か？なぜ対角化するか？</a>
+                        </h3>
+                        <p class="roadmap-card__description">
+                            対角行列の圧倒的な扱いやすさと \( P^{-1} A P = D \) の幾何学的意味を学び、なぜ対角化を行うのか（計算高速化や応用）をコードと可視化で体感します。
+                        </p>
+                        <a class="roadmap-card__cta" href="what-and-why/">
+                            第1回を読む・動かす
+                            <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                    </li>
+
+                    <li class="roadmap-card">
+                        <div class="roadmap-card__header">
+                            <span class="roadmap-card__number">第2回</span>
+                            <span class="roadmap-card__status roadmap-card__status--planned">準備中</span>
+                        </div>
+                        <h3 class="roadmap-card__title">固有値と固有ベクトルの幾何学的意味</h3>
+                        <p class="roadmap-card__description">
+                            行列を掛けても向きが変わらない「特等席のベクトル」を探し出し、対角化の構成要素である固有値方程式 \( A \vec{v} = \lambda \vec{v} \) を幾何学的に理解します。
+                        </p>
+                    </li>
+
+                    <li class="roadmap-card">
+                        <div class="roadmap-card__header">
+                            <span class="roadmap-card__number">第3回</span>
+                            <span class="roadmap-card__status roadmap-card__status--planned">準備中</span>
+                        </div>
+                        <h3 class="roadmap-card__title">対角化の具体的な手順と計算アルゴリズム</h3>
+                        <p class="roadmap-card__description">
+                            固有多項式の計算、固有値・固有ベクトルの導出、変換行列 \( P \) の構築と逆行列の計算まで、対角化を完遂する一連のアルゴリズムを手計算とプログラムで実装します。
+                        </p>
+                    </li>
+
+                    <li class="roadmap-card">
+                        <div class="roadmap-card__header">
+                            <span class="roadmap-card__number">第4回</span>
+                            <span class="roadmap-card__status roadmap-card__status--planned">準備中</span>
+                        </div>
+                        <h3 class="roadmap-card__title">対角化ができる条件（重複度と固有空間の次元）</h3>
+                        <p class="roadmap-card__description">
+                            すべての行列が対角化できるわけではありません。重解をもつ場合の対角化可能性、幾何学的重複度と代数的重複度の関係を整理します。
+                        </p>
+                    </li>
+
+                    <li class="roadmap-card">
+                        <div class="roadmap-card__header">
+                            <span class="roadmap-card__number">第5回</span>
+                            <span class="roadmap-card__status roadmap-card__status--planned">準備中</span>
+                        </div>
+                        <h3 class="roadmap-card__title">対角化の応用（行列累乗・漸化式・微分方程式）</h3>
+                        <p class="roadmap-card__description">
+                            フィボナッチ数列の一般項の導出や連立微分方程式の解法、マルコフ過程のシミュレーションなど、対角化がもたらす強力な実応用を動くコードで体験します。
+                        </p>
+                    </li>
+                </ul>
+            </div>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <a class="back-link" href="/ja/subjects/linear-algebra">← 線形代数の教材一覧へ戻る</a>
+            <p class="copyright">&copy; 理系の子. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

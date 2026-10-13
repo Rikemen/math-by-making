@@ -1,0 +1,123 @@
+@media (max-width: 40rem) {
+    .article-container,
+    .site-footer__inner {
+        width: min(100% - 24px, 880px);
+    }
+
+    .article-container {
+        padding-block: 20px 40px;
+    }
+
+    .article-header {
+        padding: 20px 16px;
+    }
+
+    h1 {
+        margin-block: 6px 12px;
+        font-size: clamp(1.75rem, 8.5vw, 2.25rem);
+        line-height: 1.15;
+    }
+
+    .article-title__english {
+        display: block;
+        margin-top: 6px;
+        color: var(--article-muted);
+        font-size: 0.62em;
+        line-height: 1.25;
+    }
+
+    .article-lead {
+        font-size: 1rem;
+    }
+
+    .learning-goals {
+        margin-top: 20px;
+        padding: 16px;
+        border-left-width: 4px;
+    }
+
+    .learning-goals h2 {
+        font-size: 1.1rem;
+        line-height: 1.4;
+    }
+
+    .learning-goals ul,
+    .tab-content ul {
+        padding-left: 1.2rem;
+    }
+
+    .learning-goals li + li,
+    .tab-content li + li {
+        margin-top: 0.45rem;
+    }
+
+    .tab-nav {
+        gap: 4px;
+        margin: 20px 0 24px;
+    }
+
+    .tab-btn {
+        min-width: 0;
+        flex: 1;
+        padding-inline: 6px;
+        font-size: 0.95rem;
+        white-space: nowrap;
+    }
+
+    .tab-btn__secondary {
+        display: none;
+    }
+
+    h2 {
+        margin-top: 32px;
+        font-size: 1.35rem;
+        line-height: 1.45;
+    }
+
+    h3 {
+        margin-top: 24px;
+        font-size: 1.1rem;
+        line-height: 1.5;
+    }
+
+    .column {
+        margin-top: 24px;
+        padding: 16px;
+        border-left-width: 4px;
+    }
+
+    .instruction,
+    .highlight {
+        padding: 14px 12px;
+    }
+
+    .math-block {
+        padding: 12px 8px;
+        font-size: 1em;
+    }
+
+    pre {
+        padding: 12px;
+        font-size: 0.82rem;
+        line-height: 1.6;
+    }
+
+    .canvas-status {
+        font-size: 0.9rem;
+    }
+
+    .source-card {
+        margin-top: 36px;
+        padding: 20px 16px;
+    }
+
+    .source-link {
+        width: 100%;
+        padding-inline: 12px;
+        text-align: center;
+    }
+
+    .site-footer__inner {
+        padding-block: 20px;
+    }
+}

@@ -33,6 +33,7 @@ const lang = {
   publication: {
     published: "公開中",
     planned: "準備中",
+    summary: "まとめ",
   },
   languages,
 };
