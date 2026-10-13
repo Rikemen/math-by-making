@@ -124,6 +124,9 @@
         }
 
         .tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             background: transparent;
             border: none;
             font-size: 16px;
@@ -133,6 +136,22 @@
             cursor: pointer;
             border-bottom: 3px solid transparent;
             transition: all 0.2s;
+        }
+
+        .article-icon {
+            display: inline-block;
+            width: 1.15em;
+            height: 1.15em;
+            vertical-align: -0.2em;
+            margin-right: 0.35em;
+            flex-shrink: 0;
+        }
+
+        .tab-btn .article-icon {
+            margin-right: 0;
+            width: 1.2em;
+            height: 1.2em;
+            vertical-align: middle;
         }
 
         .tab-btn:hover {
@@ -209,8 +228,22 @@
     <h1>線形写像 (Linear Mapping)</h1>
 
     <div class="tab-nav">
-        <button class="tab-btn active" onclick="switchTab('theory')">📚 座学 (Theory)</button>
-        <button class="tab-btn" onclick="switchTab('practice')">💻 実装 (Practice)</button>
+        <button class="tab-btn active" onclick="switchTab('theory')">
+            <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+            座学 (Theory)
+        </button>
+        <button class="tab-btn" onclick="switchTab('practice')">
+            <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="12" rx="2"></rect>
+                <path d="m9 8-2 2 2 2"></path>
+                <path d="m15 8 2 2-2 2"></path>
+                <line x1="2" y1="20" x2="22" y2="20"></line>
+            </svg>
+            実装 (Practice)
+        </button>
     </div>
 
     <!-- ==================== 座学タブ ==================== -->
@@ -226,7 +259,13 @@
             写像の中でも、ベクトル空間の持つ重要な構造である<strong>「足し算（和）」</strong>と<strong>「定数倍（スカラー倍）」</strong>という性質を壊さずに保つ写像を、<strong>線形写像 (Linear Mapping)</strong> または <strong>線形変換 (Linear Transformation)</strong> と呼びます。
         </p>
         <div class="column">
-            <h4>💡 線形写像の定義</h4>
+            <h4>
+                <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18h6"></path>
+                    <path d="M10 22h4"></path>
+                    <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .59 2.22 1.5 3.5.76.76 1.23 1.52 1.41 2.5"></path>
+                </svg>線形写像の定義
+            </h4>
             <p>
                 ベクトル空間 \(V\) からベクトル空間 \(W\) への写像 \(f: V \to W\) が以下の2条件を満たすとき、\(f\) は線形写像であるといいます。
             </p>
@@ -237,7 +276,13 @@
         </div>
 
         <div class="instruction">
-            <strong>🤔 なぜ「線形写像」を考えるのか？（モチベーション）</strong><br>
+            <strong>
+                <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>なぜ「線形写像」を考えるのか？（モチベーション）
+            </strong><br>
             現実世界の問題は複雑で非線形な現象に溢れていますが、狭い範囲に限定すれば線形に近似できることが多くあります（微分の考え方）。<br>
             線形写像の最大の強みは、<strong>「基底ベクトルの行き先さえ決まれば、空間全体の全てのベクトルの行き先が完全に決定される」</strong>という強力な性質を持っていることです。これにより、どれほど複雑な空間の変換であっても、有限個の数の表である「行列」を使ってシンプルかつ統一的に計算・分析できるようになります。
         </div>
@@ -270,12 +315,24 @@
             線形写像 \(f\) を深く理解するために、2つの重要な集合（部分空間）を考えます。
         </p>
         <div class="column">
-            <h4>💡 像 (Image)</h4>
+            <h4>
+                <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18h6"></path>
+                    <path d="M10 22h4"></path>
+                    <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .59 2.22 1.5 3.5.76.76 1.23 1.52 1.41 2.5"></path>
+                </svg>像 (Image)
+            </h4>
             <p>
                 写像 \(f\) によって「入力空間のベクトル全体が移った先（出力の集合）」のことです。\(\text{Im}(f)\) と書きます。<br>
                 行列 \(A\) による変換の場合、行列の各列ベクトルの一次結合で作られる空間（列空間）と一致します。この 像の次元 を <strong>階数 (Rank)</strong> と呼び、行列が持つ「情報量の広がり」を表します。
             </p>
-            <h4>💡 核 (Kernel)</h4>
+            <h4>
+                <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18h6"></path>
+                    <path d="M10 22h4"></path>
+                    <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .59 2.22 1.5 3.5.76.76 1.23 1.52 1.41 2.5"></path>
+                </svg>核 (Kernel)
+            </h4>
             <p>
                 写像 \(f\) によって「ゼロベクトル (\(\vec{0}\)) に潰されてしまう入力ベクトルの集合」のことです。\(\text{Ker}(f)\) と書きます。<br>
                 これは連立一次方程式 \(A\vec{x} = \vec{0}\) の解の集合（解空間）と同じものです。核が \(\{\vec{0}\}\) だけなら、違うベクトルは違う場所に写る（単射である）ことが保証されます。
@@ -344,7 +401,11 @@ let BA = Matrix.multiplyMatrices(B, A);
             マス目がどのように歪むか、あるいはペチャンコに潰れてしまう（次元が落ちる）様子を観察し、線形写像の幾何学的な意味を直感的に理解しましょう。
         </p>
         <p class="highlight" style="padding:10px; background:#fff3cd; border-left:4px solid #ffc107; margin-bottom: 20px;">
-            💡 <strong>画面をクリック</strong>すると、アニメーションの再生 / 停止を切り替えることができます。
+            <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg><strong>画面をクリック</strong>すると、アニメーションの再生 / 停止を切り替えることができます。
         </p>
         <!-- sketch.js のキャンバスが親要素としてここに追加されます -->
     </div> <!-- //tab-practice -->

@@ -73,4 +73,35 @@ describe("linear mapping article shell", () => {
     expect(document.querySelector("#learning-goals-title")?.textContent).toBe("この教材の学習目標");
     expect(goals).toHaveLength(3);
   });
+
+  it("絵文字を使わずピクトグラム（SVG）を使用する", () => {
+    const document = parseArticle();
+    const article = document.querySelector("main article");
+    const textContent = article?.textContent ?? "";
+
+    const emojiRegex = /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
+    expect(textContent).not.toMatch(emojiRegex);
+
+    const pictograms = article?.querySelectorAll("svg.article-icon");
+    expect(pictograms && pictograms.length).toBeGreaterThanOrEqual(5);
+  });
+
+  it("共有デザイントークンを読み込み、トップページのブランド色を参照する", () => {
+    const document = parseArticle();
+    const tokenLink = document.querySelector<HTMLLinkElement>('link[href*="tokens.css"]');
+    expect(tokenLink).not.toBeNull();
+
+    const articleCss = fs.readFileSync(path.resolve(articleDirectory, "article.css"), "utf8");
+    const headerCss = fs.readFileSync(path.resolve(articleDirectory, "../../shared/article-header.css"), "utf8");
+
+    // トップページ側の正とするトークンを参照していること
+    expect(articleCss).toContain("var(--color-brand-700)");
+    expect(articleCss).toContain("var(--color-surface-soft)");
+    expect(headerCss).toContain("var(--color-brand-700)");
+
+    // 旧ネイビーのハードコード（#075985, #18324a）が存在しないこと
+    expect(articleCss).not.toContain("#075985");
+    expect(articleCss).not.toContain("#18324a");
+    expect(headerCss).not.toContain("#075985");
+  });
 });
