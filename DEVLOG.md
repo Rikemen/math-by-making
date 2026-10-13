@@ -191,9 +191,20 @@ Phase 2完了。次はPhase 3のホームと科目ナビゲーションへ進め
 - `npm run build`: 成功。生成JavaScriptは約175.12 kB（gzip 63.97 kB）。
 - ローカルブラウザ: 日本語ホーム、ヒーロー、フェル画像、12科目、公開状態ラベル、CTAから線形代数ページへの遷移、線形写像カードを確認。
 - 390×844のモバイルビューポートで`innerWidth`と`scrollWidth`がともに390pxとなり、横スクロールがないことを確認。
-- Phase 3ではFirebase Hostingへデプロイしていない。
+- Phase 3完了時点ではFirebase Hostingへデプロイしていない。
 
 Phase 3完了。次はPhase 4で線形写像のサンプル教材を公開配置し、記事本体を公開品質へ整える。
+
+### Phase 3 Hosting配信記録（2026-10-13 10:46 JST）
+
+- 配信前に `npm test`（11ファイル・42テスト）、`npm run lint`、`npm run build` がすべて成功。
+- `npx -y firebase-tools@latest deploy --only hosting:app --project math-by-making` で、Hosting `app` の14ファイルだけを本番へ配信。
+- 公開URL: `https://math-by-making.web.app`
+- 本番ブラウザでホームのヒーロー、フェル画像、12科目、公開状態ラベルを確認。
+- `/ja/subjects/linear-algebra` で線形代数見出しと線形写像カードを確認。
+- 準備中の `/ja/subjects/calculus` は `404` 表示へ遷移することを確認。
+- Functions・Firestore・Rulesは配信対象外。未配備の `hono_server`、`express_server`、`express_server_v2` rewriteについてCLI警告が出たが、Hostingリリースは完了。
+- Phase 4未実装のため、線形写像記事本体の公開URLは未確認。実機スマートフォン、タッチ操作、音声読み上げも未確認。
 
 ## 詳細ループ
 
