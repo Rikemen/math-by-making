@@ -187,7 +187,8 @@ let BA = Matrix.multiplyMatrices(B, A);
         <p class="highlight">
             💡 <strong>画面をクリック</strong>すると、アニメーションの再生 / 停止を切り替えることができます。
         </p>
-        <div id="linear-mapping-canvas" class="canvas-container" aria-label="線形写像による基底変換の可視化"></div>
+        <p id="canvas-animation-status" class="canvas-status" aria-live="polite">アニメーション: 再生中</p>
+        <div id="linear-mapping-canvas" class="canvas-container" aria-label="線形写像による基底変換の可視化" data-animation-state="playing"></div>
     </div> <!-- //tab-practice -->
             <section class="source-card" aria-labelledby="source-card-title">
                 <h2 id="source-card-title">コードを手元で試す</h2>

@@ -28,8 +28,11 @@ describe("linear mapping canvas", () => {
   it("可視化専用のコンテナを持つ", () => {
     const document = parseArticle();
     const container = document.querySelector("#linear-mapping-canvas");
+    const status = document.querySelector("#canvas-animation-status");
 
     expect(container?.classList.contains("canvas-container")).toBe(true);
     expect(container?.getAttribute("aria-label")).toContain("線形写像");
+    expect(status?.getAttribute("aria-live")).toBe("polite");
+    expect(status?.textContent).toContain("再生中");
   });
 });

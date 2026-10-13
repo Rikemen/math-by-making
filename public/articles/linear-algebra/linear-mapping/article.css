@@ -333,6 +333,13 @@ pre code {
     touch-action: manipulation;
 }
 
+.canvas-status {
+    margin: 0 0 8px;
+    color: var(--article-muted);
+    font-weight: 700;
+    text-align: center;
+}
+
 .canvas-container canvas {
     display: block;
     max-width: 100%;

@@ -10,11 +10,20 @@ function getResponsiveCanvasSize() {
     return MathByMakingCanvas.calculateCanvasSize(container ? container.clientWidth : 0, window.innerWidth);
 }
 
+function updateAnimationStatus() {
+    const container = document.getElementById('linear-mapping-canvas');
+    const status = document.getElementById('canvas-animation-status');
+
+    if (container) container.dataset.animationState = isAnimating ? 'playing' : 'paused';
+    if (status) status.textContent = `アニメーション: ${isAnimating ? '再生中' : '一時停止中'}`;
+}
+
 function setup() {
     const canvasSize = getResponsiveCanvasSize();
     const canvas = createCanvas(canvasSize, canvasSize);
     canvas.parent('linear-mapping-canvas');
     canvas.attribute('aria-label', '基底ベクトルが変化する線形写像のアニメーション');
+    updateAnimationStatus();
 
     // 任意のベクトル x を [3, 3]^T とする
     fixedVector = new Matrix(2, 1);
@@ -157,6 +166,7 @@ function drawInfo(v1x, v1y, v2x, v2y) {
 function toggleAnimationAt(pointerX, pointerY) {
     if (pointerX >= 0 && pointerX <= width && pointerY >= 0 && pointerY <= height) {
         isAnimating = !isAnimating;
+        updateAnimationStatus();
         return false;
     }
 
