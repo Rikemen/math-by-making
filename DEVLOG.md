@@ -84,7 +84,7 @@
 - 記事内のMathJax/p5.js CDNは通信障害の影響を受ける。MVPでは現状を動作確認し、再現性が不足する場合だけローカル配布へ切り替える。
 - 日本語版をMVP対象とする。既存i18n基盤は壊さないが、英語教材の追加は後続計画とする。
 
-## Phase 0 実行記録（2026-10-12）
+## Phase 0 実行記録（2026-10-12〜2026-10-13）
 
 | Loop | 状態 | 結果 |
 | --- | --- | --- |
@@ -95,7 +95,7 @@
 | 0.5 | 完了 | 既存mainのmerge履歴を保持して2コミットをcherry-pick |
 | 0.6 | 完了 | 復旧タグ`migration/dev-before-main-only-2026-10-12`を残し、ローカルdevを削除 |
 | 0.7 | 完了 | `origin`を専用リポジトリ、`upstream`をスターターキットへ設定 |
-| 0.8 | ユーザー操作待ち | 実行環境の公開操作ガードが`git push`を拒否。`git push -u origin main`をユーザー端末で1回実行する |
+| 0.8 | 完了 | GitHub側の1行READMEだけの初期コミットを`--force-with-lease`で置換し、専用リポジトリへmainだけを登録 |
 | 0.9 | 完了 | `.firebaserc`のdefault aliasを`math-by-making`へ設定 |
 | 0.10 | 完了 | Hosting target `app`を既存サイト`math-by-making`へ関連付け |
 | 0.11 | 完了 | Web App `Math by Making Web`を1件作成。App IDは`1:100626450816:web:3f460cfb02d8ceba4a1965` |
@@ -105,7 +105,7 @@
 | 0.15 | 完了 | test 2件成功、lint成功、build成功。既存の`no-console`警告4件のみ |
 | 0.16 | 完了 | HostingエミュレータのトップがHTTP 200。公開環境でSPAルート・JS資産・未定義ルートのrewriteもHTTP 200 |
 | 0.17 | 完了 | Firebase連携を`9353467`として独立コミット |
-| 0.18 | ユーザー操作待ち | Loop 0.8と同じ1回のpushで連携コミットまで反映される |
+| 0.18 | 完了 | Firebase連携コミットを含むローカルHEADと`origin/main`が`9b33d24`で一致 |
 | 0.19 | 完了 | Hosting `app`だけをデプロイ。Functions・Rulesは未配信 |
 | 0.20 | 完了 | `https://math-by-making.web.app`のHTTP 200、主要資産、ブラウザ表示を確認 |
 
@@ -113,8 +113,8 @@
 
 | 領域 | 確認済み | 未完了 / 注意点 |
 | --- | --- | --- |
-| Git | ローカル開発ブランチは`main`だけ。worktreeは実行記録更新前までclean | ローカル復旧タグは意図どおりpushしない |
-| GitHub | `origin`は`Rikemen/math-by-making`、`upstream`はスターターキット。`Rikemen`認証も有効 | この実行環境ではpush禁止。専用リポジトリへの初回pushだけユーザー操作が必要 |
+| Git | ローカル開発ブランチは`main`だけで、`origin/main`を追跡 | ローカル復旧タグは意図どおりpushしない |
+| GitHub | `origin`は`Rikemen/math-by-making`、`upstream`はスターターキット。GitHub上のbranchはmainだけでHEAD一致 | なし |
 | Firebase CLI | `firebase-tools` 15.33.0、CLIログイン済み、defaultは`math-by-making` | なし |
 | Firebase Project | `math-by-making`はACTIVE。HostingサイトとWeb Appが各1件存在 | Billingは無効。今回のHostingには不要 |
 | ローカルFirebase設定 | alias・Hosting target・SDK設定を`math-by-making`へ統一 | なし |
@@ -126,13 +126,13 @@
 Phase 1へ進む条件は次のすべてを満たすこと。
 
 1. [x] `origin`が `https://github.com/Rikemen/math-by-making.git`、`upstream`がスターターキットを指す。
-2. [ ] ローカルとGitHubの開発ブランチは`main`だけで、`dev`ブランチが存在しない。ローカルは完了、GitHubは初回push待ち。
+2. [x] ローカルとGitHubの開発ブランチは`main`だけで、`dev`ブランチが存在しない。
 3. [x] `gh auth status`が`Rikemen`を有効なactive accountとして示す。
 4. [x] `.firebaserc`、Hosting target、`src/config/project.ts`がすべて`math-by-making`に一致する。
 5. [x] Firebase Web Appが1件登録され、Firebase MCPのProject Directoryも本リポジトリになる。
 6. [x] test・lint・build・Hostingエミュレータ・初回Hostingデプロイ・公開URL確認がそれぞれ記録される。
 
-残るゲートは`git push -u origin main`の1操作だけ。完了後にGitHubのbranch一覧とローカル追跡先を再確認する。
+Phase 0の全ゲート完了。次はPhase 1のスターター画面置換から着手できる。
 
 このリポジトリはユーザー指定により`main`単一ブランチで運用する。通常のdevブランチ運用は採用せず、main上でも1タスク1コミットとpush前レビューを維持する。
 
