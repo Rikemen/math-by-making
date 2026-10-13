@@ -289,6 +289,16 @@ Phase 3完了。次はPhase 4で線形写像のサンプル教材を公開配置
 - ローカル記事を320px、390px、1280px相当で確認し、全幅でページ全体の横スクロールなし。ホーム・科目・更新を認識でき、更新操作後に通常状態へ戻ることを確認。
 - Firebase Hostingへのデプロイと実機スマートフォンでの確認は未実施。
 
+### 記事共通ヘッダーメニュー Hosting配信記録（2026-10-13 20:41 JST）
+
+- 配信前に `npm test`（19ファイル、70テスト）、`npm run lint`、`npm run build`、`node --check public/articles/shared/article-header.js` がすべて成功。
+- `npx -y firebase-tools@latest deploy --only hosting:app --project math-by-making` を実行し、`dist` の29ファイル（新規アップロード7ファイル）を `https://math-by-making.web.app` へ公開。
+- 本番記事の通常URLで、ブランド、ホーム、科目から学ぶ、更新、パンくずと、共通ヘッダーCSSの読み込みを確認。
+- 320×568、390×844、1280×800でページ全体の横スクロールなし。モバイルのホーム・科目・更新は44pxの操作領域を維持し、デスクトップは横並びになることを確認。
+- 本番記事の更新ボタンで再読込し、完了後に「更新」へ戻ること、通信エラーが表示されないこと、通常URLでも最新版ヘッダーを取得できることを確認。
+- Hostingのみを配信し、Functions・Firestore・Rulesは対象外。既存の3つのFunctions rewrite警告は出たが、Hostingのリリースは成功。
+- 実機にインストールしたPWAでのタッチ操作と音声読み上げは未確認。
+
 Phase 4完了。次はPhase 5で学習目標チェック、4択問題、回答フィードバック、端末内進捗保存を追加する。
 
 ## 詳細ループ
