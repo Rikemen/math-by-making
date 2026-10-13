@@ -1,6 +1,6 @@
 <template>
   <main class="home">
-    <LearningHero />
+    <LearningHero :guide-image-src="homeContent.guideImageSrc" />
 
     <section id="subjects" class="home__subjects" aria-labelledby="subjects-title">
       <h2 id="subjects-title">{{ $t("home.subjectsTitle") }}</h2>
@@ -13,11 +13,17 @@
 import { defineComponent } from "vue";
 
 import LearningHero from "@/components/LearningHero.vue";
+import { homeContent } from "@/content/site";
 
 export default defineComponent({
   name: "HomePage",
   components: {
     LearningHero,
+  },
+  setup() {
+    return {
+      homeContent,
+    };
   },
 });
 </script>

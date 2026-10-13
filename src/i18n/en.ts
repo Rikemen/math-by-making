@@ -16,6 +16,7 @@ const lang = {
     tagline: "Learn mathematics by making",
     description: "Read the theory, write the code, and experiment with the ideas.",
     cta: "Start with linear algebra",
+    guideImageAlt: "Feru, the guide to mathematical experiments",
     subjectsTitle: "Learn by subject",
     linearAlgebra: "Linear algebra",
   },
