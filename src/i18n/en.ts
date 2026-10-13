@@ -20,6 +20,13 @@ const lang = {
     subjectsTitle: "Learn by subject",
     subjectsDescription: "Explore the subjects available now and those planned for later.",
   },
+  subjectPage: {
+    breadcrumbLabel: "Breadcrumb",
+    home: "Home",
+    eyebrow: "Subject",
+    articlesTitle: "Lessons",
+    empty: "Lessons are being prepared.",
+  },
   languages,
 };
 

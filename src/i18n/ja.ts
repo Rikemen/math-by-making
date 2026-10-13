@@ -20,6 +20,13 @@ const lang = {
     subjectsTitle: "科目から学ぶ",
     subjectsDescription: "現在学べる科目と、これから追加する科目を紹介します。",
   },
+  subjectPage: {
+    breadcrumbLabel: "パンくずリスト",
+    home: "ホーム",
+    eyebrow: "科目",
+    articlesTitle: "教材",
+    empty: "教材を準備しています。",
+  },
   languages,
 };
 

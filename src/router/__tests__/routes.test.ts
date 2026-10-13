@@ -15,4 +15,14 @@ describe("public routes", () => {
   it.each(["/account", "/mypage"])("旧アカウントURL %s を404として扱う", (path) => {
     expect(router.resolve(path).name).toBe("NotFoundPage");
   });
+
+  it("線形代数の科目URLを公開する", () => {
+    expect(router.resolve("/ja/subjects/linear-algebra").matched.at(-1)?.components?.default).toBeDefined();
+  });
+
+  it("不明な科目slugを404へ遷移する", async () => {
+    await router.push("/ja/subjects/unknown-subject");
+
+    expect(router.currentRoute.value.name).toBe("NotFoundPage");
+  });
 });
