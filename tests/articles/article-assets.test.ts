@@ -13,7 +13,6 @@ const linearMappingAssets = requiredFiles("線形写像", publishedDirectory, [
   "sketch.js",
   "Matrix.js",
   "VectorSpaceElement.js",
-  "Polynomial.js",
 ]);
 
 describe("article asset contract", () => {
