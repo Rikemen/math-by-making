@@ -1,16 +1,5 @@
-import { computed, onUnmounted, watch } from "vue";
-import { useStore } from "@/store/index";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import router from "@/router";
-
-export const useUser = () => {
-  const store = useStore();
-  return computed(() => store.user);
-};
-export const useIsSignedIn = () => {
-  const store = useStore();
-  return computed(() => store.isSignedIn);
-};
 
 export const useLang = () => {
   const i18n = useI18n();
@@ -34,45 +23,3 @@ export const sleep = (milliseconds: number) =>
       resolve(true);
     }, milliseconds);
   });
-
-export const useLocalizedRoute = () => {
-  const { localizedUrl } = useLang();
-
-  return (path: string) => {
-    router.push(localizedUrl(path));
-  };
-};
-
-export const noLoginPage = (path: string) => {
-  const store = useStore(),
-    routePush = useLocalizedRoute(),
-    unwatch = watch(
-      () => store.user,
-      (user) => {
-        if (user) {
-          routePush(path);
-        }
-      },
-      { immediate: true },
-    );
-  onUnmounted(() => {
-    unwatch();
-  });
-};
-
-export const requireLogin = (path: string) => {
-  const store = useStore(),
-    routePush = useLocalizedRoute(),
-    unwatch = watch(
-      () => store.user,
-      (user) => {
-        if (user === null) {
-          routePush(path);
-        }
-      },
-      { immediate: true },
-    );
-  onUnmounted(() => {
-    unwatch();
-  });
-};

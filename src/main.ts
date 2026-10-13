@@ -1,6 +1,5 @@
 import { createApp } from "vue";
-import { createPinia } from "pinia";
-import { createHead } from '@unhead/vue/client'
+import { createHead } from "@unhead/vue/client";
 import { createI18n } from "vue-i18n";
 import App from "./App.vue";
 import "./index.css";
@@ -13,7 +12,6 @@ const i18n = createI18n(i18nConf);
 const app = createApp(App);
 const head = createHead();
 
-app.use(createPinia());
 app.use(router);
 app.use(i18n);
 app.use(i18nUtils);

@@ -21,13 +21,6 @@ const lang = {
     subjectsTitle: "科目から学ぶ",
     linearAlgebra: "線形代数",
   },
-  menu: {
-    top: "Home",
-    mypage: "マイページ",
-    signin: "ログイン",
-    signout: "ログアウト",
-    about: "Abount",
-  },
   languages,
 };
 

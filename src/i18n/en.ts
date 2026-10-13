@@ -21,13 +21,6 @@ const lang = {
     subjectsTitle: "Learn by subject",
     linearAlgebra: "Linear algebra",
   },
-  menu: {
-    top: "Home",
-    mypage: "MyPage",
-    signin: "SignIn",
-    signout: "SignOut",
-    about: "Abount",
-  },
   languages,
 };
 
