@@ -9,6 +9,9 @@ export default defineConfig({
     // Vue コンポーネントのテスト時に DOM API を利用可能にする
     environment: "jsdom",
     globals: true,
+    css: {
+      include: [/.+/],
+    },
   },
   define: {
     global: {},

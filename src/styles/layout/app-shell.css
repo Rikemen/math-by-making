@@ -1,0 +1,24 @@
+#app {
+  min-height: 100vh;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font-family:
+    Inter,
+    "Hiragino Sans",
+    "Yu Gothic",
+    Meiryo,
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-size: var(--font-size-base);
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 0.1875rem solid var(--color-focus);
+  outline-offset: 0.1875rem;
+}
