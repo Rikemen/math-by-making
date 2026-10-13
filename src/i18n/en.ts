@@ -27,6 +27,10 @@ const lang = {
     articlesTitle: "Lessons",
     empty: "Lessons are being prepared.",
   },
+  publication: {
+    published: "Available",
+    planned: "Coming soon",
+  },
   languages,
 };
 

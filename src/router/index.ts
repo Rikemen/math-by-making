@@ -6,11 +6,12 @@ import NotFound from "@/components/NotFound.vue";
 import Home from "@/views/Home.vue";
 import About from "@/views/About.vue";
 import Subject from "@/views/Subject.vue";
+import { isPublished } from "@/content/publication";
 import { getSubjectBySlug } from "@/content/selectors";
 
 export const knownSubjectGuard: NavigationGuard = (to) => {
   const { subjectSlug } = to.params;
-  if (typeof subjectSlug === "string" && getSubjectBySlug(subjectSlug)) return Promise.resolve(true);
+  if (typeof subjectSlug === "string" && isPublished(getSubjectBySlug(subjectSlug)?.status ?? "planned")) return Promise.resolve(true);
 
   return Promise.resolve({
     name: "NotFoundPage",

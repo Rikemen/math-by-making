@@ -1,10 +1,12 @@
 <template>
-  <article class="subject-card" :class="{ 'subject-card--published': subject.status === 'published' }">
-    <router-link v-if="subject.status === 'published'" class="subject-card__link" :to="localizedUrl(subject.href)">
+  <article class="subject-card" :class="{ 'subject-card--published': published }">
+    <router-link v-if="published" class="subject-card__link" :to="localizedUrl(subject.href)">
+      <PublicationStatusBadge :status="subject.status" />
       <h3 class="subject-card__title">{{ subject.title }}</h3>
       <p class="subject-card__description">{{ subject.description }}</p>
     </router-link>
     <div v-else class="subject-card__body">
+      <PublicationStatusBadge :status="subject.status" />
       <h3 class="subject-card__title">{{ subject.title }}</h3>
       <p class="subject-card__description">{{ subject.description }}</p>
     </div>
@@ -12,24 +14,31 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 
+import PublicationStatusBadge from "@/components/PublicationStatusBadge.vue";
+import { isPublished } from "@/content/publication";
 import type { SubjectMeta } from "@/content/types";
 import { useLang } from "@/utils/utils";
 
 export default defineComponent({
   name: "SubjectCard",
+  components: {
+    PublicationStatusBadge,
+  },
   props: {
     subject: {
       type: Object as PropType<SubjectMeta>,
       required: true,
     },
   },
-  setup() {
+  setup(props) {
     const { localizedUrl } = useLang();
+    const published = computed(() => isPublished(props.subject.status));
 
     return {
       localizedUrl,
+      published,
     };
   },
 });

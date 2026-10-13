@@ -27,6 +27,10 @@ const lang = {
     articlesTitle: "教材",
     empty: "教材を準備しています。",
   },
+  publication: {
+    published: "公開中",
+    planned: "準備中",
+  },
   languages,
 };
 

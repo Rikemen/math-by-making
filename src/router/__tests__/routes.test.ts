@@ -25,4 +25,10 @@ describe("public routes", () => {
 
     expect(router.currentRoute.value.name).toBe("NotFoundPage");
   });
+
+  it("準備中の科目URLを404へ遷移する", async () => {
+    await router.push("/ja/subjects/calculus");
+
+    expect(router.currentRoute.value.name).toBe("NotFoundPage");
+  });
 });

@@ -1,10 +1,12 @@
 <template>
   <article class="article-card">
-    <a v-if="article.status === 'published'" class="article-card__link" :href="article.href">
+    <a v-if="published" class="article-card__link" :href="article.href">
+      <PublicationStatusBadge :status="article.status" />
       <h3 class="article-card__title">{{ article.title }}</h3>
       <p class="article-card__description">{{ article.description }}</p>
     </a>
     <div v-else class="article-card__body">
+      <PublicationStatusBadge :status="article.status" />
       <h3 class="article-card__title">{{ article.title }}</h3>
       <p class="article-card__description">{{ article.description }}</p>
     </div>
@@ -12,17 +14,29 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 
+import PublicationStatusBadge from "@/components/PublicationStatusBadge.vue";
+import { isPublished } from "@/content/publication";
 import type { ArticleMeta } from "@/content/types";
 
 export default defineComponent({
   name: "ArticleCard",
+  components: {
+    PublicationStatusBadge,
+  },
   props: {
     article: {
       type: Object as PropType<ArticleMeta>,
       required: true,
     },
+  },
+  setup(props) {
+    const published = computed(() => isPublished(props.article.status));
+
+    return {
+      published,
+    };
   },
 });
 </script>

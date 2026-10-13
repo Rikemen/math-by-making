@@ -46,6 +46,7 @@ describe("SubjectCard", () => {
 
     expect(link.props("to")).toBe("/ja/subjects/linear-algebra");
     expect(wrapper.text()).toContain("線形代数");
+    expect(wrapper.text()).toContain("公開中");
   });
 
   it("準備中の科目をリンクにしない", () => {
@@ -53,5 +54,6 @@ describe("SubjectCard", () => {
 
     expect(wrapper.findComponent(RouterLinkStub).exists()).toBe(false);
     expect(wrapper.text()).toContain("微分積分");
+    expect(wrapper.text()).toContain("準備中");
   });
 });
