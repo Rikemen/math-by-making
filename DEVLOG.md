@@ -226,7 +226,17 @@ Phase 3完了。次はPhase 4で線形写像のサンプル教材を公開配置
 - ローカルブラウザ: 記事シェル、学習目標、MathJax本文、座学・実装タブ、p5キャンバス、GitHub導線、戻るリンクを確認。
 - クリックで実装タブへ切り替わり、キャンバス操作で`playing`と`paused`が切り替わることを確認。左右キー操作はjsdomテストで確認。
 - 390×844のブラウザ上書きで、有効レイアウト幅354pxに対しdocument幅354px、キャンバス約321pxとなり、横スクロールがないことを確認。
-- Phase 4の変更はFirebase Hostingへ未デプロイ。実機スマートフォンのタッチ、音声読み上げ、外部GitHubリンクの到達確認も未実施。
+- Phase 4の変更をFirebase Hostingへデプロイ済み。実機スマートフォンのタッチ、音声読み上げ、外部GitHubリンクの到達確認は未実施。
+
+### Phase 4 Hosting配信記録（2026-10-13 11:21 JST）
+
+- 配信前に `npm test`（15ファイル、53テスト）、`npm run lint`、`npm run build` がすべて成功。
+- `npx -y firebase-tools@latest deploy --only hosting:app --project math-by-making` を実行し、`dist` の23ファイル（新規アップロード12ファイル）を `https://math-by-making.web.app` へ公開。
+- 本番ブラウザでホーム、`/ja/subjects/linear-algebra`、`/articles/linear-algebra/linear-mapping/` の表示を確認。
+- 本番記事で座学・実装タブのクリックと左右キー操作、キャンバスの `playing` / `paused` 切り替え、状態文言の更新を確認。
+- 390×844の本番表示でviewport幅とdocument幅がともに390px、キャンバス幅356pxとなり、横スクロールがないことを確認。
+- Hostingのみを配信し、Functions・Firestore・Rulesは対象外。未配信の `hono_server`、`express_server`、`express_server_v2` を参照する既存rewriteについて警告が出たが、Hostingの公開は成功。
+- GitHub教材リンクは `main` の未pushコミットを参照するため、push完了までは到達未確認。実機スマートフォンのタッチ操作と音声読み上げも未確認。
 
 Phase 4完了。次はPhase 5で学習目標チェック、4択問題、回答フィードバック、端末内進捗保存を追加する。
 
