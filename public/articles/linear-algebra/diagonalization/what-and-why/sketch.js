@@ -102,7 +102,7 @@ function draw() {
     // 1. 変形グリッドを描画
     drawTransformedGrid(m00, m01, m10, m11, scaleFactor);
 
-    // 2. 固有ベクトルの軸（特等席の軸）を描画
+    // 2. 固有ベクトルの軸（固有空間の軸）を描画
     drawEigenAxes(scaleFactor);
 
     // 3. 標準基底ベクトル (e1, e2) の行き先を描画

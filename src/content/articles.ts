@@ -19,7 +19,7 @@ export const diagonalizationArticle: ArticleMeta = {
   slug: diagonalizationSlug,
   subjectSlug: linearAlgebraSubject.slug,
   title: "行列の対角化",
-  description: "空間の変換を特等席の軸から見直し、複雑な計算を劇的に単純化する対角化の全体像を学びます。",
+  description: "固有ベクトルを基底に選んで行列を対角行列で表す「対角化」の定義と、それによって累乗などの計算が簡単になる理由を学びます。",
   status: "published",
   isSummary: true,
   href: `/articles/${linearAlgebraSubject.slug}/${diagonalizationSlug}/`,
