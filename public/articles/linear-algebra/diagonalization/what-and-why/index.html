@@ -176,7 +176,32 @@
                     となります。つまり \( D = P^{-1} A P \) は、<strong>「固有ベクトルを基底にして成分（係数）を表したときに、\( A \) を掛ける操作を表す行列」</strong>です。\( D \) は対角行列なので、各固有ベクトル成分の係数 \( c_1, c_2 \) はそれぞれ \( \lambda_1, \lambda_2 \) 倍されるだけで、互いに混ざりません。
                 </p>
                 <p>
-                    例: \( \vec{x} = \begin{pmatrix} 2 \\ 0 \end{pmatrix} = 1\vec{v}_1 + (-1)\vec{v}_2 \) のとき、固有ベクトル基底での係数は \( \vec{c} = \begin{pmatrix} 1 \\ -1 \end{pmatrix} \) です。変換後のベクトル \( A\vec{x} \) を同じ固有ベクトル基底で表したときの係数は \( D\vec{c} = \begin{pmatrix} 3 \\ -1 \end{pmatrix} \) となり、実際のベクトルは \( 3\vec{v}_1 - 1\vec{v}_2 = \begin{pmatrix} 4 \\ 2 \end{pmatrix} \) です。これは直接計算した \( A\vec{x} = \begin{pmatrix} 2 \cdot 2 + 1 \cdot 0 \\ 1 \cdot 2 + 2 \cdot 0 \end{pmatrix} = \begin{pmatrix} 4 \\ 2 \end{pmatrix} \) と完全に一致します。
+                    具体例（前提: \( A = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix} \)、固有ベクトル \( \vec{v}_1 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}, \vec{v}_2 = \begin{pmatrix} -1 \\ 1 \end{pmatrix} \)、固有値 \( \lambda_1 = 3, \lambda_2 = 1 \)、対角行列 \( D = \begin{pmatrix} 3 & 0 \\ 0 & 1 \end{pmatrix} \)）:
+                </p>
+                <p>
+                    ベクトル \( \vec{x} = \begin{pmatrix} 2 \\ 0 \end{pmatrix} \) を固有ベクトル基底の組み合わせで表すと、
+                    \[
+                    \vec{x} = 1\vec{v}_1 + (-1)\vec{v}_2 = 1\begin{pmatrix} 1 \\ 1 \end{pmatrix} - 1\begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 1 - (-1) \\ 1 - 1 \end{pmatrix} = \begin{pmatrix} 2 \\ 0 \end{pmatrix}
+                    \]
+                    より、固有ベクトル基底での係数は \( \vec{c} = \begin{pmatrix} 1 \\ -1 \end{pmatrix} \) です。
+                </p>
+                <p>
+                    変換後のベクトル \( A\vec{x} \) を同じ固有ベクトル基底で表したときの係数は、\( D \) を左から掛けて
+                    \[
+                    D\vec{c} = \begin{pmatrix} 3 & 0 \\ 0 & 1 \end{pmatrix} \begin{pmatrix} 1 \\ -1 \end{pmatrix} = \begin{pmatrix} 3 \cdot 1 \\ 1 \cdot (-1) \end{pmatrix} = \begin{pmatrix} 3 \\ -1 \end{pmatrix}
+                    \]
+                    となります（各固有ベクトルの係数がそれぞれ \( \lambda_1 = 3 \) 倍、\( \lambda_2 = 1 \) 倍されます）。
+                </p>
+                <p>
+                    この係数から実際のベクトルを復元すると、
+                    \[
+                    3\vec{v}_1 - 1\vec{v}_2 = 3\begin{pmatrix} 1 \\ 1 \end{pmatrix} - 1\begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 3 - (-1) \\ 3 - 1 \end{pmatrix} = \begin{pmatrix} 4 \\ 2 \end{pmatrix}
+                    \]
+                    です。これは直接計算した
+                    \[
+                    A\vec{x} = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix} \begin{pmatrix} 2 \\ 0 \end{pmatrix} = \begin{pmatrix} 2 \cdot 2 + 1 \cdot 0 \\ 1 \cdot 2 + 2 \cdot 0 \end{pmatrix} = \begin{pmatrix} 4 \\ 2 \end{pmatrix}
+                    \]
+                    と完全に一致します。
                 </p>
                 <p>
                     なお、独立な固有ベクトルが \( n \) 本揃わない行列（例: \( \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix} \)）は対角化できません。条件の詳細はシリーズ第4回で扱います。
