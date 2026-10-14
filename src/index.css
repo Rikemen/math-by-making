@@ -2,3 +2,4 @@
 @import "./styles/base/tokens.css";
 @import "./styles/base/reset.css";
 @import "./styles/layout/app-shell.css";
+@import "./styles/components/pi-loader.css";

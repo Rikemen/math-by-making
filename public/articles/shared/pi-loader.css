@@ -1,0 +1,141 @@
+/* Math by Making - Pi Loading Animation */
+
+.pi-loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(255 255 255 / 88%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.24s ease;
+  pointer-events: none;
+}
+
+.pi-loader-overlay.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.pi-loader-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: min(calc(100vw - 32px), 420px);
+  padding: 24px 28px;
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #bfdbfe);
+  border-radius: var(--radius-lg, 1.25rem);
+  box-shadow: 0 12px 32px -4px rgb(29 78 216 / 14%), 0 4px 12px -2px rgb(29 78 216 / 8%);
+  text-align: center;
+}
+
+.pi-loader-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: var(--color-brand-50, #eff6ff);
+  border: 1px solid var(--color-brand-300, #93c5fd);
+  border-radius: 9999px;
+  color: var(--color-brand-700, #1d4ed8);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.pi-loader-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--color-brand-300, #93c5fd);
+  border-top-color: var(--color-brand-700, #1d4ed8);
+  border-radius: 50%;
+  animation: pi-loader-spin 0.75s linear infinite;
+}
+
+@keyframes pi-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pi-loader-expression {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--color-surface-soft, #f8fafc);
+  border: 1px solid var(--color-border, #bfdbfe);
+  border-radius: var(--radius-md, 0.75rem);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.pi-loader-symbol {
+  flex-shrink: 0;
+  color: var(--color-brand-700, #1d4ed8);
+  margin-right: 6px;
+  user-select: none;
+}
+
+.pi-loader-digits-wrapper {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+.pi-loader-digits {
+  color: var(--color-text, #0f172a);
+  letter-spacing: 0.04em;
+}
+
+.pi-loader-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: var(--color-brand-700, #1d4ed8);
+  animation: pi-loader-blink 0.75s step-end infinite;
+}
+
+@keyframes pi-loader-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.pi-loader-footer {
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #475569);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pi-loader-spinner {
+    animation: none;
+  }
+  .pi-loader-cursor {
+    animation: none;
+  }
+}

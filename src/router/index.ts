@@ -8,6 +8,7 @@ import About from "@/views/About.vue";
 import Subject from "@/views/Subject.vue";
 import { isPublished } from "@/content/publication";
 import { getSubjectBySlug } from "@/content/selectors";
+import { startPiLoader, stopPiLoader } from "@/utils/piLoader";
 
 export const knownSubjectGuard: NavigationGuard = (to) => {
   const { subjectSlug } = to.params;
@@ -57,9 +58,20 @@ const routes: Array<RouteRecordRaw> = [
     component: NotFound,
   },
 ];
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from) => {
+  if (to.path !== from.path) {
+    startPiLoader();
+  }
+});
+
+router.afterEach(() => {
+  stopPiLoader();
 });
 
 export default router;

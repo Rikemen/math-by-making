@@ -8,6 +8,7 @@ import router from "./router";
 import i18nConf from "./i18n/index";
 import { i18nUtils } from "./i18n/utils";
 import { registerPwa } from "./pwa/appUpdate";
+import { setupGlobalPiLoader } from "./utils/piLoader";
 
 const i18n = createI18n(i18nConf);
 const app = createApp(App);
@@ -19,6 +20,8 @@ app.use(i18nUtils);
 app.use(head);
 
 app.mount("#app");
+
+setupGlobalPiLoader();
 
 if (import.meta.env.PROD) {
   registerPwa().catch(() => {

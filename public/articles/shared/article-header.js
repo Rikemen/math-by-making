@@ -1,3 +1,5 @@
+import { initializePiPageLoader } from "./pi-loader.js";
+
 const APP_CACHE_PREFIX = "math-by-making-";
 
 const createBrowserDependencies = () => {
@@ -84,6 +86,8 @@ export const initializeArticleHeader = (root = document, refresh = refreshArticl
 };
 
 const initializeCurrentArticleHeader = () => {
+    initializePiPageLoader();
+
     const articleHeader = document.querySelector("[data-article-header]");
 
     if (articleHeader) {
