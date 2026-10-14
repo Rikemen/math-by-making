@@ -92,4 +92,13 @@ describe("diagonalization what-and-why article shell", () => {
     expect(tabs).toHaveLength(2);
     expect(canvas).not.toBeNull();
   });
+
+  it("記事スタイルに枠はみ出し防止（MathJax横スクロール・タイトル折り返し・ボックス防壁）を定義する", () => {
+    const styles = fs.readFileSync(path.resolve(whatAndWhyDirectory, "article.css"), "utf8");
+
+    expect(styles).toContain('mjx-container[display="true"]');
+    expect(styles).toContain("overflow-x: auto");
+    expect(styles).toContain("overflow-wrap: break-word");
+    expect(styles).not.toMatch(/\.article-title__english\s*\{[^}]*white-space:\s*nowrap/);
+  });
 });

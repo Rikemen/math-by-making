@@ -81,8 +81,21 @@ h1 {
     line-height: 1.2;
 }
 
+p,
+li,
+h1,
+h2,
+h3,
+h4 {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
 .article-title__english {
-    white-space: nowrap;
+    display: inline-block;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
 .article-lead {
@@ -195,8 +208,25 @@ p {
     margin: 0 0 16px;
 }
 
+mjx-container {
+    max-width: 100% !important;
+}
+
+mjx-container[display="true"] {
+    display: block !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    padding-block: 4px;
+}
+
 .definition-box,
 .theorem-box {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
     margin: 24px 0;
     padding: 20px 24px;
     border: 1px solid var(--color-border);
@@ -217,6 +247,10 @@ p {
 
 .motivation-box,
 .instruction {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
     margin: 24px 0;
     padding: 20px 24px;
     border: 1px solid var(--color-border);
@@ -226,6 +260,10 @@ p {
 }
 
 .highlight {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
     margin: 20px 0;
     padding: 16px 20px;
     border: 1px solid var(--color-border);
@@ -245,9 +283,12 @@ p {
 }
 
 pre {
+    max-width: 100%;
+    box-sizing: border-box;
     margin: 20px 0;
     padding: 18px;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     border-radius: 8px;
     background: var(--article-code);
     color: #f8fafc;
@@ -257,6 +298,9 @@ pre {
 }
 
 code {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
     padding: 2px 6px;
     border-radius: 4px;
     background: var(--color-brand-100);
@@ -269,6 +313,7 @@ pre code {
     padding: 0;
     background: transparent;
     color: inherit;
+    word-break: normal;
 }
 
 .canvas-container {

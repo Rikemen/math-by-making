@@ -64,4 +64,13 @@ describe("diagonalization summary article shell", () => {
     const link = document.querySelector<HTMLAnchorElement>('a[href="what-and-why/"]');
     expect(link).not.toBeNull();
   });
+
+  it("記事スタイルに枠はみ出し防止（MathJax横スクロール・タイトル折り返し・ボックス防壁）を定義する", () => {
+    const styles = fs.readFileSync(path.resolve(diagonalizationDirectory, "article.css"), "utf8");
+
+    expect(styles).toContain('mjx-container[display="true"]');
+    expect(styles).toContain("overflow-x: auto");
+    expect(styles).toContain("overflow-wrap: break-word");
+    expect(styles).not.toMatch(/\.article-title__english\s*\{[^}]*white-space:\s*nowrap/);
+  });
 });

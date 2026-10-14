@@ -86,9 +86,13 @@
         border-left-width: 4px;
     }
 
+    .definition-box,
+    .theorem-box,
+    .motivation-box,
     .instruction,
     .highlight {
         padding: 14px 12px;
+        border-left-width: 4px;
     }
 
     .math-block {

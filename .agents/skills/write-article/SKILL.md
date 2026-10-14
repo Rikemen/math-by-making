@@ -1,6 +1,6 @@
 ---
 name: write-article
-description: 数学教材記事（public/articles/ 配下の HTML・README、src/content/articles.ts の説明文）を新規作成・加筆・修正するときに必ず使うスキル。比喩・誇張・主語のない抽象表現（ポエム）を禁止し、定義・式・具体例で書くための執筆規約とセルフチェック手順を定める。
+description: 数学教材記事（public/articles/ 配下の HTML・README、src/content/articles.ts の説明文）を新規作成・加筆・修正するときに必ず使うスキル。比喩・誇張・主語のない抽象表現（ポエム）を禁止し、定義・式・具体例で書くための執筆規約、数式や要素の枠はみ出しを防止するCSS・レイアウト設計規約、およびセルフチェック手順を定める。
 ---
 
 # 教材記事執筆スキル
@@ -64,7 +64,66 @@ description: 数学教材記事（public/articles/ 配下の HTML・README、src
 - 数式は MathJax の `\( ... \)`（インライン）と `\[ ... \]`（ディスプレイ）で書く。
 - 絵文字は使わず、アイコンは既存記事と同じ `svg.article-icon` を使う。
 
-## 6. セルフチェック（記事を書き終えたら必ず実行）
+## 6. レイアウト・枠はみ出し防止規約（CSS・HTML）
+
+記事内のコンテンツ（数式、タイトル、カード、コード、表）が親コンテナやボックスの枠線を右側にはみ出す（横オーバーフローする）ことを厳禁とする。次のルールを全記事のCSS・HTMLで遵守する。
+
+### 6.1 数式（MathJax）のオーバーフロー防止
+- 行列式や長い数式が `.definition-box`、`.theorem-box`、`.motivation-box`、`.tab-content` などの枠線を突き破らないよう、必ず `article.css` で以下を定義する：
+  ```css
+  mjx-container {
+      max-width: 100% !important;
+  }
+
+  mjx-container[display="true"] {
+      display: block !important;
+      max-width: 100% !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      -webkit-overflow-scrolling: touch;
+      padding-block: 4px;
+  }
+  ```
+
+### 6.2 タイトル英名の折り返し許可
+- `.article-title__english` に `white-space: nowrap;` を指定してはならない。狭い画面幅や拡大表示時に親カードを突き抜ける原因となる。
+- 必ず折り返しを許可し、モバイルではブロック要素として改行させる：
+  ```css
+  .article-title__english {
+      display: inline-block;
+      max-width: 100%;
+      overflow-wrap: break-word;
+      white-space: normal;
+  }
+
+  @media (max-width: 40rem) {
+      .article-title__english {
+          display: block;
+          margin-top: 6px;
+      }
+  }
+  ```
+
+### 6.3 枠付きボックス・コンテナの防壁設計
+- `.definition-box`, `.theorem-box`, `.motivation-box`, `.learning-goals`, `.highlight`, `.column`, `.source-card`, `.roadmap-card` などの枠線・背景付きボックスには必ず以下を指定する：
+  ```css
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  ```
+- フレックスやグリッドの子要素には `min-width: 0;` を明示し、子要素の内容による意図しない親幅拡張を防ぐ。
+
+### 6.4 コードブロック・テーブル・画像
+- `pre` には `max-width: 100%; box-sizing: border-box; overflow-x: auto; -webkit-overflow-scrolling: touch;` を指定する。
+- インライン `code` には `max-width: 100%; overflow-wrap: break-word; word-break: break-word;` を指定する。
+- テーブル要素には `display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;` を指定する。
+- 画像やキャンバスには `max-width: 100%; height: auto;` を指定する。
+
+### 6.5 本文テキスト・見出し
+- `p, li, dd, dt, h1, h2, h3, h4` に `overflow-wrap: break-word; word-break: break-word;` を指定し、長い英単語や数式記号での突き抜けを防ぐ。
+
+## 7. セルフチェック（記事を書き終えたら必ず実行）
 
 1. 次のコマンドで禁止表現が残っていないか確認する。ヒットした箇所は1つずつ書き換える。
 
@@ -72,10 +131,18 @@ description: 数学教材記事（public/articles/ 配下の HTML・README、src
    grep -nE "圧倒的|爆発的|劇的|驚く|瞬時|強力|秘密|魔法|特等席|観察|見つめ|乗り換え|都合|うまい具合|化け|ドミノ|複雑怪奇|解きほぐ|体感|に他なりません|本質" <対象ファイル>
    ```
 
-2. 各段落について、次の問いに文面だけで答えられるか確認する。答えられない段落は書き直す。
+2. 次のコマンドで枠はみ出しの原因となる `white-space: nowrap` が記事タイトルや本文に残っていないか確認する。
+
+   ```bash
+   grep -n "white-space:\s*nowrap" public/articles/**/*.css
+   ```
+   ※ `.tab-btn` などのボタン内でのみ許可し、`.article-title__english` や本文・ボックス要素には使用しないこと。
+
+3. 各段落について、次の問いに文面だけで答えられるか確認する。答えられない段落は書き直す。
    - 主語（何が）と対象（何に）と結果（どうなる）は書かれているか。
    - 出てくる用語は、それより前で定義されているか。
    - 「係数」「成分」「座標」「表現行列」を書いたとき、何の基底に関するものかが明記されているか。
    - 主張に式または数値例が付いているか。
    - 数値例は手計算で検算して正しいか。
-3. 既存テスト（`tests/articles/`）・`npm test`・`npm run lint`・`npm run build` を実行し、すべて通ることを確認する。
+   - モバイル幅（375px〜400px）で表示した際、ディスプレイ数式やタイトルが枠線の右側にはみ出さず、適切にスクロールまたは折り返されているか。
+4. 既存テスト（`tests/articles/`）・`npm test`・`npm run lint`・`npm run build` を実行し、すべて通ることを確認する。

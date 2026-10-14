@@ -81,8 +81,19 @@ h1 {
     line-height: 1.2;
 }
 
+h1,
+h2,
+h3,
+h4 {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
 .article-title__english {
-    white-space: nowrap;
+    display: inline-block;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
 .article-lead {
@@ -159,6 +170,9 @@ li {
 }
 
 .math-block {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     margin: 15px 0;
@@ -171,10 +185,17 @@ li {
     text-align: center;
 }
 
+mjx-container {
+    max-width: 100% !important;
+}
+
 mjx-container[display="true"] {
-    max-width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
+    display: block !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    padding-block: 4px;
 }
 
 .math-block--theorem {
@@ -183,6 +204,10 @@ mjx-container[display="true"] {
 
 .instruction,
 .highlight {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
     margin-bottom: 20px;
     padding: 15px;
     border-left: 4px solid var(--color-focus);
@@ -192,6 +217,10 @@ mjx-container[display="true"] {
 }
 
 .column {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
     margin-top: 30px;
     padding: 25px;
     border: 1px solid var(--color-border);
