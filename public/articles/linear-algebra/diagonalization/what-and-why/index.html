@@ -166,13 +166,17 @@
 
                 <h3>2.2 \( P^{-1} A P \) が表しているもの</h3>
                 <p>
-                    ベクトル \( \vec{x} \) を固有ベクトルの組み合わせ \( \vec{x} = c_1 \vec{v}_1 + c_2 \vec{v}_2 \) で表したときの係数を \( \vec{c} = \begin{pmatrix} c_1 \\ c_2 \end{pmatrix} \) とします。これは \( \vec{x} = P\vec{c} \)、つまり \( \vec{c} = P^{-1}\vec{x} \) と同じ意味です。
+                    ベクトル \( \vec{x} \) を固有ベクトルの組み合わせ \( \vec{x} = c_1 \vec{v}_1 + c_2 \vec{v}_2 \) で表したときの係数ベクトルを \( \vec{c} = \begin{pmatrix} c_1 \\ c_2 \end{pmatrix} \) とします。\( P = (\vec{v}_1 \ \vec{v}_2) \) より \( \vec{x} = P\vec{c} \) なので、両辺に左から \( P^{-1} \) を掛けると \( \vec{c} = P^{-1}\vec{x} \) です（任意のベクトルを固有ベクトル基底で表した係数は、左から \( P^{-1} \) を掛けると求まります）。
                 </p>
                 <p>
-                    \( A\vec{x} \) の係数は \( P^{-1}(A\vec{x}) = P^{-1} A P \vec{c} = D\vec{c} \) です。つまり \( D = P^{-1} A P \) は、<strong>固有ベクトルを基底にして成分を表したときに、\( A \) を掛ける操作を表す行列</strong>です。\( D \) は対角行列なので、係数 \( c_1, c_2 \) はそれぞれ \( \lambda_1, \lambda_2 \) 倍されるだけで、互いに混ざりません。
+                    では、変換後のベクトル \( A\vec{x} \) を固有ベクトルの基底 \( \vec{v}_1, \vec{v}_2 \) で表したときの係数はどうなるでしょうか？同じように左から \( P^{-1} \) を掛けると
+                    \[
+                    P^{-1}(A\vec{x}) = P^{-1} A (P\vec{c}) = (P^{-1} A P) \vec{c} = D\vec{c}
+                    \]
+                    となります。つまり \( D = P^{-1} A P \) は、<strong>「固有ベクトルを基底にして成分（係数）を表したときに、\( A \) を掛ける操作を表す行列」</strong>です。\( D \) は対角行列なので、各固有ベクトル成分の係数 \( c_1, c_2 \) はそれぞれ \( \lambda_1, \lambda_2 \) 倍されるだけで、互いに混ざりません。
                 </p>
                 <p>
-                    例: \( \vec{x} = \begin{pmatrix} 2 \\ 0 \end{pmatrix} = 1\vec{v}_1 + (-1)\vec{v}_2 \) なので \( \vec{c} = \begin{pmatrix} 1 \\ -1 \end{pmatrix} \) です。\( D\vec{c} = \begin{pmatrix} 3 \\ -1 \end{pmatrix} \) より \( A\vec{x} = 3\vec{v}_1 - 1\vec{v}_2 = \begin{pmatrix} 4 \\ 2 \end{pmatrix} \) となり、直接計算した \( A\vec{x} = \begin{pmatrix} 2 \cdot 2 + 1 \cdot 0 \\ 1 \cdot 2 + 2 \cdot 0 \end{pmatrix} = \begin{pmatrix} 4 \\ 2 \end{pmatrix} \) と一致します。
+                    例: \( \vec{x} = \begin{pmatrix} 2 \\ 0 \end{pmatrix} = 1\vec{v}_1 + (-1)\vec{v}_2 \) のとき、固有ベクトル基底での係数は \( \vec{c} = \begin{pmatrix} 1 \\ -1 \end{pmatrix} \) です。変換後のベクトル \( A\vec{x} \) を同じ固有ベクトル基底で表したときの係数は \( D\vec{c} = \begin{pmatrix} 3 \\ -1 \end{pmatrix} \) となり、実際のベクトルは \( 3\vec{v}_1 - 1\vec{v}_2 = \begin{pmatrix} 4 \\ 2 \end{pmatrix} \) です。これは直接計算した \( A\vec{x} = \begin{pmatrix} 2 \cdot 2 + 1 \cdot 0 \\ 1 \cdot 2 + 2 \cdot 0 \end{pmatrix} = \begin{pmatrix} 4 \\ 2 \end{pmatrix} \) と完全に一致します。
                 </p>
                 <p>
                     なお、独立な固有ベクトルが \( n \) 本揃わない行列（例: \( \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix} \)）は対角化できません。条件の詳細はシリーズ第4回で扱います。
