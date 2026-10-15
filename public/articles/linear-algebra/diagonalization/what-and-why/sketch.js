@@ -1,210 +1,454 @@
-let isAnimating = true;
-let currentT = 0;
-let animationDirection = 1;
+// 行列累乗の計算量・実行時間比較グラフ (p5.js)
 
-// 行列 A = [[2, 1], [1, 2]]
-// 固有値: λ1 = 3, λ2 = 1
-// 固有ベクトル: v1 = [1, 1]^T, v2 = [-1, 1]^T
-const matrixA = [
-    [2, 1],
-    [1, 2]
-];
+// 状態管理
+let currentMode = 'operations'; // 'operations' (計算回数) | 'time' (実測時間)
+let isBenchmarking = false;
+
+// サンプル行列 A = [[2, 1], [1, 2]], P = [[1, -1], [1, 1]], 固有値 = [3, 1]
+const matrixA = new Matrix(2, 2);
+matrixA.set([[2, 1], [1, 2]]);
+
+const matrixP = new Matrix(2, 2);
+matrixP.set([[1, -1], [1, 1]]);
+
+const eigenvalues = [3, 1];
+
+// 計算回数モードのデータ (n = 1 .. 50)
+const opNValues = [];
+for (let n = 1; n <= 50; n++) {
+    opNValues.push(n);
+}
+
+// 実測時間モードの n 値 (1, 5, 10, ..., 50)
+const timeNValues = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+const benchmarkRuns = 1000;
+
+// 実測時間の初期キャッシュ（初回計測前の初期目安値、計測後に上書き）
+let benchmarkDirectTimes = timeNValues.map(n => Number((0.0035 * n).toFixed(3)));
+let benchmarkDiagonalTimes = timeNValues.map(() => 0.025);
+
+// ホバー追従
+let hoveredNIndex = -1;
 
 function getResponsiveCanvasSize() {
     const container = document.getElementById('diagonalization-canvas');
-    return MathByMakingCanvas.calculateCanvasSize(container ? container.clientWidth : 0, window.innerWidth);
+    const width = MathByMakingCanvas.calculateCanvasSize(container ? container.clientWidth : 0, window.innerWidth);
+    // アスペクト比: 幅に応じて高さを 320px〜380px に設定
+    const height = Math.max(300, Math.min(380, Math.floor(width * 0.62)));
+    return { width, height };
 }
 
-function updateAnimationStatus() {
-    const container = document.getElementById('diagonalization-canvas');
-    const status = document.getElementById('canvas-animation-status');
-
-    if (container) container.dataset.animationState = isAnimating ? 'playing' : 'paused';
-    if (status) status.textContent = `アニメーション: ${isAnimating ? '再生中' : '一時停止中'}`;
+function updateStatusText(message) {
+    const statusEl = document.getElementById('canvas-benchmark-status');
+    if (statusEl) {
+        statusEl.textContent = message;
+    }
 }
 
-function toggleAnimation() {
-    isAnimating = !isAnimating;
-    updateAnimationStatus();
+// 1. 通常の行列積による累乗（直接法）
+function powerDirect(a, n) {
+    let result = Matrix.createIdentity(a.rows);
+    for (let i = 0; i < n; i++) {
+        result = Matrix.multiplyMatrices(result, a);
+    }
+    return result;
+}
+
+// 2. 対角化による累乗 (A^n = P * D^n * P^-1)
+function powerDiagonalized(p, eigs, n) {
+    const dn = new Matrix(eigs.length, eigs.length);
+    for (let i = 0; i < eigs.length; i++) {
+        dn.data[i][i] = Math.pow(eigs[i], n);
+    }
+    const pInv = p.inverse();
+    const temp = Matrix.multiplyMatrices(p, dn);
+    return Matrix.multiplyMatrices(temp, pInv);
+}
+
+// 実測ベンチマーク実行
+function executeBenchmark() {
+    if (isBenchmarking) return;
+    isBenchmarking = true;
+    updateStatusText(`ベンチマーク計測中... (${benchmarkRuns}回反復)`);
+
+    const runBtn = document.getElementById('btn-run-benchmark');
+    if (runBtn) runBtn.disabled = true;
+
+    // UIの描画更新を阻害しないよう setTimeout で非同期実行
+    setTimeout(() => {
+        const directTimes = [];
+        const diagonalTimes = [];
+
+        // ウォームアップ
+        powerDirect(matrixA, 5);
+        powerDiagonalized(matrixP, eigenvalues, 5);
+
+        for (const n of timeNValues) {
+            // 直接法の計測
+            const t0 = performance.now();
+            for (let r = 0; r < benchmarkRuns; r++) {
+                powerDirect(matrixA, n);
+            }
+            const t1 = performance.now();
+            directTimes.push(Number((t1 - t0).toFixed(2)));
+
+            // 対角化法の計測
+            const t2 = performance.now();
+            for (let r = 0; r < benchmarkRuns; r++) {
+                powerDiagonalized(matrixP, eigenvalues, n);
+            }
+            const t3 = performance.now();
+            diagonalTimes.push(Number((t3 - t2).toFixed(2)));
+        }
+
+        benchmarkDirectTimes = directTimes;
+        benchmarkDiagonalTimes = diagonalTimes;
+        isBenchmarking = false;
+
+        if (runBtn) runBtn.disabled = false;
+
+        const maxN = timeNValues[timeNValues.length - 1];
+        const lastDirect = directTimes[directTimes.length - 1];
+        const lastDiag = diagonalTimes[diagonalTimes.length - 1];
+        const ratio = lastDiag > 0 ? (lastDirect / lastDiag).toFixed(1) : "-";
+
+        updateStatusText(`実測完了 (${benchmarkRuns}回反復): n=${maxN} では対角化法が約 ${ratio} 倍高速に完了`);
+        redraw();
+    }, 50);
 }
 
 function setup() {
-    const canvasSize = getResponsiveCanvasSize();
-    const canvas = createCanvas(canvasSize, canvasSize);
+    const { width: w, height: h } = getResponsiveCanvasSize();
+    const canvas = createCanvas(w, h);
     canvas.parent('diagonalization-canvas');
-    canvas.attribute('aria-label', '固有ベクトル方向への拡大縮小と対角化の幾何学的アニメーション');
-    canvas.elt.addEventListener('click', toggleAnimation);
-    updateAnimationStatus();
+    canvas.attribute('aria-label', '累乗計算における直接法と対角化法の計算量・実行時間比較グラフ');
 
-    // 行列演算のデモ計算をコンソールに出力
-    demonstrateMatrixDiagonalization();
+    setupDomControls();
+    updateStatusText('表示中: 計算回数（乗算回数）の理論値比較。グラフ上で詳細を確認できます。');
+    noLoop(); // 静的グラフ。ホバーやモード切り替え時に redraw() を呼ぶ
 }
 
-function demonstrateMatrixDiagonalization() {
-    const A = new Matrix(2, 2);
-    A.set([[2, 1], [1, 2]]);
+function setupDomControls() {
+    const btnOps = document.getElementById('btn-mode-operations');
+    const btnTime = document.getElementById('btn-mode-time');
+    const btnRun = document.getElementById('btn-run-benchmark');
 
-    // P = [[1, -1], [1, 1]] (固有ベクトルを並べた行列)
-    const P = new Matrix(2, 2);
-    P.set([[1, -1], [1, 1]]);
+    if (btnOps) {
+        btnOps.addEventListener('click', () => {
+            currentMode = 'operations';
+            btnOps.classList.add('active');
+            btnOps.setAttribute('aria-pressed', 'true');
+            if (btnTime) {
+                btnTime.classList.remove('active');
+                btnTime.setAttribute('aria-pressed', 'false');
+            }
+            hoveredNIndex = -1;
+            updateStatusText('表示中: 計算回数（乗算回数）の理論値比較。直接法は O(n) で増加、対角化法は O(1) で一定。');
+            redraw();
+        });
+    }
 
-    const P_inv = P.inverse();
+    if (btnTime) {
+        btnTime.addEventListener('click', () => {
+            currentMode = 'time';
+            btnTime.classList.add('active');
+            btnTime.setAttribute('aria-pressed', 'true');
+            if (btnOps) {
+                btnOps.classList.remove('active');
+                btnOps.setAttribute('aria-pressed', 'false');
+            }
+            hoveredNIndex = -1;
+            updateStatusText(`表示中: ブラウザ実測時間 (${benchmarkRuns}回反復)。「実測ベンチマークを実行」で再測定できます。`);
+            redraw();
+        });
+    }
 
-    // D = P^-1 * A * P
-    const temp = Matrix.multiplyMatrices(P_inv, A);
-    const D = Matrix.multiplyMatrices(temp, P);
-
-    console.log("=== 行列 A の対角化検証 ===");
-    console.log("元の行列 A:");
-    console.table(A.data);
-    console.log("固有ベクトルを並べた行列 P:");
-    console.table(P.data);
-    console.log("対角化後の行列 D = P⁻¹AP (対角成分が固有値 3, 1):");
-    console.table(D.data);
+    if (btnRun) {
+        btnRun.addEventListener('click', () => {
+            // 自動的に実測時間モードに切り替えて実行
+            if (btnTime && !btnTime.classList.contains('active')) {
+                btnTime.click();
+            }
+            executeBenchmark();
+        });
+    }
 }
 
 function windowResized() {
-    const canvasSize = getResponsiveCanvasSize();
-    resizeCanvas(canvasSize, canvasSize);
+    const { width: w, height: h } = getResponsiveCanvasSize();
+    resizeCanvas(w, h);
+    redraw();
+}
+
+function mouseMoved() {
+    handlePointer(mouseX, mouseY);
+}
+
+function touchMoved() {
+    if (touches.length > 0) {
+        handlePointer(touches[0].x, touches[0].y);
+    }
+    return false; // スクロール防止
+}
+
+function handlePointer(px, py) {
+    const padLeft = 64;
+    const padRight = 24;
+    const padTop = 44;
+    const padBottom = 48;
+    const plotW = width - padLeft - padRight;
+    const plotH = height - padTop - padBottom;
+
+    if (px >= padLeft && px <= padLeft + plotW && py >= padTop && py <= padTop + plotH) {
+        const nList = currentMode === 'operations' ? opNValues : timeNValues;
+        const normX = (px - padLeft) / plotW;
+        const targetN = normX * (nList[nList.length - 1] - nList[0]) + nList[0];
+
+        // 最も近い n を探す
+        let closestIdx = 0;
+        let minDiff = Infinity;
+        for (let i = 0; i < nList.length; i++) {
+            const diff = Math.abs(nList[i] - targetN);
+            if (diff < minDiff) {
+                minDiff = diff;
+                closestIdx = i;
+            }
+        }
+
+        if (hoveredNIndex !== closestIdx) {
+            hoveredNIndex = closestIdx;
+            redraw();
+        }
+    } else if (hoveredNIndex !== -1) {
+        hoveredNIndex = -1;
+        redraw();
+    }
 }
 
 function draw() {
     background(248, 250, 252); // var(--color-surface-soft)
 
-    if (isAnimating) {
-        currentT += 0.008 * animationDirection;
-        if (currentT >= 1) {
-            currentT = 1;
-            animationDirection = -1;
-        } else if (currentT <= 0) {
-            currentT = 0;
-            animationDirection = 1;
+    const padLeft = 64;
+    const padRight = 24;
+    const padTop = 44;
+    const padBottom = 48;
+    const plotW = width - padLeft - padRight;
+    const plotH = height - padTop - padBottom;
+
+    const nList = currentMode === 'operations' ? opNValues : timeNValues;
+    const maxN = nList[nList.length - 1];
+
+    let maxY = 420;
+    let yUnit = '回';
+    if (currentMode === 'operations') {
+        maxY = 420; // 8 * 50 = 400 + 余白
+        yUnit = '乗算回数 (回)';
+    } else {
+        const maxTime = Math.max(...benchmarkDirectTimes, ...benchmarkDiagonalTimes, 0.1);
+        maxY = Math.ceil(maxTime * 1.25 * 10) / 10;
+        yUnit = `実行時間 (ms / ${benchmarkRuns}回)`;
+    }
+
+    // 1. グリッド線とY軸ラベル
+    stroke(226, 232, 240);
+    strokeWeight(1);
+    fill(100, 116, 139);
+    textSize(11);
+    textAlign(RIGHT, CENTER);
+
+    const yTicks = 5;
+    for (let i = 0; i <= yTicks; i++) {
+        const val = (maxY / yTicks) * i;
+        const y = padTop + plotH - (plotH / yTicks) * i;
+        line(padLeft, y, padLeft + plotW, y);
+        noStroke();
+        text(currentMode === 'operations' ? Math.round(val) : val.toFixed(1), padLeft - 8, y);
+        stroke(226, 232, 240);
+    }
+
+    // 2. X軸目盛りとラベル
+    textAlign(CENTER, TOP);
+    const xStep = currentMode === 'operations' ? 10 : 10;
+    for (let n = 0; n <= maxN; n += xStep) {
+        const x = padLeft + (n / maxN) * plotW;
+        line(x, padTop, x, padTop + plotH);
+        noStroke();
+        text(n, x, padTop + plotH + 8);
+        stroke(226, 232, 240);
+    }
+
+    // 3. 軸タイトル
+    noStroke();
+    fill(71, 85, 105);
+    textSize(12);
+    textStyle(BOLD);
+    textAlign(CENTER, TOP);
+    text('累乗数 n', padLeft + plotW / 2, padTop + plotH + 26);
+
+    textAlign(LEFT, BOTTOM);
+    text(yUnit, padLeft, padTop - 12);
+    textStyle(NORMAL);
+
+    // 4. 折れ線グラフのプロット
+    // (A) 直接法 (赤色)
+    stroke(239, 68, 68);
+    strokeWeight(2.5);
+    noFill();
+    beginShape();
+    for (let i = 0; i < nList.length; i++) {
+        const n = nList[i];
+        const val = currentMode === 'operations' ? (8 * n) : benchmarkDirectTimes[i];
+        const x = padLeft + (n / maxN) * plotW;
+        const y = padTop + plotH - (val / maxY) * plotH;
+        vertex(x, y);
+    }
+    endShape();
+
+    // 直接法のポイント描画
+    fill(239, 68, 68);
+    for (let i = 0; i < nList.length; i++) {
+        const n = nList[i];
+        const val = currentMode === 'operations' ? (8 * n) : benchmarkDirectTimes[i];
+        const x = padLeft + (n / maxN) * plotW;
+        const y = padTop + plotH - (val / maxY) * plotH;
+        if (currentMode === 'time' || n % 5 === 0 || n === 1) {
+            circle(x, y, 5);
         }
     }
 
-    // 補間イージング (smoothstep)
-    const t = currentT * currentT * (3 - 2 * currentT);
+    // (B) 対角化法 (ブランドブルー)
+    stroke(37, 99, 235);
+    strokeWeight(2.5);
+    noFill();
+    beginShape();
+    for (let i = 0; i < nList.length; i++) {
+        const n = nList[i];
+        const val = currentMode === 'operations' ? 18 : benchmarkDiagonalTimes[i];
+        const x = padLeft + (n / maxN) * plotW;
+        const y = padTop + plotH - (val / maxY) * plotH;
+        vertex(x, y);
+    }
+    endShape();
 
-    const halfW = width / 2;
-    const halfH = height / 2;
-    const scaleFactor = width / 10; // 空間の単位スケール (1目盛り)
+    // 対角化法のポイント描画
+    fill(37, 99, 235);
+    for (let i = 0; i < nList.length; i++) {
+        const n = nList[i];
+        const val = currentMode === 'operations' ? 18 : benchmarkDiagonalTimes[i];
+        const x = padLeft + (n / maxN) * plotW;
+        const y = padTop + plotH - (val / maxY) * plotH;
+        if (currentMode === 'time' || n % 5 === 0 || n === 1) {
+            circle(x, y, 5);
+        }
+    }
 
-    push();
-    translate(halfW, halfH);
-    scale(1, -1); // 数学のデカルト座標系（上が +y）にする
+    // 5. 凡例 (右上)
+    const legendX = padLeft + plotW - 170;
+    const legendY = padTop - 28;
+    textSize(11);
+    textAlign(LEFT, CENTER);
 
-    // 現在の補間行列 M(t) = (1 - t) * I + t * A
-    const m00 = 1 + (matrixA[0][0] - 1) * t;
-    const m01 = 0 + (matrixA[0][1] - 0) * t;
-    const m10 = 0 + (matrixA[1][0] - 0) * t;
-    const m11 = 1 + (matrixA[1][1] - 1) * t;
+    // 直接法
+    stroke(239, 68, 68);
+    strokeWeight(3);
+    line(legendX, legendY, legendX + 16, legendY);
+    noStroke();
+    fill(71, 85, 105);
+    text('直接計算 O(n)', legendX + 22, legendY);
 
-    // 1. 変形グリッドを描画
-    drawTransformedGrid(m00, m01, m10, m11, scaleFactor);
+    // 対角化法
+    stroke(37, 99, 235);
+    strokeWeight(3);
+    line(legendX + 90, legendY, legendX + 106, legendY);
+    noStroke();
+    fill(71, 85, 105);
+    text('対角化 O(1)', legendX + 112, legendY);
 
-    // 2. 固有ベクトルの軸（固有空間の軸）を描画
-    drawEigenAxes(scaleFactor);
+    // 6. ホバーインジケータとツールチップ
+    if (hoveredNIndex >= 0 && hoveredNIndex < nList.length) {
+        const n = nList[hoveredNIndex];
+        const x = padLeft + (n / maxN) * plotW;
 
-    // 3. 標準基底ベクトル (e1, e2) の行き先を描画
-    drawVector(m00 * scaleFactor, m10 * scaleFactor, color(239, 68, 68), 'e₁'); // 赤
-    drawVector(m01 * scaleFactor, m11 * scaleFactor, color(34, 197, 94), 'e₂'); // 緑
+        const directVal = currentMode === 'operations' ? (8 * n) : benchmarkDirectTimes[hoveredNIndex];
+        const diagVal = currentMode === 'operations' ? 18 : benchmarkDiagonalTimes[hoveredNIndex];
 
-    // 4. 固有ベクトル (v1, v2) の行き先を描画
-    // v1 = [1, 1] -> A*v1 = [3, 3]
-    const v1x = (m00 * 1 + m01 * 1) * scaleFactor;
-    const v1y = (m10 * 1 + m11 * 1) * scaleFactor;
-    drawVector(v1x, v1y, color(29, 78, 216), 'v₁ (λ=3)', 3); // 濃い青
+        const directY = padTop + plotH - (directVal / maxY) * plotH;
+        const diagY = padTop + plotH - (diagVal / maxY) * plotH;
 
-    // v2 = [-1, 1] -> A*v2 = [-1, 1]
-    const v2x = (m00 * (-1) + m01 * 1) * scaleFactor;
-    const v2y = (m10 * (-1) + m11 * 1) * scaleFactor;
-    drawVector(v2x, v2y, color(147, 51, 234), 'v₂ (λ=1)', 3); // 紫
+        // 垂直ガイドライン
+        stroke(148, 163, 184);
+        strokeWeight(1);
+        drawingContext.setLineDash([4, 4]);
+        line(x, padTop, x, padTop + plotH);
+        drawingContext.setLineDash([]);
 
-    pop();
+        // ポイント強調
+        stroke(255);
+        strokeWeight(2);
+        fill(239, 68, 68);
+        circle(x, directY, 9);
+        fill(37, 99, 235);
+        circle(x, diagY, 9);
 
-    // 画面左上に状態ラベルを描画
-    drawOverlayLabels(t);
-}
-
-function drawTransformedGrid(m00, m01, m10, m11, scaleFactor) {
-    stroke(203, 213, 225, 120); // 薄いスレート
-    strokeWeight(1);
-
-    const range = 5;
-    for (let i = -range; i <= range; i++) {
-        // x = i の垂直線
-        const x1 = (m00 * i + m01 * (-range)) * scaleFactor;
-        const y1 = (m10 * i + m11 * (-range)) * scaleFactor;
-        const x2 = (m00 * i + m01 * range) * scaleFactor;
-        const y2 = (m10 * i + m11 * range) * scaleFactor;
-        line(x1, y1, x2, y2);
-
-        // y = i の水平線
-        const hx1 = (m00 * (-range) + m01 * i) * scaleFactor;
-        const hy1 = (m10 * (-range) + m11 * i) * scaleFactor;
-        const hx2 = (m00 * range + m01 * i) * scaleFactor;
-        const hy2 = (m10 * range + m11 * i) * scaleFactor;
-        line(hx1, hy1, hx2, hy2);
+        // ツールチップカード描画
+        drawTooltip(x, directY, diagY, n, directVal, diagVal, padLeft, padRight, plotW);
     }
 }
 
-function drawEigenAxes(scaleFactor) {
-    // 固有ベクトル1の方向 (y = x)
-    stroke(29, 78, 216, 80);
-    strokeWeight(1.5);
-    drawingContext.setLineDash([4, 4]);
-    line(-scaleFactor * 5, -scaleFactor * 5, scaleFactor * 5, scaleFactor * 5);
+function drawTooltip(targetX, y1, y2, n, directVal, diagVal, padLeft, padRight, plotW) {
+    const tipW = 160;
+    const tipH = 74;
 
-    // 固有ベクトル2の方向 (y = -x)
-    stroke(147, 51, 234, 80);
-    line(-scaleFactor * 5, scaleFactor * 5, scaleFactor * 5, -scaleFactor * 5);
+    // ツールチップの左右位置調整（端ではみ出さないよう反転）
+    let tipX = targetX + 12;
+    if (tipX + tipW > padLeft + plotW) {
+        tipX = targetX - tipW - 12;
+    }
 
-    drawingContext.setLineDash([]); // 点線リセット
-}
+    const tipY = Math.max(48, Math.min(height - tipH - 52, (y1 + y2) / 2 - tipH / 2));
 
-function drawVector(x, y, col, labelText, sw = 2.5) {
-    stroke(col);
-    strokeWeight(sw);
-    fill(col);
-
-    // ベクトル本体
-    line(0, 0, x, y);
-
-    // 矢印の先端
-    const angle = atan2(y, x);
-    const arrowSize = 8;
-    push();
-    translate(x, y);
-    rotate(angle);
-    triangle(0, 0, -arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2);
-    pop();
-
-    // ラベル（数学座標系に合わせて文字は反転を戻す）
-    push();
-    translate(x, y);
-    scale(1, -1);
+    // カードの影
     noStroke();
-    fill(col);
-    textSize(11);
+    fill(0, 0, 0, 15);
+    rect(tipX + 2, tipY + 2, tipW, tipH, 6);
+
+    // カード本体
+    stroke(191, 219, 254);
+    strokeWeight(1);
+    fill(255);
+    rect(tipX, tipY, tipW, tipH, 6);
+
+    // タイトル
+    noStroke();
+    fill(15, 23, 42);
     textStyle(BOLD);
-    text(labelText, 8, -6);
-    pop();
-}
-
-function drawOverlayLabels(t) {
-    noStroke();
-    fill(15, 23, 42); // slate-900
-    textSize(12);
-    textAlign(LEFT, TOP);
-    textStyle(NORMAL);
-
-    const percent = Math.round(t * 100);
-    text(`変換の進行: ${percent}% (クリックで停止/再生)`, 16, 16);
-
     textSize(11);
-    fill(29, 78, 216);
-    text(`● v₁=[1, 1]ᵀ 方向: 3倍にまっすぐ伸縮 (λ=3)`, 16, 36);
+    textAlign(LEFT, TOP);
+    text(`累乗数 n = ${n}`, tipX + 10, tipY + 8);
 
-    fill(147, 51, 234);
-    text(`● v₂=[-1, 1]ᵀ 方向: 1倍（変化なし） (λ=1)`, 16, 52);
+    // 各値の表示
+    textStyle(NORMAL);
+    textSize(10.5);
+
+    // 直接法
+    fill(239, 68, 68);
+    const directLabel = currentMode === 'operations' ? `${directVal} 回` : `${directVal} ms`;
+    text(`● 直接計算: ${directLabel}`, tipX + 10, tipY + 26);
+
+    // 対角化
+    fill(37, 99, 235);
+    const diagLabel = currentMode === 'operations' ? `${diagVal} 回` : `${diagVal} ms`;
+    text(`● 対角化法: ${diagLabel}`, tipX + 10, tipY + 41);
+
+    // 削減率 / 高速化率
+    fill(71, 85, 105);
+    let ratioText = '';
+    if (currentMode === 'operations') {
+        const reduction = directVal > 0 ? (((directVal - diagVal) / directVal) * 100).toFixed(1) : 0;
+        ratioText = `削減率: ${reduction}% 減`;
+    } else {
+        const speedup = diagVal > 0 ? (directVal / diagVal).toFixed(1) : '-';
+        ratioText = `速度: 約 ${speedup} 倍高速`;
+    }
+    text(`→ ${ratioText}`, tipX + 10, tipY + 56);
 }

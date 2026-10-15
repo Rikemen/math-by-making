@@ -93,6 +93,19 @@ describe("diagonalization what-and-why article shell", () => {
     expect(canvas).not.toBeNull();
   });
 
+  it("計算量と実行時間の比較グラフおよびベンチマーク操作UIを備える", () => {
+    const document = parseArticle();
+    const btnOps = document.querySelector('#btn-mode-operations');
+    const btnTime = document.querySelector('#btn-mode-time');
+    const btnRun = document.querySelector('#btn-run-benchmark');
+    const status = document.querySelector('#canvas-benchmark-status');
+
+    expect(btnOps).not.toBeNull();
+    expect(btnTime).not.toBeNull();
+    expect(btnRun).not.toBeNull();
+    expect(status).not.toBeNull();
+  });
+
   it("記事スタイルに枠はみ出し防止（MathJax横スクロール・タイトル折り返し・ボックス防壁）を定義する", () => {
     const styles = fs.readFileSync(path.resolve(whatAndWhyDirectory, "article.css"), "utf8");
 

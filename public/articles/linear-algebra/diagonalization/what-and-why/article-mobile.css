@@ -106,8 +106,33 @@
         line-height: 1.6;
     }
 
+    .benchmark-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .benchmark-btn-group {
+        width: 100%;
+        display: flex;
+    }
+
+    .benchmark-btn {
+        flex: 1;
+        padding-inline: 8px;
+        font-size: 0.85rem;
+        text-align: center;
+    }
+
+    .benchmark-run-btn {
+        width: 100%;
+        justify-content: center;
+        font-size: 0.85rem;
+    }
+
     .canvas-status {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        line-height: 1.4;
     }
 
     .source-card {
