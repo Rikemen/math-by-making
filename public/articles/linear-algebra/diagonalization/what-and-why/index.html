@@ -270,31 +270,89 @@
                     \]
                 </p>
 
-                <pre><code>// 1. 通常の行列積による累乗（愚直に掛け算を繰り返す）
-function powerDirect(matrixA, n) {
+                <h3>1.2 単位行列の生成 (<code>Matrix.createIdentity</code>)</h3>
+                <p>
+                    通常の数値の掛け算で累乗を計算するとき、初期値として \( 1 \)（掛け算の単位元）を用意して <code>result = 1; result *= A;</code> と計算するのと同様に、行列の掛け算では<strong>単位行列 \( I \)</strong>（掛けても相手を変えない行列）から計算を始めます。この単位行列を生成するメソッドを <code>Matrix</code> クラスに追加しています。
+                </p>
+                <pre><code>// 指定した次数の単位行列（主対角成分が1で他が0の正方行列）を生成
+static createIdentity(size) {
+    const identity = new Matrix(size, size);
+    for (let i = 0; i < size; i++) {
+        identity.data[i][i] = 1; // 主対角成分 [0][0], [1][1]... に 1 を代入
+    }
+    return identity;
+}</code></pre>
+                <p><strong>処理の流れ:</strong></p>
+                <ol>
+                    <li><code>new Matrix(size, size)</code> で、すべての成分が \( 0 \) で初期化された \( \text{size} \times \text{size} \) の正方行列を作成します。</li>
+                    <li><code>for</code> ループで行番号と列番号が等しい主対角成分 <code>[i][i]</code> だけを \( 1 \) に書き換えます。</li>
+                    <li>完成した単位行列 \( I \) を返します。</li>
+                </ol>
+
+                <h3>1.3 通常の行列積による累乗 (<code>powerDirect</code>)</h3>
+                <p>
+                    定義どおりに行列の掛け算を愚直に \( n \) 回繰り返す方法です。
+                </p>
+                <pre><code>function powerDirect(matrixA, n) {
+    // 初期値として単位行列 I を用意 (A^0 = I に相当)
     let result = Matrix.createIdentity(matrixA.rows);
+    
+    // 行列 A を 1 回ずつ順番に n 回掛け合わせる
     for (let i = 0; i < n; i++) {
         result = Matrix.multiplyMatrices(result, matrixA);
     }
     return result;
-}
+}</code></pre>
+                <p><strong>処理の流れ:</strong></p>
+                <ol>
+                    <li><code>Matrix.createIdentity(matrixA.rows)</code> で、結果の初期値として単位行列 \( I \) を作成します。</li>
+                    <li><code>for</code> ループで、現在の <code>result</code> に対して右から <code>matrixA</code> を \( 1 \) 回ずつ、計 \( n \) 回掛けます。行列の積 1 回あたり \( 2 \times 2 \) 行列では \( 8 \) 回の乗算と \( 4 \) 回の加算が発生するため、\( n \) 回のループで乗算は \( 8n \) 回行われます。</li>
+                    <li>\( n \) 回の積を終えた行列 \( A^n \) を返します。</li>
+                </ol>
 
-// 2. 対角化による累乗 (A^n = P * D^n * P^-1)
-function powerDiagonalized(P, eigenvalues, n) {
-    // D^n は対角成分をそれぞれ n 乗するだけ
+                <h3>1.4 対角化を用いた高速累乗 (<code>powerDiagonalized</code>)</h3>
+                <p>
+                    対角化の公式 \( A^n = P D^n P^{-1} \) を用いて、行列積の回数を常に \( 2 \) 回に抑える方法です。
+                </p>
+                <pre><code>function powerDiagonalized(P, eigenvalues, n) {
+    // Step 1: 対角行列 D^n の作成（対角成分をそれぞれ n 乗する）
     const Dn = new Matrix(eigenvalues.length, eigenvalues.length);
     for (let i = 0; i < eigenvalues.length; i++) {
         Dn.data[i][i] = Math.pow(eigenvalues[i], n);
     }
 
+    // Step 2: 固有ベクトルを並べた行列 P の逆行列 P⁻¹ を取得
     const P_inv = P.inverse();
+
+    // Step 3: 行列の積を 2 回だけ計算 (P * D^n * P⁻¹)
     const temp = Matrix.multiplyMatrices(P, Dn);
     return Matrix.multiplyMatrices(temp, P_inv);
 }</code></pre>
+                <p><strong>処理の流れ:</strong></p>
+                <ol>
+                    <li><strong>Step 1（対角成分の累乗）:</strong> 対角行列 \( D \) の累乗は、対角成分である固有値（\( 3 \) と \( 1 \)）をスカラー累乗 <code>Math.pow(eigenvalues[i], n)</code> するだけで求まります。重い行列積は一切行いません。</li>
+                    <li><strong>Step 2（逆行列の取得）:</strong> 固有ベクトルを列に並べた行列 \( P \) の逆行列 \( P^{-1} \) を <code>P.inverse()</code>（ガウス・ジョルダン消去法）で求めます。</li>
+                    <li><strong>Step 3（行列積の実行）:</strong> \( P \) と \( D^n \) の積を計算し（行列積 1 回目）、その結果に右から \( P^{-1} \) を掛けます（行列積 2 回目）。</li>
+                    <li><strong>計算回数の比較:</strong> \( n = 10 \) の場合、直接法では行列積が \( 10 \) 回（乗算 \( 80 \) 回）必要ですが、対角化法ではスカラー累乗 \( 2 \) 回と行列積 \( 2 \) 回（乗算 \( 16 \) 回）で完了します。\( n \) が \( 100 \) や \( 1,000 \) に増えても、対角化法の行列積は <strong>常に 2 回（乗算 16 回）で一定</strong> です。</li>
+                </ol>
 
+                <h3>1.5 実行時間の計測ロジック（ブラウザ実測ベンチマーク）</h3>
                 <p>
-                    \( n = 10 \) の場合、上の <code>powerDirect</code> は単位行列から掛け始めるので \( 10 \) 回の行列積（掛け算 \( 80 \) 回、足し算 \( 40 \) 回）を行います。対角化法では \( 3^{10} = 59049 \) と \( 1^{10} = 1 \) を求めた後、行列積は \( 2 \) 回です。\( n \) を増やすと直接計算の行列積は \( n \) 回に増えますが、対角化法は \( 2 \) 回のままです（ただし JavaScript の数値は約 \( 1.8 \times 10^{308} \) を超えると <code>Infinity</code> になるため、\( 3^{n} \) が大きくなりすぎる \( n \) では正しく計算できません）。
+                    計算回数だけでなく、実際にプログラムの実行にかかる時間（ミリ秒）を計測して比較するため、<code>performance.now()</code> を使ってベンチマークを実装しています。
                 </p>
+                <pre><code>// performance.now() による高精度な実行時間計測
+const t0 = performance.now();
+for (let r = 0; r < 1000; r++) {
+    powerDirect(matrixA, n); // 同じ計算を 1,000 回反復して累積時間を計測
+}
+const t1 = performance.now();
+const directElapsedTime = t1 - t0; // 直接法にかかった時間 (ms)</code></pre>
+                <p><strong>処理の流れ:</strong></p>
+                <ol>
+                    <li>単一の小さな行列計算は数マイクロ秒未満で終了するため、ブラウザのタイマー解像度を確保し測定誤差を抑える目的で、同一の計算を <code>1,000</code> 回反復実行します。</li>
+                    <li>処理の開始直前 \( t_0 \) と終了直後 \( t_1 \) に <code>performance.now()</code> を呼び出し、その差分 \( t_1 - t_0 \) をミリ秒単位の所要時間として記録します。</li>
+                    <li>直接法と対角化法で同じ反復回数を実行し、その所要時間の差をグラフ上にプロットします。</li>
+                </ol>
 
                 <h2>2. 計算量と実行時間の比較グラフ (<code>sketch.js</code>)</h2>
                 <p>

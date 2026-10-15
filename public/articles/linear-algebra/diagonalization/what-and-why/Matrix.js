@@ -193,6 +193,22 @@ class Matrix extends VectorSpaceElement {
         }
         return true; //全てのチェックを通過すれば単位行列
     }
+
+    /**
+     * 指定した次数の単位行列（主対角成分が1で他がすべて0の正方行列）を生成して返します。
+     * @param {number} size - 行列の次数（行数・列数）
+     * @returns {Matrix} 単位行列
+     */
+    static createIdentity(size) {
+        if (!Number.isInteger(size) || size <= 0) {
+            throw new Error("単位行列のサイズは1以上の整数である必要があります。");
+        }
+        const identity = new Matrix(size, size);
+        for (let i = 0; i < size; i++) {
+            identity.data[i][i] = 1;
+        }
+        return identity;
+    }
     /**
     * この行列が上三角行列かどうかを判定します。
     * @returns {boolean} 上三角行列の場合はtrue、そうでない場合はfalse
