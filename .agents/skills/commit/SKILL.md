@@ -40,6 +40,7 @@ Generate a clean Conventional Commits message from staged changes **in English**
 
 **Output Rules:**
 - Normally output only the commit message text (ready to copy). A necessary split proposal may be stated briefly and separately. Do not include internal reasoning or unrelated commentary.
+- When requesting approval for commit and deploy from the user, follow `.agents/skills/request-commit-deploy/` and provide reasons (Why), changes (What), and verification results in concise bullet points.
 - Example:
   ```
   feat(auth): add OAuth2 login endpoint
