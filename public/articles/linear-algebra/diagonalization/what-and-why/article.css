@@ -324,7 +324,7 @@ pre code {
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md, 12px);
     background: var(--color-surface);
-    touch-action: manipulation;
+    touch-action: pan-y;
 }
 
 .benchmark-controls {

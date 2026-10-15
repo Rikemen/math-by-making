@@ -188,7 +188,7 @@ function touchMoved() {
     if (touches.length > 0) {
         handlePointer(touches[0].x, touches[0].y);
     }
-    return false; // スクロール防止
+    // ページ全体のスクロールを阻害しないよう false を返さない（ブラウザの縦スクロールを許可）
 }
 
 function handlePointer(px, py) {

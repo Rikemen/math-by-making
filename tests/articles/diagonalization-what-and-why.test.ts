@@ -114,4 +114,17 @@ describe("diagonalization what-and-why article shell", () => {
     expect(styles).toContain("overflow-wrap: break-word");
     expect(styles).not.toMatch(/\.article-title__english\s*\{[^}]*white-space:\s*nowrap/);
   });
+
+  it("sketch.js はタッチスクロールを抑制する return false を返さない", () => {
+    const sketchScript = fs.readFileSync(path.resolve(whatAndWhyDirectory, "sketch.js"), "utf8");
+
+    // touchMoved 内で return false を返すと p5.js がページ全体のスクロールを preventDefault する
+    expect(sketchScript).not.toMatch(/function\s+touchMoved\s*\([^)]*\)\s*\{[^}]*return\s+false/);
+  });
+
+  it("HTMLおよびスクリプトから停止・危険な polyfill.io 参照が排除されている", () => {
+    const html = fs.readFileSync(path.resolve(whatAndWhyDirectory, "index.html"), "utf8");
+
+    expect(html).not.toContain("polyfill.io");
+  });
 });
