@@ -127,4 +127,19 @@ describe("diagonalization what-and-why article shell", () => {
 
     expect(html).not.toContain("polyfill.io");
   });
+
+  it(".highlight ボックスにインラインテキストを縦潰れさせる display: flex が指定されていない", () => {
+    const styles = fs.readFileSync(path.resolve(whatAndWhyDirectory, "article.css"), "utf8");
+
+    // .highlight に display: flex があると直接のテキストノードやタグが1文字幅に圧縮される
+    expect(styles).not.toMatch(/\.highlight\s*\{[^}]*display:\s*flex/);
+  });
+
+  it("sketch.js の凡例がテキスト幅に基づく動的間隔で描画され重なりを防止している", () => {
+    const sketchScript = fs.readFileSync(path.resolve(whatAndWhyDirectory, "sketch.js"), "utf8");
+
+    // textWidth(directLegendText) 等を用いて動的に間隔を計算していることを検証
+    expect(sketchScript).toContain("textWidth(directLegendText)");
+    expect(sketchScript).toContain("textWidth(diagLegendText)");
+  });
 });

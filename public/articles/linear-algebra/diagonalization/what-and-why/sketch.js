@@ -21,11 +21,11 @@ for (let n = 1; n <= 50; n++) {
 
 // 実測時間モードの n 値 (1, 5, 10, ..., 50)
 const timeNValues = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
-const benchmarkRuns = 1000;
+const benchmarkRuns = 2000;
 
 // 実測時間の初期キャッシュ（初回計測前の初期目安値、計測後に上書き）
-let benchmarkDirectTimes = timeNValues.map(n => Number((0.0035 * n).toFixed(3)));
-let benchmarkDiagonalTimes = timeNValues.map(() => 0.025);
+let benchmarkDirectTimes = timeNValues.map(n => Number((0.08 * n + 0.2).toFixed(2)));
+let benchmarkDiagonalTimes = timeNValues.map(() => 0.45);
 
 // ホバー追従
 let hoveredNIndex = -1;
@@ -33,8 +33,8 @@ let hoveredNIndex = -1;
 function getResponsiveCanvasSize() {
     const container = document.getElementById('diagonalization-canvas');
     const width = MathByMakingCanvas.calculateCanvasSize(container ? container.clientWidth : 0, window.innerWidth);
-    // アスペクト比: 幅に応じて高さを 320px〜380px に設定
-    const height = Math.max(300, Math.min(380, Math.floor(width * 0.62)));
+    // アスペクト比: 幅に応じて高さを 330px〜390px に設定（上部余白を確保）
+    const height = Math.max(320, Math.min(390, Math.floor(width * 0.65)));
     return { width, height };
 }
 
@@ -65,6 +65,21 @@ function powerDiagonalized(p, eigs, n) {
     return Matrix.multiplyMatrices(temp, pInv);
 }
 
+// JIT/GCノイズを除去するため複数回計測の中央値を採用
+function measureMedian(fn, runs, rounds = 3) {
+    const samples = [];
+    for (let r = 0; r < rounds; r++) {
+        const t0 = performance.now();
+        for (let i = 0; i < runs; i++) {
+            fn();
+        }
+        const t1 = performance.now();
+        samples.push(t1 - t0);
+    }
+    samples.sort((a, b) => a - b);
+    return samples[Math.floor(samples.length / 2)];
+}
+
 // 実測ベンチマーク実行
 function executeBenchmark() {
     if (isBenchmarking) return;
@@ -84,21 +99,13 @@ function executeBenchmark() {
         powerDiagonalized(matrixP, eigenvalues, 5);
 
         for (const n of timeNValues) {
-            // 直接法の計測
-            const t0 = performance.now();
-            for (let r = 0; r < benchmarkRuns; r++) {
-                powerDirect(matrixA, n);
-            }
-            const t1 = performance.now();
-            directTimes.push(Number((t1 - t0).toFixed(2)));
+            // 直接法の計測（中央値）
+            const dTime = measureMedian(() => powerDirect(matrixA, n), benchmarkRuns);
+            directTimes.push(Number(dTime.toFixed(2)));
 
-            // 対角化法の計測
-            const t2 = performance.now();
-            for (let r = 0; r < benchmarkRuns; r++) {
-                powerDiagonalized(matrixP, eigenvalues, n);
-            }
-            const t3 = performance.now();
-            diagonalTimes.push(Number((t3 - t2).toFixed(2)));
+            // 対角化法の計測（中央値）
+            const diagTime = measureMedian(() => powerDiagonalized(matrixP, eigenvalues, n), benchmarkRuns);
+            diagonalTimes.push(Number(diagTime.toFixed(2)));
         }
 
         benchmarkDirectTimes = directTimes;
@@ -192,9 +199,9 @@ function touchMoved() {
 }
 
 function handlePointer(px, py) {
-    const padLeft = 64;
-    const padRight = 24;
-    const padTop = 44;
+    const padLeft = 60;
+    const padRight = 20;
+    const padTop = 56;
     const padBottom = 48;
     const plotW = width - padLeft - padRight;
     const plotH = height - padTop - padBottom;
@@ -228,9 +235,9 @@ function handlePointer(px, py) {
 function draw() {
     background(248, 250, 252); // var(--color-surface-soft)
 
-    const padLeft = 64;
-    const padRight = 24;
-    const padTop = 44;
+    const padLeft = 60;
+    const padRight = 20;
+    const padTop = 56;
     const padBottom = 48;
     const plotW = width - padLeft - padRight;
     const plotH = height - padTop - padBottom;
@@ -244,12 +251,12 @@ function draw() {
         maxY = 420; // 8 * 50 = 400 + 余白
         yUnit = '乗算回数 (回)';
     } else {
-        const maxTime = Math.max(...benchmarkDirectTimes, ...benchmarkDiagonalTimes, 0.1);
+        const maxTime = Math.max(...benchmarkDirectTimes, ...benchmarkDiagonalTimes, 0.5);
         maxY = Math.ceil(maxTime * 1.25 * 10) / 10;
         yUnit = `実行時間 (ms / ${benchmarkRuns}回)`;
     }
 
-    // 1. グリッド線とY軸ラベル
+    // 1. グリッド線とY軸ラベル（線型座標軸）
     stroke(226, 232, 240);
     strokeWeight(1);
     fill(100, 116, 139);
@@ -268,7 +275,7 @@ function draw() {
 
     // 2. X軸目盛りとラベル
     textAlign(CENTER, TOP);
-    const xStep = currentMode === 'operations' ? 10 : 10;
+    const xStep = 10;
     for (let n = 0; n <= maxN; n += xStep) {
         const x = padLeft + (n / maxN) * plotW;
         line(x, padTop, x, padTop + plotH);
@@ -277,7 +284,43 @@ function draw() {
         stroke(226, 232, 240);
     }
 
-    // 3. 軸タイトル
+    // 3. 凡例（最上段 y = 18 付近、右端基準で重なり防止）
+    const rightEdge = padLeft + plotW;
+    const legendY = 18;
+    textSize(11);
+
+    const directLegendText = '直接計算 O(n)';
+    const diagLegendText = '対角化 O(1)';
+    const lineLen = 16;
+    const lineGap = 6;
+    const itemGap = 16;
+
+    const directW = lineLen + lineGap + textWidth(directLegendText);
+    const diagW = lineLen + lineGap + textWidth(diagLegendText);
+    const totalLegendW = directW + itemGap + diagW;
+
+    // 右端から配置（狭い画面でも左側と重ならないようにpadLeftを最小限保証）
+    const legendStartX = Math.max(padLeft, rightEdge - totalLegendW);
+    textAlign(LEFT, CENTER);
+
+    // 直接法（赤線）
+    stroke(239, 68, 68);
+    strokeWeight(3);
+    line(legendStartX, legendY, legendStartX + lineLen, legendY);
+    noStroke();
+    fill(71, 85, 105);
+    text(directLegendText, legendStartX + lineLen + lineGap, legendY);
+
+    // 対角化法（青線）
+    const diagStartX = legendStartX + directW + itemGap;
+    stroke(37, 99, 235);
+    strokeWeight(3);
+    line(diagStartX, legendY, diagStartX + lineLen, legendY);
+    noStroke();
+    fill(71, 85, 105);
+    text(diagLegendText, diagStartX + lineLen + lineGap, legendY);
+
+    // 4. 軸タイトル（下段・独立配置で凡例との衝突を防止）
     noStroke();
     fill(71, 85, 105);
     textSize(12);
@@ -285,11 +328,13 @@ function draw() {
     textAlign(CENTER, TOP);
     text('累乗数 n', padLeft + plotW / 2, padTop + plotH + 26);
 
-    textAlign(LEFT, BOTTOM);
-    text(yUnit, padLeft, padTop - 12);
+    // Y軸単位ラベル（プロット直上・左寄せ）
+    textAlign(LEFT, CENTER);
+    textSize(11);
+    text(yUnit, padLeft, padTop - 14);
     textStyle(NORMAL);
 
-    // 4. 折れ線グラフのプロット
+    // 5. 折れ線グラフのプロット（線型座標軸）
     // (A) 直接法 (赤色)
     stroke(239, 68, 68);
     strokeWeight(2.5);
@@ -341,28 +386,6 @@ function draw() {
             circle(x, y, 5);
         }
     }
-
-    // 5. 凡例 (右上)
-    const legendX = padLeft + plotW - 170;
-    const legendY = padTop - 28;
-    textSize(11);
-    textAlign(LEFT, CENTER);
-
-    // 直接法
-    stroke(239, 68, 68);
-    strokeWeight(3);
-    line(legendX, legendY, legendX + 16, legendY);
-    noStroke();
-    fill(71, 85, 105);
-    text('直接計算 O(n)', legendX + 22, legendY);
-
-    // 対角化法
-    stroke(37, 99, 235);
-    strokeWeight(3);
-    line(legendX + 90, legendY, legendX + 106, legendY);
-    noStroke();
-    fill(71, 85, 105);
-    text('対角化 O(1)', legendX + 112, legendY);
 
     // 6. ホバーインジケータとツールチップ
     if (hoveredNIndex >= 0 && hoveredNIndex < nList.length) {
