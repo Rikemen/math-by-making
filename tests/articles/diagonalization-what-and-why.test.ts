@@ -142,4 +142,28 @@ describe("diagonalization what-and-why article shell", () => {
     expect(sketchScript).toContain("textWidth(directLegendText)");
     expect(sketchScript).toContain("textWidth(diagLegendText)");
   });
+
+  it("行列サイズmの比較キャンバスおよびn切り替えコントロールを備える", () => {
+    const document = parseArticle();
+    const sizeCanvas = document.querySelector("#matrix-size-canvas");
+    const btn10 = document.querySelector("#btn-n-10");
+    const btn20 = document.querySelector("#btn-n-20");
+    const btn50 = document.querySelector("#btn-n-50");
+    const sizeStatus = document.querySelector("#canvas-size-status");
+
+    expect(sizeCanvas).not.toBeNull();
+    expect(btn10).not.toBeNull();
+    expect(btn20).not.toBeNull();
+    expect(btn50).not.toBeNull();
+    expect(sizeStatus).not.toBeNull();
+  });
+
+  it("累乗の指数nと計算回数（行列積と成分乗算）の定義を記事内に明記している", () => {
+    const document = parseArticle();
+    const textContent = document.body.textContent ?? "";
+
+    expect(textContent).toContain("累乗の指数");
+    expect(textContent).toContain("行列積の回数");
+    expect(textContent).toContain("成分同士（スカラー）の乗算回数");
+  });
 });

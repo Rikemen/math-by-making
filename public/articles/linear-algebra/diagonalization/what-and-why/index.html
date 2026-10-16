@@ -353,14 +353,27 @@ const directElapsedTime = t1 - t0; // 直接法にかかった時間 (ms)</code>
                     <li>直接法と対角化法で同じ反復回数を実行し、その所要時間の差をグラフ上にプロットします。</li>
                 </ol>
 
-                <h2>2. 計算量と実行時間の比較グラフ (<code>sketch.js</code>)</h2>
+                <h2>2. 累乗数 \( n \) による計算量と実行時間の比較</h2>
                 <p>
-                    下のグラフでは、累乗数 \( n \) が大きくなるにつれて「直接計算」と「対角化」の計算回数（理論値）およびブラウザでの実行時間（実測値）がどのように推移するかを比較しています。
+                    ここでは、累乗の指数 \( n \) を増やしたときに、直接法と対角化法で計算回数と実行時間がどう変化するかを比較します。
                 </p>
-                <ul>
-                    <li><strong>直接計算（赤線）:</strong> \( n \) の増加に比例して計算回数が \( 8n \) 回と直線的に増加します。</li>
-                    <li><strong>対角化法（青線）:</strong> 対角成分の累乗（スカラー累乗 \( 2 \) 回）と行列積 \( 2 \) 回だけで済むため、\( n \) が大きくなっても行列積の回数は \( 2 \) 回（乗算 \( 16 \) 回）で一定です。</li>
-                </ul>
+
+                <div class="column">
+                    <h4>
+                        <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>「累乗の指数 \( n \)」と「計算回数」の定義
+                    </h4>
+                    <p>
+                        ここで扱う <strong>\( n \)</strong> は、行列 \( A \) を何回掛け合わせるかを表す<strong>「累乗の指数（累乗数）」</strong>です。また、計算回数を考える際は以下の2つの指標を区別します：
+                    </p>
+                    <ul>
+                        <li><strong>行列積の回数:</strong> 行列どうしを掛け合わせる演算の回数です。直接法では \( n \) 回の行列積を行います。一方、対角化法では \( A^n = P D^n P^{-1} \) の式のとおり、\( n \) がいくら増えても行列積は \( P \times D^n \) とその結果 \( \times P^{-1} \) の <strong>常に 2 回（一定: \( O(1) \)）</strong> です。</li>
+                        <li><strong>成分同士（スカラー）の乗算回数:</strong> 行列積 1 回を計算するために行われる数値同士の掛け算の回数です。\( m \times m \) 行列の積 1 回には \( m^3 \) 回（\( 2 \times 2 \) 行列なら \( 2^3 = 8 \) 回）の乗算が必要です。直接法では \( n \) 回の積で計 \( 8n \) 回の乗算が行われます。</li>
+                    </ul>
+                </div>
 
                 <p class="highlight">
                     <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -389,6 +402,30 @@ const directElapsedTime = t1 - t0; // 直接法にかかった時間 (ms)</code>
 
                 <p id="canvas-benchmark-status" class="canvas-status" aria-live="polite">表示中: 計算回数（乗算回数）の理論値比較</p>
                 <div id="diagonalization-canvas" class="canvas-container" aria-label="累乗計算における直接法と対角化法の計算量・実行時間比較グラフ"></div>
+
+                <h2>3. 行列サイズ \( m \) による成分乗算回数の比較</h2>
+                <p>
+                    ここまでは \( 2 \times 2 \) 行列（サイズ \( m = 2 \)）で累乗数 \( n \) を増やしたときの比較を見てきました。次に、<strong>行列のサイズ（次数）\( m \) が大きくなった場合</strong>に、内部で行われる成分同士の掛け算回数がどう増大するかを比較します。
+                </p>
+                <p>
+                    \( m \times m \) 行列の累乗 \( A^n \) における成分同士の総乗算回数は以下のようになります：
+                </p>
+                <ul>
+                    <li><strong>直接計算:</strong> 行列積を \( n \) 回行うため、乗算回数は \( n \times m^3 \) 回です。行列サイズ \( m \) に対して <strong>\( 3 \) 次関数（\( O(m^3) \)）</strong> で急激に増大します。</li>
+                    <li><strong>対角化法:</strong> 対角成分のスカラー累乗 \( m \) 回と、行列積 \( 2 \) 回分（\( 2 \times m^3 \) 回）で済むため、乗算回数は \( 2m^3 + m \) 回です。直接法に比べて計算量が約 <strong>\( \frac{2}{n} \)</strong>（例えば \( n = 20 \) なら 10分の1、\( n = 50 \) なら 25分の1）に抑えられます。</li>
+                </ul>
+
+                <div class="benchmark-controls" role="group" aria-label="行列サイズ比較グラフの累乗数 n 切り替え">
+                    <span class="control-label">累乗数 \( n \) の選択:</span>
+                    <div class="benchmark-btn-group">
+                        <button id="btn-n-10" class="benchmark-btn" type="button" aria-pressed="false">n = 10</button>
+                        <button id="btn-n-20" class="benchmark-btn active" type="button" aria-pressed="true">n = 20</button>
+                        <button id="btn-n-50" class="benchmark-btn" type="button" aria-pressed="false">n = 50</button>
+                    </div>
+                </div>
+
+                <p id="canvas-size-status" class="canvas-status" aria-live="polite">表示中: 累乗数 n = 20 における行列サイズ m の計算回数比較</p>
+                <div id="matrix-size-canvas" class="canvas-container" aria-label="行列サイズ m の増加に伴う成分乗算回数の比較グラフ"></div>
             </div> <!-- //tab-practice -->
 
             <section class="source-card" aria-labelledby="source-card-title">

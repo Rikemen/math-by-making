@@ -335,6 +335,12 @@ pre code {
     margin: 24px 0 14px;
 }
 
+.control-label {
+    font-weight: 700;
+    color: var(--color-brand-900);
+    font-size: 0.95rem;
+}
+
 .benchmark-btn-group {
     display: inline-flex;
     border: 1px solid var(--color-border);
