@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>固有値と固有ベクトルの幾何学的意味</title>
+    <meta name="article:github-url" content="https://github.com/Rikemen/math-by-making/tree/main/public/articles/linear-algebra/diagonalization/eigenvalues-and-eigenvectors">
+    <link rel="stylesheet" href="../../../shared/tokens.css">
+    <link rel="stylesheet" href="article.css">
+    <link rel="stylesheet" href="../../../shared/article-header.css">
+    <link rel="stylesheet" href="article-mobile.css">
+    <script type="module" src="../../../shared/article-header.js"></script>
+    <!-- MathJax for rendering math equations beautifully -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- スクリプトの読み込み -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+    <script src="VectorSpaceElement.js"></script>
+    <script src="Matrix.js"></script>
+    <script src="canvas-size.js"></script>
+    <script src="sketch.js"></script>
+    <script src="tabs.js" defer></script>
+    <script src="source-link.js" defer></script>
+</head>
+
+<body>
+    <header class="site-header" data-article-header>
+        <div class="site-header__inner">
+            <div class="site-header__top">
+                <a class="site-brand" href="/ja/" aria-label="Math by Making ホーム">
+                    <span class="site-brand__mark" aria-hidden="true">M²</span>
+                    <span>Math by Making</span>
+                </a>
+                <nav class="site-header__nav" aria-label="主要ナビゲーション">
+                    <a class="site-header__link" href="/ja/">ホーム</a>
+                    <a class="site-header__link" href="/ja/#subjects">科目から学ぶ</a>
+                </nav>
+                <button class="site-header__update" type="button" data-pwa-update>
+                    <span aria-hidden="true">↻</span>
+                    <span data-pwa-update-label>更新</span>
+                </button>
+            </div>
+            <p class="site-header__status" data-pwa-update-status role="status" hidden>
+                更新できませんでした。通信を確認してください。
+            </p>
+            <nav class="site-header__breadcrumbs" aria-label="パンくずリスト">
+                <ol class="breadcrumbs">
+                    <li><a href="/ja/">ホーム</a></li>
+                    <li><a href="/ja/subjects/linear-algebra">線形代数</a></li>
+                    <li><a href="/articles/linear-algebra/diagonalization/">行列の対角化</a></li>
+                    <li aria-current="page">固有値と固有ベクトルの幾何学的意味</li>
+                </ol>
+            </nav>
+        </div>
+    </header>
+
+    <main class="article-container">
+        <article>
+            <header class="article-header">
+                <p class="article-kicker">行列の対角化 シリーズ 第2回</p>
+                <h1>固有値と固有ベクトルの幾何学的意味 <span class="article-title__english" lang="en">(Geometric Meaning of Eigenvalues and Eigenvectors)</span></h1>
+                <p class="article-lead">\( A\vec{v} = \lambda\vec{v} \) を満たす固有値 \( \lambda \) と固有ベクトル \( \vec{v} \) の数学的定義を学び、正方行列がベクトルを「回転させずスカラー倍する方向」であることを手計算とインタラクティブな可視化で確かめます。</p>
+                <section class="learning-goals" aria-labelledby="learning-goals-title">
+                    <h2 id="learning-goals-title">この教材の学習目標</h2>
+                    <ul>
+                        <li>固有値と固有ベクトルの定義式 \( A\vec{v} = \lambda\vec{v} \) を書き、特性方程式 \( \det(A - \lambda I) = 0 \) から固有値と固有ベクトルを計算できる。</li>
+                        <li>固有ベクトルが幾何学的に「行列を掛けても直線の向きが変わらない方向」であることを説明できる。</li>
+                        <li>固有ベクトル基底によって、行列による任意のベクトルの変換が各軸方向の独立な伸縮に分解される理由を導ける。</li>
+                    </ul>
+                </section>
+            </header>
+
+            <div class="tab-nav" role="tablist" aria-label="教材の表示切り替え">
+                <button id="tab-theory-button" class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="tab-theory" tabindex="0">
+                    <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                    </svg>
+                    座学 <span class="tab-btn__secondary" lang="en">Theory</span>
+                </button>
+                <button id="tab-practice-button" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="tab-practice" tabindex="-1">
+                    <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="12" rx="2"></rect>
+                        <path d="m9 8-2 2 2 2"></path>
+                        <path d="m15 8 2 2-2 2"></path>
+                        <line x1="2" y1="20" x2="22" y2="20"></line>
+                    </svg>
+                    実装 <span class="tab-btn__secondary" lang="en">Practice</span>
+                </button>
+            </div>
+
+            <!-- ==================== 座学タブ ==================== -->
+            <div id="tab-theory" class="tab-content active" role="tabpanel" aria-labelledby="tab-theory-button">
+                <h2>1. 行列によるベクトルの変換と「向きの変化」</h2>
+                <p>
+                    2次正方行列 \( A \) による線形変換 \( \vec{x} \mapsto A\vec{x} \) を考えます。例として、次の行列 \( A \) を取り上げます：
+                </p>
+                <p>
+                    \[
+                    A = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}
+                    \]
+                </p>
+                <p>
+                    この行列 \( A \) を、平面上の標準基底ベクトル \( \vec{e}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix} \) に掛けると次のようになります：
+                </p>
+                <p>
+                    \[
+                    A \vec{e}_1 = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix} \begin{pmatrix} 1 \\ 0 \end{pmatrix} = \begin{pmatrix} 2 \\ 1 \end{pmatrix}
+                    \]
+                </p>
+                <p>
+                    元のベクトル \( \vec{e}_1 \) は \( x \) 軸正の向き（角度 \( 0^\circ \)）を向いていましたが、変換後のベクトル \( A\vec{e}_1 \) は角度約 \( 26.6^\circ \) の方向を向き、長さも \( 1 \) から \( \sqrt{5} \approx 2.24 \) へと変化しました。このように、一般のベクトルに行列を掛けると、<strong>「長さ」だけでなく「向き（角度）」も回転して変化</strong>します。
+                </p>
+                <p>
+                    しかし、平面内のすべてのベクトルが向きを変えてしまうわけではありません。特定の方向をもつベクトルに対しては、<strong>行列 \( A \) を掛けても直線の向きが一切変わらず、長さが定数倍されるだけ</strong>という現象が起きます。この特別な方向と倍率を数学的に捉える概念が「固有ベクトル」と「固有値」です。
+                </p>
+
+                <h2>2. 固有値と固有ベクトルの数学的定義</h2>
+                <p>
+                    正方行列に対する固有値と固有ベクトルは、次のように定義されます。
+                </p>
+
+                <div class="definition-box">
+                    <p class="definition-title">
+                        <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>固有値と固有ベクトルの定義
+                    </p>
+                    <p>
+                        \( n \) 次正方行列 \( A \) に対し、
+                        \[
+                        A\vec{v} = \lambda \vec{v} \quad (\vec{v} \neq \vec{0})
+                        \]
+                        を満たすスカラー \( \lambda \) を行列 \( A \) の<strong>固有値 (Eigenvalue)</strong> と呼び、この関係を満たす非ゼロのベクトル \( \vec{v} \) を固有値 \( \lambda \) に対する<strong>固有ベクトル (Eigenvector)</strong> と呼びます。
+                    </p>
+                </div>
+
+                <div class="column">
+                    <h4>
+                        <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>なぜゼロベクトル \( \vec{v} = \vec{0} \) を除外するのか？
+                    </h4>
+                    <p>
+                        定義において \( \vec{v} \neq \vec{0} \) という条件が付けられているのは、ゼロベクトルに対しては任意の数 \( \lambda \) で常に \( A\vec{0} = \vec{0} = \lambda\vec{0} \) が成り立ってしまうためです。どのような数 \( \lambda \) でも式が自明に成立してしまい、行列の幾何学的特性や方向を特定する情報にならないため、非ゼロベクトルに限定します。
+                    </p>
+                </div>
+
+                <h3>2.1 特性方程式（固有多項式）の導出</h3>
+                <p>
+                    定義式 \( A\vec{v} = \lambda\vec{v} \) の右辺を左辺に移項し、単位行列 \( I \) を用いて整理すると、次の連立1次方程式が得られます：
+                </p>
+                <p>
+                    \[
+                    (A - \lambda I)\vec{v} = \vec{0}
+                    \]
+                </p>
+                <p>
+                    もし行列 \( (A - \lambda I) \) が正則（逆行列をもつ）であるならば、両辺に左から逆行列を掛けることで \( \vec{v} = (A - \lambda I)^{-1}\vec{0} = \vec{0} \) となり、自明なゼロ解しか存在しなくなります。
+                </p>
+                <p>
+                    したがって、非ゼロベクトル \( \vec{v} \neq \vec{0} \) が存在するための必要十分条件は、行列 \( (A - \lambda I) \) が逆行列をもたないこと、すなわち<strong>行列式が \( 0 \) であること</strong>です。
+                </p>
+
+                <div class="theorem-box">
+                    <p class="definition-title">
+                        <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                            <polyline points="2 17 12 22 22 17"></polyline>
+                            <polyline points="2 12 12 17 22 12"></polyline>
+                        </svg>特性方程式（固有多項式）
+                    </p>
+                    <p>
+                        行列 \( A \) の固有値 \( \lambda \) は、次の \( n \) 次代数方程式（特性方程式）の解として求まります：
+                        \[
+                        \det(A - \lambda I) = 0
+                        \]
+                    </p>
+                </div>
+
+                <h2>3. 具体例による計算と検算</h2>
+                <p>
+                    最初に取り上げた行列 \( A = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix} \) を使って、固有値と固有ベクトルを実際に手計算で導きます。
+                </p>
+
+                <h3>3.1 固有値の計算</h3>
+                <p>
+                    特性方程式 \( \det(A - \lambda I) = 0 \) を立てます：
+                </p>
+                <p>
+                    \[
+                    \det \begin{pmatrix} 2 - \lambda & 1 \\ 1 & 2 - \lambda \end{pmatrix} = (2 - \lambda)^2 - 1 \times 1 = 0
+                    \]
+                </p>
+                <p>
+                    式を展開して因数分解します：
+                </p>
+                <p>
+                    \[
+                    \lambda^2 - 4\lambda + 4 - 1 = \lambda^2 - 4\lambda + 3 = (\lambda - 3)(\lambda - 1) = 0
+                    \]
+                </p>
+                <p>
+                    したがって、行列 \( A \) の固有値は <strong>\( \lambda_1 = 3 \)</strong> と <strong>\( \lambda_2 = 1 \)</strong> の2つであることが求まりました。
+                </p>
+
+                <h3>3.2 固有値 \( \lambda_1 = 3 \) に対する固有ベクトルの計算</h3>
+                <p>
+                    \( (A - 3I)\vec{v} = \vec{0} \) にベクトル \( \vec{v} = \begin{pmatrix} x \\ y \end{pmatrix} \) を代入します：
+                </p>
+                <p>
+                    \[
+                    \begin{pmatrix} 2 - 3 & 1 \\ 1 & 2 - 3 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} -1 & 1 \\ 1 & -1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}
+                    \]
+                </p>
+                <p>
+                    これは方程式 \( -x + y = 0 \)（すなわち \( y = x \)）を表します。したがって、\( \lambda_1 = 3 \) に対する固有ベクトルは、直線 \( y = x \) 上の任意の非ゼロベクトルです：
+                </p>
+                <p>
+                    \[
+                    \vec{v}_1 = c_1 \begin{pmatrix} 1 \\ 1 \end{pmatrix} \quad (c_1 \neq 0)
+                    \]
+                </p>
+                <p><strong>検算:</strong></p>
+                <p>
+                    \[
+                    A \vec{v}_1 = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix} \begin{pmatrix} 1 \\ 1 \end{pmatrix} = \begin{pmatrix} 2 \cdot 1 + 1 \cdot 1 \\ 1 \cdot 1 + 2 \cdot 1 \end{pmatrix} = \begin{pmatrix} 3 \\ 3 \end{pmatrix} = 3 \begin{pmatrix} 1 \\ 1 \end{pmatrix} = 3\vec{v}_1
+                    \]
+                </p>
+                <p>
+                    方向は回転せず、長さがちょうど \( 3 \) 倍に引き伸ばされていることが確認できます。
+                </p>
+
+                <h3>3.3 固有値 \( \lambda_2 = 1 \) に対する固有ベクトルの計算</h3>
+                <p>
+                    同様に、\( (A - 1I)\vec{v} = \vec{0} \) を計算します：
+                </p>
+                <p>
+                    \[
+                    \begin{pmatrix} 2 - 1 & 1 \\ 1 & 2 - 1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 1 & 1 \\ 1 & 1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}
+                    \]
+                </p>
+                <p>
+                    これは方程式 \( x + y = 0 \)（すなわち \( y = -x \)）を表します。したがって、\( \lambda_2 = 1 \) に対する固有ベクトルは、直線 \( y = -x \) 上の任意の非ゼロベクトルです：
+                </p>
+                <p>
+                    \[
+                    \vec{v}_2 = c_2 \begin{pmatrix} -1 \\ 1 \end{pmatrix} \quad (c_2 \neq 0)
+                    \]
+                </p>
+                <p><strong>検算:</strong></p>
+                <p>
+                    \[
+                    A \vec{v}_2 = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix} \begin{pmatrix} -1 \\ 1 \end{pmatrix} = \begin{pmatrix} 2 \cdot (-1) + 1 \cdot 1 \\ 1 \cdot (-1) + 2 \cdot 1 \end{pmatrix} = \begin{pmatrix} -1 \\ 1 \end{pmatrix} = 1\vec{v}_2
+                    \]
+                </p>
+                <p>
+                    向きも長さも一切変わらず、完全に自分自身へ写されている（\( 1 \) 倍）ことが確認できます。
+                </p>
+
+                <h2>4. 固有値と固有ベクトルの幾何学的意味</h2>
+                <p>
+                    計算結果を幾何学的（図形上）の視点で整理します。
+                </p>
+
+                <h3>4.1 固有空間（不変直線）</h3>
+                <p>
+                    ある固有値 \( \lambda \) に属する固有ベクトル全体の集合にゼロベクトルを加えた部分空間 \( V_\lambda = \{ \vec{v} \in \mathbb{R}^n \mid A\vec{v} = \lambda\vec{v} \} \) を<strong>固有空間 (Eigenspace)</strong> と呼びます。
+                </p>
+                <p>
+                    2次元平面における固有空間は、原点を通る直線です：
+                </p>
+                <ul>
+                    <li><strong>直線 \( y = x \):</strong> 固有値 \( \lambda_1 = 3 \) の固有直線。この直線上のベクトルは、行列 \( A \) を掛けても同一直線上に留まり、原点からの距離が \( 3 \) 倍に伸長されます。</li>
+                    <li><strong>直線 \( y = -x \):</strong> 固有値 \( \lambda_2 = 1 \) の固有直線。この直線上のベクトルは、行列 \( A \) を掛けても同一直線上に留まり、原点からの距離も等倍（\( 1 \) 倍）のまま維持されます。</li>
+                </ul>
+                <p>
+                    このように、固有ベクトルとは<strong>「行列を掛けても空間内で回転せず、直線の方向が保たれる軸（不変直線）」</strong>を指しています。
+                </p>
+
+                <h3>4.2 固有値 \( \lambda \) の値による幾何学的挙動の分類</h3>
+                <p>
+                    固有値 \( \lambda \) は、その固有直線上でベクトルがどのように伸縮・反転するかを決めるスカラー倍率です。値の範囲によって幾何学的挙動は次のように分類されます：
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>固有値の範囲</th>
+                            <th>幾何学的挙動</th>
+                            <th>図形上の変化</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>\( \lambda > 1 \)</td>
+                            <td>伸長（拡大）</td>
+                            <td>向きは同じままで、原点からの距離が伸びる。</td>
+                        </tr>
+                        <tr>
+                            <td>\( 0 < \lambda < 1 \)</td>
+                            <td>縮小</td>
+                            <td>向きは同じままで、原点に向かって縮む。</td>
+                        </tr>
+                        <tr>
+                            <td>\( \lambda = 1 \)</td>
+                            <td>不変</td>
+                            <td>向きも長さも変わらない（恒等写像）。</td>
+                        </tr>
+                        <tr>
+                            <td>\( \lambda = 0 \)</td>
+                            <td>原点への退化</td>
+                            <td>原点 \( \vec{0} \) に潰れる（行列が正則でない / 核を形成）。</td>
+                        </tr>
+                        <tr>
+                            <td>\( -1 < \lambda < 0 \)</td>
+                            <td>反転かつ縮小</td>
+                            <td>原点を挟んで反対側を向き、縮む。</td>
+                        </tr>
+                        <tr>
+                            <td>\( \lambda = -1 \)</td>
+                            <td>反転（原点対称）</td>
+                            <td>原点を挟んで反対側を向き、長さは等倍。</td>
+                        </tr>
+                        <tr>
+                            <td>\( \lambda < -1 \)</td>
+                            <td>反転かつ拡大</td>
+                            <td>原点を挟んで反対側を向き、原点からの距離が伸びる。</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>5. 任意のベクトルの幾何学的分解（対角化への架け橋）</h2>
+                <p>
+                    平面上の固有直線上にない「一般のベクトル」を行列 \( A \) で変換するとどうなるでしょうか？
+                </p>
+                <p>
+                    求めた2本の固有ベクトル \( \vec{v}_1 = \begin{pmatrix} 1 \\ 1 \end{pmatrix} \) と \( \vec{v}_2 = \begin{pmatrix} -1 \\ 1 \end{pmatrix} \) は線形独立であるため、2次元平面 \( \mathbb{R}^2 \) の基底をなします。
+                </p>
+                <p>
+                    したがって、標準基底での成分が \( \vec{x} = \begin{pmatrix} x \\ y \end{pmatrix} \) である任意の平面ベクトルは、固有ベクトル基底 \( \{ \vec{v}_1, \vec{v}_2 \} \) の線形結合として次のように一意に分解して表すことができます：
+                </p>
+                <p>
+                    \[
+                    \vec{x} = c_1 \vec{v}_1 + c_2 \vec{v}_2
+                    \]
+                </p>
+                <p>
+                    この両辺に行列 \( A \) を掛けると、行列演算の線形性と固有ベクトルの定義より、次が成り立ちます：
+                </p>
+                <p>
+                    \[
+                    A\vec{x} = A(c_1 \vec{v}_1 + c_2 \vec{v}_2) = c_1 (A\vec{v}_1) + c_2 (A\vec{v}_2) = c_1 (\lambda_1 \vec{v}_1) + c_2 (\lambda_2 \vec{v}_2)
+                    \]
+                </p>
+                <p>
+                    今回の例では \( \lambda_1 = 3, \lambda_2 = 1 \) であるため、
+                </p>
+                <p>
+                    \[
+                    A\vec{x} = 3 c_1 \vec{v}_1 + 1 c_2 \vec{v}_2
+                    \]
+                </p>
+                <p>
+                    となります。この式は極めて重要な幾何学的意味を示しています：
+                </p>
+
+                <div class="motivation-box">
+                    <p class="definition-title">
+                        <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>行列変換の本質: 固有ベクトル軸に沿った独立な伸縮
+                    </p>
+                    <p>
+                        一般のベクトル \( \vec{x} \) に行列 \( A \) を掛けると複雑に回転・変形するように見えますが、<strong>固有ベクトルを基底にとると、各軸方向成分（係数 \( c_1, c_2 \)）が互いに干渉することなく、それぞれ固有値倍（\( 3 \) 倍と \( 1 \) 倍）に単独で伸縮されるだけ</strong>です。
+                    </p>
+                    <p>
+                        これこそが「対角化によって連立方程式や累乗計算が独立な1成分の計算に分離できる」幾何学的な根本理由です。
+                    </p>
+                </div>
+            </div> <!-- //tab-theory -->
+
+            <!-- ==================== 実装タブ ==================== -->
+            <div id="tab-practice" class="tab-content" role="tabpanel" aria-labelledby="tab-practice-button" hidden>
+                <h2>1. JavaScript による固有ベクトル判定アルゴリズム</h2>
+                <p>
+                    プログラム上で、あるベクトル \( \vec{x} \) が行列 \( A \) の固有ベクトルであるかどうかを判定するには、変換後ベクトル \( A\vec{x} \) と元のベクトル \( \vec{x} \) が<strong>「平行（同一直線上にある）」</strong>かを評価します。
+                </p>
+
+                <h3>1.1 2次元ベクトルの外積による平行判定</h3>
+                <p>
+                    2次元ベクトル \( \vec{u} = \begin{pmatrix} u_x \\ u_y \end{pmatrix} \) と \( \vec{w} = \begin{pmatrix} w_x \\ w_y \end{pmatrix} \) が平行であるとき、両者が張る平行四辺形の面積（外積の大きさ・行列式）は \( 0 \) になります：
+                </p>
+                <p>
+                    \[
+                    \text{外積} = u_x w_y - u_y w_x = 0
+                    \]
+                </p>
+                <p>
+                    浮動小数点数の計算誤差を考慮し、ベクトルの長さの積で正規化した値が微小閾値（例: \( 0.05 \) 未満）であるか、あるいは成す角度差が \( 0^\circ \) または \( 180^\circ \) 付近であるかによって平行を判定します。
+                </p>
+
+                <h3>1.2 固有ベクトルの判定コード</h3>
+                <pre><code>// 行列 A とベクトル x を受け取り、平行度と固有値 λ を解析する関数
+function analyzeEigenvector(matrixA, vecX) {
+    // 変換後ベクトル Ax の計算
+    const ax = {
+        x: matrixA[0][0] * vecX.x + matrixA[0][1] * vecX.y,
+        y: matrixA[1][0] * vecX.x + matrixA[1][1] * vecX.y
+    };
+
+    const lenX = Math.hypot(vecX.x, vecX.y);
+    const lenAx = Math.hypot(ax.x, ax.y);
+    if (lenX < 1e-6) {
+        return { isEigenvector: false, lambda: 0, angleDiffDeg: 0 };
+    }
+
+    // 2次元外積 (平行度合の判定) と 内積 (コサインの判定)
+    const cross = vecX.x * ax.y - vecX.y * ax.x;
+    const dot = vecX.x * ax.x + vecX.y * ax.y;
+
+    // 角度差 (0〜180度) の計算
+    const cosTheta = Math.max(-1, Math.min(1, dot / (lenX * lenAx)));
+    const angleDiffRad = Math.acos(cosTheta);
+    const angleDiffDeg = (angleDiffRad * 180) / Math.PI;
+
+    // 外積が微小、または角度差が 0度/180度 付近であれば平行
+    const normalizedCross = Math.abs(cross) / (lenX * lenAx);
+    const isParallel = normalizedCross < 0.05 || angleDiffDeg < 2 || Math.abs(angleDiffDeg - 180) < 2;
+
+    // 長さの比率から固有値 λ を算出 (逆向きなら負符号)
+    let lambda = lenAx / lenX;
+    if (dot < 0) {
+        lambda = -lambda;
+    }
+
+    return {
+        isEigenvector: isParallel,
+        lambda: isParallel ? lambda : null,
+        angleDiffDeg: angleDiffDeg,
+        ax: ax
+    };
+}</code></pre>
+
+                <h2>2. インタラクティブな幾何学的可視化</h2>
+                <p>
+                    以下のキャンバスでは、行列 \( A = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix} \) によるベクトルの変換をリアルタイムでシミュレーションしています。
+                </p>
+                <div class="instruction">
+                    <p class="definition-title">
+                        <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>操作方法
+                    </p>
+                    <ul>
+                        <li><strong>ドラッグ操作:</strong> 青い丸（ベクトル \( \vec{x} \) の先端）をドラッグして、ベクトルの向きと長さを自由に変更できます。</li>
+                        <li><strong>プリセットボタン:</strong> 固有ベクトルの方向（\( \lambda=3 \) の直線 \( y=x \)、\( \lambda=1 \) の直線 \( y=-x \)）や、回転が起きる一般のベクトルを即座にセットできます。</li>
+                        <li><strong>モード切替:</strong> 「ベクトル検証」と、単位円全体が行列によって楕円に変形する様子を観察できる「単位円写像」を切り替えられます。</li>
+                        <li><strong>自動回転:</strong> ベクトルを連続的に回転させ、どの角度を通過するときに向きが保たれるかを観察できます。</li>
+                    </ul>
+                </div>
+
+                <div class="interactive-controls" role="group" aria-label="固有値可視化の操作パネル">
+                    <div class="controls-row">
+                        <span class="control-label">プリセット:</span>
+                        <div class="btn-group">
+                            <button id="btn-preset-eigen1" class="ctrl-btn" type="button">
+                                固有ベクトル1 (λ = 3)
+                            </button>
+                            <button id="btn-preset-eigen2" class="ctrl-btn" type="button">
+                                固有ベクトル2 (λ = 1)
+                            </button>
+                            <button id="btn-preset-general" class="ctrl-btn" type="button">
+                                一般ベクトル (回転)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="controls-row">
+                        <span class="control-label">表示モード:</span>
+                        <div class="btn-group">
+                            <button id="btn-mode-vector" class="ctrl-btn active" type="button">
+                                ベクトル検証
+                            </button>
+                            <button id="btn-mode-circle" class="ctrl-btn" type="button">
+                                単位円写像 (楕円変形)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="controls-row">
+                        <span class="control-label">アクション:</span>
+                        <div class="btn-group">
+                            <button id="btn-toggle-rotate" class="ctrl-btn ctrl-btn-action" type="button">
+                                自動回転
+                            </button>
+                            <button id="btn-reset-vector" class="ctrl-btn" type="button">
+                                初期位置に戻す
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <p id="canvas-eigen-status" class="canvas-status" aria-live="polite">
+                    ベクトル先端をドラッグ、またはプリセットボタンで固有ベクトルの方向を確認できます
+                </p>
+
+                <div id="eigen-canvas" class="canvas-container" aria-label="行列 A によるベクトルの変換と固有直線の幾何学的可視化キャンバス"></div>
+
+                <div class="vector-info-card">
+                    <h4>
+                        <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>リアルタイム計算ステータス
+                    </h4>
+                    <div class="vector-info-grid">
+                        <div class="vector-stat">
+                            <div class="vector-stat__label">入力ベクトル x</div>
+                            <div id="val-vector-x" class="vector-stat__value">(0.00, 0.00)</div>
+                        </div>
+                        <div class="vector-stat">
+                            <div class="vector-stat__label">変換後ベクトル A x</div>
+                            <div id="val-vector-ax" class="vector-stat__value">(0.00, 0.00)</div>
+                        </div>
+                        <div class="vector-stat">
+                            <div class="vector-stat__label">角度差 Δθ</div>
+                            <div id="val-angle-diff" class="vector-stat__value">0.0°</div>
+                        </div>
+                        <div id="stat-lambda-card" class="vector-stat">
+                            <div class="vector-stat__label">固有値倍率 λ</div>
+                            <div id="val-lambda" class="vector-stat__value">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>3. 可視化から得られる幾何学的結論</h2>
+                <p>
+                    インタラクティブな可視化を通じて、以下の事実が目で見て確認できます：
+                </p>
+                <ol>
+                    <li>
+                        <strong>固有ベクトルの方向でのみ \( \vec{x} \) と \( A\vec{x} \) が同一直線上に重なる:</strong>
+                        直線 \( y = x \) 上では青い矢印と赤い矢印が完全に同じ方向を向き、赤い矢印は青い矢印の正確に \( 3 \) 倍の長さになります。また直線 \( y = -x \) 上では両者が完全に一致（等倍）します。
+                    </li>
+                    <li>
+                        <strong>それ以外の角度では必ず回転が生じる:</strong>
+                        一般のベクトルでは青い矢印に対して赤い矢印が別の角度へ傾き、角度差 \( \Delta\theta \neq 0^\circ \) が生じます。
+                    </li>
+                    <li>
+                        <strong>単位円の変換像（楕円）の長軸と短軸:</strong>
+                        「単位円写像」モードに切り替えると、半径 \( 1 \) の青い円が変換後に行列 \( A \) によって赤い「楕円」に変形することがわかります。この楕円の最も伸びている長軸の方向が \( \lambda_1 = 3 \) の固有直線 \( y = x \)（長さ \( 3 \)）であり、最も縮んでいる短軸の方向が \( \lambda_2 = 1 \) の固有直線 \( y = -x \)（長さ \( 1 \)）に完全に一致します。
+                    </li>
+                </ol>
+            </div> <!-- //tab-practice -->
+
+            <section class="source-card" aria-labelledby="source-card-title">
+                <h2 id="source-card-title">コードを手元で試す</h2>
+                <p>教材で使っているHTML・JavaScriptをGitHubで確認し、自分の環境へ取得できます。</p>
+                <a id="source-link" class="source-link" hidden>GitHubでコードを見る・取得する</a>
+            </section>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <nav class="footer-nav" aria-label="ページ遷移">
+                <a class="back-link" href="/articles/linear-algebra/diagonalization/">← 行列の対角化 まとめへ戻る</a>
+                <a class="back-link" href="/articles/linear-algebra/diagonalization/what-and-why/">第1回: 対角化とは何か？なぜ対角化するか？</a>
+                <a class="back-link" href="/ja/subjects/linear-algebra">線形代数の教材一覧へ戻る</a>
+            </nav>
+            <p class="copyright">&copy; 理系の子. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

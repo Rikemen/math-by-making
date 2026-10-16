@@ -4,6 +4,7 @@ import type { ArticleMeta } from "@/content/types";
 const linearMappingSlug = "linear-mapping";
 const diagonalizationSlug = "diagonalization";
 const whatAndWhySlug = "what-and-why";
+const eigenvaluesAndEigenvectorsSlug = "eigenvalues-and-eigenvectors";
 
 export const linearMappingArticle: ArticleMeta = {
   slug: linearMappingSlug,
@@ -37,8 +38,20 @@ export const diagonalizationWhatAndWhyArticle: ArticleMeta = {
   githubUrl: "https://github.com/Rikemen/math-by-making/tree/main/public/articles/linear-algebra/diagonalization/what-and-why",
 };
 
+export const diagonalizationEigenvaluesAndEigenvectorsArticle: ArticleMeta = {
+  slug: eigenvaluesAndEigenvectorsSlug,
+  parentSlug: diagonalizationSlug,
+  subjectSlug: linearAlgebraSubject.slug,
+  title: "固有値と固有ベクトルの幾何学的意味",
+  description: "A v = λ v を満たす固有値と固有ベクトルの定義を学び、正方行列がベクトルを回転させずスカラー倍する幾何学的意味をコードと可視化で確かめます。",
+  status: "published",
+  href: `/articles/${linearAlgebraSubject.slug}/${diagonalizationSlug}/${eigenvaluesAndEigenvectorsSlug}/`,
+  githubUrl: "https://github.com/Rikemen/math-by-making/tree/main/public/articles/linear-algebra/diagonalization/eigenvalues-and-eigenvectors",
+};
+
 export const articles: readonly ArticleMeta[] = [
   linearMappingArticle,
   diagonalizationArticle,
   diagonalizationWhatAndWhyArticle,
+  diagonalizationEigenvaluesAndEigenvectorsArticle,
 ];

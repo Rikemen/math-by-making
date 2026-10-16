@@ -41,6 +41,21 @@ const whatAndWhyAssets = requiredFiles("行列の対角化とは何か？なぜ�
   "VectorSpaceElement.js",
 ]);
 
+const eigenvaluesAndEigenvectorsDirectory = path.resolve(process.cwd(), "public/articles/linear-algebra/diagonalization/eigenvalues-and-eigenvectors");
+
+const eigenvaluesAndEigenvectorsAssets = requiredFiles("固有値と固有ベクトルの幾何学的意味", eigenvaluesAndEigenvectorsDirectory, [
+  "README.md",
+  "article-mobile.css",
+  "article.css",
+  "canvas-size.js",
+  "index.html",
+  "sketch.js",
+  "source-link.js",
+  "Matrix.js",
+  "tabs.js",
+  "VectorSpaceElement.js",
+]);
+
 describe("article asset contract", () => {
   it("線形写像の公開フォルダに必須ファイルが揃っている", () => {
     expect(validateRequiredFiles(linearMappingAssets)).toEqual([]);
@@ -52,6 +67,10 @@ describe("article asset contract", () => {
 
   it("行列の対角化第1回記事の公開フォルダに必須ファイルが揃っている", () => {
     expect(validateRequiredFiles(whatAndWhyAssets)).toEqual([]);
+  });
+
+  it("行列の対角化第2回記事の公開フォルダに必須ファイルが揃っている", () => {
+    expect(validateRequiredFiles(eigenvaluesAndEigenvectorsAssets)).toEqual([]);
   });
 
   it("不足ファイルを記事名つきで報告する", () => {
