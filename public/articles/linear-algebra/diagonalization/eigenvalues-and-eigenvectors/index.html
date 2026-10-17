@@ -166,6 +166,46 @@
                     したがって、非ゼロベクトル \( \vec{v} \neq \vec{0} \) が存在するための必要十分条件は、行列 \( (A - \lambda I) \) が逆行列をもたないこと、すなわち<strong>行列式が \( 0 \) であること</strong>です。
                 </p>
 
+                <details class="accordion-box">
+                    <summary class="accordion-summary">
+                        <svg class="article-icon accordion-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                        <span>【補足】なぜ行列式が \( 0 \) だと逆行列が存在しないのか？</span>
+                    </summary>
+                    <div class="accordion-content">
+                        <h4>① 代数的な理由（積の行列式とゼロ除算）</h4>
+                        <p>
+                            もし正方行列 \( M \) に逆行列 \( M^{-1} \) が存在するならば、逆行列の定義より \( M M^{-1} = I \)（単位行列）が成り立ちます。
+                        </p>
+                        <p>
+                            両辺の行列式をとると、行列式の性質 \( \det(AB) = \det(A)\det(B) \) より、
+                            \[
+                            \det(M M^{-1}) = \det(M) \det(M^{-1}) = \det(I) = 1
+                            \]
+                            となります。ここで、もし \( \det(M) = 0 \) だとすると、左辺は \( 0 \times \det(M^{-1}) = 0 \) となり、右辺の \( 1 \) と一致せず矛盾します（\( 0 = 1 \)）。
+                        </p>
+                        <p>
+                            また、余因子行列 \( \widetilde{M} \) を用いた逆行列の公式
+                            \[
+                            M^{-1} = \frac{1}{\det(M)} \widetilde{M}
+                            \]
+                            を見ても、分母が \( \det(M) = 0 \) になってしまうため、数式上定義できません。したがって、\( \det(M) = 0 \) のとき逆行列は存在しません。
+                        </p>
+
+                        <h4>② 幾何学的な理由（空間の面積・体積の潰れ）</h4>
+                        <p>
+                            2次元平面において、行列式 \( \det(M) \) の絶対値は「正方行列 \( M \) が張る平行四辺形の面積（面積拡大率）」を表します。
+                        </p>
+                        <p>
+                            \( \det(M) = 0 \) であるということは、<strong>変換によって平面全体の面積が \( 0 \) に潰れてしまう</strong>ことを意味します。たとえば、2次元平面内のすべての点が1本の直線の上（1次元）、あるいは原点という1点（0次元）に押し潰されます。
+                        </p>
+                        <p>
+                            一度1本の直線に押し潰されてしまった図形からは、潰れる前にもとの平面のどこにあった点なのかを一意に特定して元に戻すことができません（逆写像が一意に定まりません）。したがって、空間を元に戻す操作である「逆行列 \( M^{-1} \)」が存在しないのです。
+                        </p>
+                    </div>
+                </details>
+
                 <div class="theorem-box">
                     <p class="definition-title">
                         <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -181,6 +221,49 @@
                         \]
                     </p>
                 </div>
+
+                <h3>2.2 特性方程式が「必要十分条件」である理由</h3>
+                <p>
+                    「\( \lambda \) が固有値ならば \( \det(A - \lambda I) = 0 \) が成り立つ」という<strong>必要性</strong>は、もし逆行列が存在すると仮定すると \( \vec{v} = (A - \lambda I)^{-1}\vec{0} = \vec{0} \) となり、非ゼロベクトルという定義に反することから直ちに導かれます。
+                </p>
+                <p>
+                    では、逆に「\( \det(A - \lambda I) = 0 \) を満たす \( \lambda \) であれば、<strong>必ず非ゼロの固有ベクトル \( \vec{v} \neq \vec{0} \) が存在する（十分条件でもある）</strong>」といえるのはなぜでしょうか？
+                </p>
+
+                <div class="motivation-box">
+                    <p class="definition-title">
+                        <svg class="article-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>十分性: 行列式が 0 なら非ゼロ解（固有ベクトル）が必ず存在する理由
+                    </p>
+                    <p>
+                        行列 \( M = A - \lambda I \) とおきます。固有ベクトルを求める方程式 \( M\vec{v} = \vec{0} \) は、未知数 \( n \) 個の斉次連立1次方程式です。
+                    </p>
+                    <p>
+                        <strong>① 行列の階数（ランク）と解の自由度:</strong><br>
+                        正方行列 \( M \) の行列式が \( \det(M) = 0 \) であることは、行列 \( M \) の各行（または各列）ベクトルが線形従属（互いに平行、または他の行の線形結合で表せる）であることを意味します。したがって、連立方程式の中にある実質的に独立な制約式の数（階数 \( \text{rank}(M) \)）は、未知数の数 \( n \) より厳密に小さくなります（\( \text{rank}(M) < n \)）。
+                    </p>
+                    <p>
+                        次元定理（階数・退化次数定理）より、解空間（核）の次元は次を満たします：
+                        \[
+                        \dim(\ker(M)) = n - \text{rank}(M) \ge 1
+                        \]
+                        解空間の次元が \( 1 \) 以上であるということは、解の自由度が少なくとも \( 1 \) つ残ることを意味し、原点 \( \vec{0} \) 以外の解（非自明解 \( \vec{v} \neq \vec{0} \)）が解空間（直線や平面）として必ず無数に存在します。
+                    </p>
+                    <p>
+                        <strong>② 2次元における具体例での確認:</strong><br>
+                        \( 2 \times 2 \) 行列 \( M = \begin{pmatrix} a & b \\ c & d \end{pmatrix} \) で \( \det(M) = ad - bc = 0 \) のとき、2つの行ベクトル \( (a, b) \) と \( (c, d) \) は平行（実質的に1本の方程式）になります。もし \( (a, b) \neq (0, 0) \) ならば、\( ax + by = 0 \) を満たす非ゼロの解として、たとえば \( \vec{v} = \begin{pmatrix} -b \\ a \end{pmatrix} \neq \begin{pmatrix} 0 \\ 0 \end{pmatrix} \) が常に確実に作れます。もう一方の式 \( cx + dy = 0 \) も自動的に満たされます。
+                    </p>
+                    <p>
+                        したがって、\( \det(A - \lambda I) = 0 \) を満たす実数 \( \lambda \) であれば、対応する非ゼロの固有ベクトル \( \vec{v} \) が<strong>数学的に必ず存在することが保証</strong>されます。
+                    </p>
+                </div>
+
+                <p>
+                    このように、特性方程式 \( \det(A - \lambda I) = 0 \) は固有値であるための<strong>必要十分条件（同値）</strong>です。そのため、特性方程式を解くだけで「漏れなく（必要性）、余計な偽の解を含まず（十分性）」すべての固有値を確実に特定できます。
+                </p>
 
                 <h2>3. 具体例による計算と検算</h2>
                 <p>
@@ -336,36 +419,37 @@
                 <h2>5. 任意のベクトルの幾何学的分解（対角化への架け橋）</h2>
                 <p>
                     平面上の固有直線上にない「一般のベクトル」を行列 \( A \) で変換するとどうなるでしょうか？
+                    ここでは、ベクトルを<strong>「標準基底」</strong>で分解した場合と、<strong>「固有ベクトル基底」</strong>で分解した場合の違いを比較します。
                 </p>
+
+                <h3>5.1 標準基底で分解した場合（軸の歪みと成分の干渉）</h3>
                 <p>
-                    求めた2本の固有ベクトル \( \vec{v}_1 = \begin{pmatrix} 1 \\ 1 \end{pmatrix} \) と \( \vec{v}_2 = \begin{pmatrix} -1 \\ 1 \end{pmatrix} \) は線形独立であるため、2次元平面 \( \mathbb{R}^2 \) の基底をなします。
-                </p>
-                <p>
-                    したがって、標準基底での成分が \( \vec{x} = \begin{pmatrix} x \\ y \end{pmatrix} \) である任意の平面ベクトルは、固有ベクトル基底 \( \{ \vec{v}_1, \vec{v}_2 \} \) の線形結合として次のように一意に分解して表すことができます：
-                </p>
-                <p>
-                    \[
-                    \vec{x} = c_1 \vec{v}_1 + c_2 \vec{v}_2
-                    \]
-                </p>
-                <p>
-                    この両辺に行列 \( A \) を掛けると、行列演算の線形性と固有ベクトルの定義より、次が成り立ちます：
+                    直交する標準基底 \( \vec{e}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \vec{e}_2 = \begin{pmatrix} 0 \\ 1 \end{pmatrix} \) を用いると、任意のベクトルは \( \vec{x} = x \vec{e}_1 + y \vec{e}_2 \) と表されます。この両辺に行列 \( A = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix} \) を掛けると次のようになります：
                 </p>
                 <p>
                     \[
-                    A\vec{x} = A(c_1 \vec{v}_1 + c_2 \vec{v}_2) = c_1 (A\vec{v}_1) + c_2 (A\vec{v}_2) = c_1 (\lambda_1 \vec{v}_1) + c_2 (\lambda_2 \vec{v}_2)
+                    A\vec{x} = x(A\vec{e}_1) + y(A\vec{e}_2) = x \begin{pmatrix} 2 \\ 1 \end{pmatrix} + y \begin{pmatrix} 1 \\ 2 \end{pmatrix} = \begin{pmatrix} 2x + y \\ x + 2y \end{pmatrix}
                     \]
                 </p>
                 <p>
-                    今回の例では \( \lambda_1 = 3, \lambda_2 = 1 \) であるため、
+                    変換後の基底ベクトル \( A\vec{e}_1 = \begin{pmatrix} 2 \\ 1 \end{pmatrix} \) と \( A\vec{e}_2 = \begin{pmatrix} 1 \\ 2 \end{pmatrix} \) は、もとの直交座標軸から斜めに傾いて歪んでしまいます。その結果、第1成分に \( y \)、第2成分に \( x \) が混入し、<strong>成分同士が互いに混ざり合って干渉（連立）</strong>してしまいます。
+                </p>
+
+                <h3>5.2 固有ベクトル基底で分解した場合（軸の不変と独立伸縮）</h3>
+                <p>
+                    一方、2本の固有ベクトル \( \vec{v}_1 = \begin{pmatrix} 1 \\ 1 \end{pmatrix} \) と \( \vec{v}_2 = \begin{pmatrix} -1 \\ 1 \end{pmatrix} \) は線形独立であるため、2次元平面 \( \mathbb{R}^2 \) の基底をなします。
+                </p>
+                <p>
+                    任意のベクトル \( \vec{x} \) を固有ベクトル基底 \( \{ \vec{v}_1, \vec{v}_2 \} \) の線形結合として表すと、
+                    \[
+                    \vec{x} = c_1 \vec{v}_1 + c_2 \vec{v}_2 \quad \left( c_1 = \frac{x+y}{2}, \; c_2 = \frac{-x+y}{2} \right)
+                    \]
+                    となります。この両辺に行列 \( A \) を掛けると、固有値 \( \lambda_1 = 3, \lambda_2 = 1 \) より次のようになります：
                 </p>
                 <p>
                     \[
-                    A\vec{x} = 3 c_1 \vec{v}_1 + 1 c_2 \vec{v}_2
+                    A\vec{x} = c_1 (A\vec{v}_1) + c_2 (A\vec{v}_2) = c_1 (3\vec{v}_1) + c_2 (1\vec{v}_2) = 3 c_1 \vec{v}_1 + 1 c_2 \vec{v}_2
                     \]
-                </p>
-                <p>
-                    となります。この式は極めて重要な幾何学的意味を示しています：
                 </p>
 
                 <div class="motivation-box">
@@ -374,15 +458,51 @@
                             <circle cx="12" cy="12" r="10"></circle>
                             <line x1="12" y1="16" x2="12" y2="12"></line>
                             <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>行列変換の本質: 固有ベクトル軸に沿った独立な伸縮
+                        </svg>行列変換の本質: 固有ベクトル軸に沿った完全な独立伸縮
                     </p>
                     <p>
-                        一般のベクトル \( \vec{x} \) に行列 \( A \) を掛けると複雑に回転・変形するように見えますが、<strong>固有ベクトルを基底にとると、各軸方向成分（係数 \( c_1, c_2 \)）が互いに干渉することなく、それぞれ固有値倍（\( 3 \) 倍と \( 1 \) 倍）に単独で伸縮されるだけ</strong>です。
+                        固有ベクトルを基底にとると、<strong>基底ベクトルの方向（軸）が一切傾かず、各軸方向成分（係数 \( c_1, c_2 \)）が互いに干渉することなく、それぞれ固有値倍（\( 3 \) 倍と \( 1 \) 倍）に単独で伸縮されるだけ</strong>です。
                     </p>
                     <p>
-                        これこそが「対角化によって連立方程式や累乗計算が独立な1成分の計算に分離できる」幾何学的な根本理由です。
+                        成分同士が一切混ざらないため、複雑に見える行列の変換や何十回もの累乗計算が、単純な1変数の掛け算に完全に分離（デカップリング）されます。これこそが「対角化」の幾何学的な根本原理です。
                     </p>
                 </div>
+
+                <h3>5.3 標準基底と固有ベクトル基底の幾何学的対比</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>比較項目</th>
+                            <th>標準基底 \( \{ \vec{e}_1, \vec{e}_2 \} \)</th>
+                            <th>固有ベクトル基底 \( \{ \vec{v}_1, \vec{v}_2 \} \)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>基底の軸の向き</td>
+                            <td>直交する \( x \) 軸・\( y \) 軸</td>
+                            <td>固有直線 \( y = x \) と \( y = -x \)</td>
+                        </tr>
+                        <tr>
+                            <td>変換後の軸の向き</td>
+                            <td>斜めに傾いて歪む（非直交化）</td>
+                            <td><strong>全く傾かない（不変直線）</strong></td>
+                        </tr>
+                        <tr>
+                            <td>変換後の各成分</td>
+                            <td>\( \begin{pmatrix} 2x + y \\ x + 2y \end{pmatrix} \)（互いに混ざる）</td>
+                            <td>\( \begin{pmatrix} 3c_1 \\ 1c_2 \end{pmatrix} \)（<strong>完全に独立</strong>）</td>
+                        </tr>
+                        <tr>
+                            <td>幾何学的挙動</td>
+                            <td>空間全体が歪み回転を伴う</td>
+                            <td><strong>各軸方向に単独で 3倍・1倍に伸びるだけ</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    ※ 実装タブのグラフで<strong>「標準基底で分解」</strong>と<strong>「固有基底で分解」</strong>を切り替えると、この軸の歪みと独立伸縮の違いを視覚的に直接比較できます。
+                </p>
             </div> <!-- //tab-theory -->
 
             <!-- ==================== 実装タブ ==================== -->
@@ -460,7 +580,7 @@ function analyzeEigenvector(matrixA, vecX) {
                     <ul>
                         <li><strong>ドラッグ操作:</strong> 青い丸（ベクトル \( \vec{x} \) の先端）をドラッグして、ベクトルの向きと長さを自由に変更できます。</li>
                         <li><strong>プリセットボタン:</strong> 固有ベクトルの方向（\( \lambda=3 \) の直線 \( y=x \)、\( \lambda=1 \) の直線 \( y=-x \)）や、回転が起きる一般のベクトルを即座にセットできます。</li>
-                        <li><strong>モード切替:</strong> 「ベクトル検証」と、単位円全体が行列によって楕円に変形する様子を観察できる「単位円写像」を切り替えられます。</li>
+                        <li><strong>モード切替:</strong> 「単一ベクトル」「標準基底で分解」「固有基底で分解」「単位円写像」を切り替えられます。</li>
                         <li><strong>自動回転:</strong> ベクトルを連続的に回転させ、どの角度を通過するときに向きが保たれるかを観察できます。</li>
                     </ul>
                 </div>
@@ -485,7 +605,13 @@ function analyzeEigenvector(matrixA, vecX) {
                         <span class="control-label">表示モード:</span>
                         <div class="btn-group">
                             <button id="btn-mode-vector" class="ctrl-btn active" type="button">
-                                ベクトル検証
+                                単一ベクトル
+                            </button>
+                            <button id="btn-mode-decomp-std" class="ctrl-btn" type="button">
+                                標準基底で分解
+                            </button>
+                            <button id="btn-mode-decomp-eigen" class="ctrl-btn" type="button">
+                                固有基底で分解
                             </button>
                             <button id="btn-mode-circle" class="ctrl-btn" type="button">
                                 単位円写像 (楕円変形)
@@ -518,38 +644,54 @@ function analyzeEigenvector(matrixA, vecX) {
                             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                         </svg>リアルタイム計算ステータス
                     </h4>
+
+                    <div id="vector-explanation-card" class="vector-explanation-card">
+                        <p id="vector-explanation-title" class="vector-explanation-title">一般ベクトル（標準基底 e₁ = (1, 0)ᵀ）の幾何学的変化</p>
+                        <p id="vector-explanation-text" class="vector-explanation-text">
+                            元のベクトル x は x 軸正の向き（角度 0.0°）を向いていましたが、変換後のベクトル A x は角度約 26.6° の方向を向き、長さも 1.00 から 2.24（√5 ≈ 2.24）へと変化しました（回転角 Δθ = 26.6°）。このように、一般のベクトルに行列を掛けると「長さ」だけでなく「向き（角度）」も回転して変化します。
+                        </p>
+                    </div>
+
                     <div class="vector-info-grid">
                         <div class="vector-stat">
                             <div class="vector-stat__label">入力ベクトル x</div>
-                            <div id="val-vector-x" class="vector-stat__value">(0.00, 0.00)</div>
+                            <div id="val-vector-x" class="vector-stat__value">(1.00, 0.00)</div>
+                            <div class="vector-stat__sub">長さ: <span id="val-len-x">1.00</span> / 角度: <span id="val-angle-x">0.0°</span></div>
                         </div>
                         <div class="vector-stat">
                             <div class="vector-stat__label">変換後ベクトル A x</div>
-                            <div id="val-vector-ax" class="vector-stat__value">(0.00, 0.00)</div>
+                            <div id="val-vector-ax" class="vector-stat__value">(2.00, 1.00)</div>
+                            <div class="vector-stat__sub">長さ: <span id="val-len-ax">2.24</span> / 角度: <span id="val-angle-ax">26.6°</span></div>
                         </div>
                         <div class="vector-stat">
-                            <div class="vector-stat__label">角度差 Δθ</div>
-                            <div id="val-angle-diff" class="vector-stat__value">0.0°</div>
+                            <div class="vector-stat__label">回転角 Δθ</div>
+                            <div id="val-angle-diff" class="vector-stat__value">26.6°</div>
+                            <div class="vector-stat__sub">向きの変化（角度差）</div>
                         </div>
                         <div id="stat-lambda-card" class="vector-stat">
                             <div class="vector-stat__label">固有値倍率 λ</div>
-                            <div id="val-lambda" class="vector-stat__value">-</div>
+                            <div id="val-lambda" class="vector-stat__value">方向が変化 (非平行)</div>
+                            <div class="vector-stat__sub">長さの伸縮比率</div>
                         </div>
                     </div>
                 </div>
 
                 <h2>3. 可視化から得られる幾何学的結論</h2>
                 <p>
-                    インタラクティブな可視化を通じて、以下の事実が目で見て確認できます：
+                    インタラクティブな可視化を通じて、以下の幾何学的事実が目で見て確認できます：
                 </p>
                 <ol>
                     <li>
-                        <strong>固有ベクトルの方向でのみ \( \vec{x} \) と \( A\vec{x} \) が同一直線上に重なる:</strong>
-                        直線 \( y = x \) 上では青い矢印と赤い矢印が完全に同じ方向を向き、赤い矢印は青い矢印の正確に \( 3 \) 倍の長さになります。また直線 \( y = -x \) 上では両者が完全に一致（等倍）します。
+                        <strong>一般のベクトルでは「向き」が回転する（具体例の確認）:</strong>
+                        プリセットの「一般ベクトル」を選択すると、入力ベクトル \( \vec{x} = \begin{pmatrix} 1 \\ 0 \end{pmatrix} \)（長さ \( 1 \)、角度 \( 0.0^\circ \)）に対して、変換後ベクトル \( A\vec{x} = \begin{pmatrix} 2 \\ 1 \end{pmatrix} \) は角度約 \( 26.6^\circ \)（\( \Delta\theta \approx 26.6^\circ \) 回転）の方向を向き、長さも \( 1 \) から \( \sqrt{5} \approx 2.24 \) へと変化します。キャンバス上の扇形のアークがこの回転角を示しており、一般のベクトルでは向きが保たれないことが直感的に確認できます。
                     </li>
                     <li>
-                        <strong>それ以外の角度では必ず回転が生じる:</strong>
-                        一般のベクトルでは青い矢印に対して赤い矢印が別の角度へ傾き、角度差 \( \Delta\theta \neq 0^\circ \) が生じます。
+                        <strong>固有ベクトルの方向でのみ \( \vec{x} \) と \( A\vec{x} \) が同一直線上に重なる（回転角 \( \Delta\theta = 0^\circ \)）:</strong>
+                        直線 \( y = x \) 上（プリセット「固有ベクトル1」）では、青い矢印と赤い矢印がともに角度 \( 45.0^\circ \) を向き、回転角は \( \Delta\theta = 0.0^\circ \) です。赤い矢印は青い矢印の正確に \( 3 \) 倍（固有値 \( \lambda_1 = 3 \)）の長さになります。また直線 \( y = -x \) 上（プリセット「固有ベクトル2」）では角度 \( 135.0^\circ \) のまま等倍（\( \lambda_2 = 1 \) 倍）で維持されます。
+                    </li>
+                    <li>
+                        <strong>基底による分解の比較（標準基底の歪みと干渉 vs 固有基底の独立伸縮）:</strong>
+                        「標準基底で分解」を選ぶと、直角だった基底が斜めに歪み、平行四辺形が潰れて \( x \) と \( y \) の成分が混ざり合う様子が描かれます。一方「固有基底で分解」を選ぶと、基底の軸が一切傾かず、固有直線 \( y = x \) 方向に \( 3 \) 倍、\( y = -x \) 方向に \( 1 \) 倍引き伸ばされるだけで、成分同士が全く混ざり合わない（独立に分離される）ことが視覚的に確認できます。
                     </li>
                     <li>
                         <strong>単位円の変換像（楕円）の長軸と短軸:</strong>

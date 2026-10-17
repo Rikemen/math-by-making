@@ -96,6 +96,26 @@
         border-left-width: 4px;
     }
 
+    .accordion-box {
+        margin: 16px 0 20px;
+    }
+
+    .accordion-summary {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+        gap: 8px;
+    }
+
+    .accordion-content {
+        padding: 14px;
+        font-size: 0.9rem;
+    }
+
+    .accordion-content h4 {
+        margin: 14px 0 6px;
+        font-size: 0.95rem;
+    }
+
     .interactive-controls {
         padding: 14px;
         gap: 12px;
@@ -120,8 +140,21 @@
         justify-content: center;
     }
 
+    .vector-explanation-card {
+        padding: 12px 14px;
+        margin: 10px 0 14px;
+    }
+
+    .vector-explanation-title {
+        font-size: 0.9rem;
+    }
+
+    .vector-explanation-text {
+        font-size: 0.85rem;
+    }
+
     .vector-info-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: 10px;
     }
 
@@ -131,6 +164,10 @@
 
     .vector-stat__value {
         font-size: 1rem;
+    }
+
+    .vector-stat__sub {
+        font-size: 0.75rem;
     }
 
     .source-card {
